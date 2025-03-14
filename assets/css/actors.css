@@ -44,17 +44,70 @@ h6 {
 /*--------------------------------------------------------------
 # Team Section
 --------------------------------------------------------------*/
+.big-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  position: relative;
+}
+
 .team .member {
   background-color: var(--surface-color);
   border: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
   text-align: center;
   margin-bottom: 20px;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+  /* Smooth transition for hover effects */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Add default shadow */
+  border-radius: 10px;
+  /* Rounded corners */
+  opacity: 0;
+  /* Initially hidden */
+  transform: translateY(30px);
+  /* Move the cards a bit down */
+  animation: fadeInUp 0.6s forwards;
+  /* Apply animation */
+}
+
+.team .member:nth-child(odd) {
+  animation-delay: 0.2s;
+  /* Delay for odd elements */
+}
+
+.team .member:nth-child(even) {
+  animation-delay: 0.4s;
+  /* Delay for even elements */
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    /* Bring cards to their original position */
+  }
+}
+
+.team .member:hover {
+  transform: scale(1.05);
+  /* Slightly increase size */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  /* Stronger shadow on hover */
+  cursor: pointer;
+  /* Pointer cursor on hover */
 }
 
 .team .member img {
   border-radius: 50%;
   max-width: 60%;
   margin: 30px 0;
+  transition: all 0.3s ease;
+}
+
+.team .member:hover img {
+  transform: scale(1.1);
+  /* Enlarge image slightly on hover */
 }
 
 .team .member .member-content {
@@ -91,7 +144,7 @@ h6 {
 }
 
 .team .member .social a:hover {
-  color: var(--accent-color);
+  color: black !important;
 }
 
 .team .member .social i {
