@@ -1,24 +1,47 @@
 <?php
 require_once '../../../config/db_connect.php';
 
+// Check if the 'id' parameter is set in the URL
+if (isset($_GET['id'])) {
+    // Get the actor ID from the URL
+    $actor_id = $_GET['id'];
+
+    // Fetch the actor data from the database
+    $sql = "SELECT * FROM actors WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $actor_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $actor = $result->fetch_assoc();
+    } else {
+        echo "Actor not found.";
+        exit();
+    }
+}
+
+// Check if form is submitted to update actor data
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'] . $_POST['surname'];
+    $name = $_POST['name'] . ' ' . $_POST['surname'];
     $birthdate = $_POST['birthdate'];
     $biography = $_POST['biography'];
 
     // Check if file is uploaded
-    if (!isset($_FILES['photo']) || $_FILES['photo']['error'] != 0) {
-        die("Error: No file uploaded or file upload error.");
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
+        // Read the image as binary data
+        $image = file_get_contents($_FILES['photo']['tmp_name']);
+        // Update the actor's photo
+        $sql = "UPDATE actors SET name = ?, birthdate = ?, biography = ?, photo = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssbi", $name, $birthdate, $biography, $null, $actor_id);
+        $stmt->send_long_data(3, $image); // Send BLOB data
+    } else {
+        // Update without changing the photo
+        $sql = "UPDATE actors SET name = ?, birthdate = ?, biography = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssi", $name, $birthdate, $biography, $actor_id);
     }
-
-    // Read the image as binary data
-    $image = file_get_contents($_FILES['photo']['tmp_name']);
-
-    // Fix the SQL query by correctly adding 4 values
-    $sql = "INSERT INTO actors (name, birthdate, biography, photo) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssb", $name, $birthdate, $biography, $null);
-    $stmt->send_long_data(3, $image); // Send BLOB data
 
     if ($stmt->execute()) {
         header('Location: index.php'); // Redirect to actors list
@@ -29,17 +52,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Actor</title>
+    <title>Edit Actor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="./add.ccs">
     <style>
         body {
             background-color: #f8f9fa;
@@ -116,37 +137,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
     <div class="form-container">
-        <h2 class="text-center mb-4">Shto nje aktor te ri ne teatrin Metropol</h2>
+        <h2 class="text-center mb-4">Edit Actor Details</h2>
         <form method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Emri</label>
-                <input type="text" name="name" class="form-control" required>
+                <input type="text" name="name" class="form-control"
+                    value="<?php echo explode(' ', $actor['name'])[0]; ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Mbiemri</label>
-                <input type="text" name="surname" class="form-control" required>
+                <input type="text" name="surname" class="form-control"
+                    value="<?php echo explode(' ', $actor['name'])[1]; ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Data e lindjes</label>
-                <input type="date" name="birthdate" class="form-control" required>
+                <input type="date" name="birthdate" class="form-control" value="<?php echo $actor['birthdate']; ?>"
+                    required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label">Biografia</label>
-                <textarea name="biography" class="form-control" style=" height: 120px; " rows="10" required></textarea>
+                <textarea name="biography" class="form-control" style="height: 120px;" rows="10"
+                    required><?php echo $actor['biography']; ?></textarea>
             </div>
-
 
             <div class="mb-3 text-center">
                 <label class="photo-upload" onclick="document.getElementById('photoInput').click()">
-                    <img id="photoPreview" class="photo-preview d-none" src="#" alt="Preview">
-                    <p>Kliko per te shkarkuar foto</p>
+                    <?php if (!empty($actor['photo'])): ?>
+                        <p>Kliko per te modifikuar foton</p>
+                        <img id="photoPreview" class="photo-preview"
+                            src="data:image/jpeg;base64,<?php echo base64_encode($actor['photo']); ?>" alt="Preview">
+                    <?php else: ?>
+                        <p>Kliko per te shkarkuar foto</p>
+                    <?php endif; ?>
                 </label>
-                <input type="file" id="photoInput" name="photo" accept="image/*" class="d-none" required
+                <input type="file" id="photoInput" name="photo" accept="image/*" class="d-none"
                     onchange="previewImage(event)">
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Add Actor</button>
+            <button type="submit" class="btn btn-primary w-100">Modifiko te dhenat e aktorit</button>
         </form>
     </div>
 
