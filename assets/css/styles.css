@@ -203,7 +203,7 @@ button {
     width: 180px;
     border: none;
     border-radius: 10px;
-    background-color: var(--heading2-color);
+    background-image: linear-gradient(to bottom, var(--heading2-color) , var(--accent-color));
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(70px);
     transition: transform 0.2s ease, background-color 0.2s ease;
@@ -211,7 +211,7 @@ button {
 
 button:hover {
     cursor: pointer;
-    background-image: linear-gradient(to bottom, var(--heading2-color) , var(--accent-color));
+    background-image: linear-gradient(to bottom, var(--accent-color) , #75612b);
     backdrop-filter: blur(80px);
 }
 
