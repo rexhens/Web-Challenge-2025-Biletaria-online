@@ -1,6 +1,7 @@
 <?php
 /** @var mysqli $conn */
 require "config/db_connect.php";
+require "functions.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +36,7 @@ require "config/db_connect.php";
         <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
         <label for="password-confirm">Konfirmoni Fjalëkalimin e Ri</label>
     </div>
-    <button type="submit" name="submit" id="change">Ndryshoje</button>
+    <button type="submit" name="submit" id="change">Ndrysho</button>
 </form>
 <div class="info-container">
     <div class="email-error errors" id="email-error">
@@ -112,10 +113,8 @@ require "config/db_connect.php";
             $query = "UPDATE users SET password = ?, is_verified = 0, verification_token = ? WHERE email = ?";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("sss", $hashedPassword, $verification_token, $email);
-            $stmt->execute();
-            $result = $stmt->get_result();
 
-            if(!$result) {
+            if(!$stmt->execute()) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
             }
 

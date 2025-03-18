@@ -142,14 +142,13 @@ session_start();
                                         $errors[] = "Një problem ndodhi! Provoni më vonë!";
                                         session_unset();
                                         session_destroy();
+                                    } else {
+                                        setcookie('remember_me', $rememberToken, time() + (86400 * 30), "/");
                                     }
 
                                     $stmt->close();
-
-                                    setcookie('remember_me', $rememberToken, time() + (86400 * 30), "/");
                                 } catch (\Random\RandomException $e) {
                                     $errors[] = "Një problem ndodhi! Provoni më vonë!";
-
                                 }
                             }
                             if(empty($errors)){
