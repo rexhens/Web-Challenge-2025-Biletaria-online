@@ -114,7 +114,7 @@ session_start();
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = "Adresë e pasaktë email-i!";
         }
-        if (!preg_match('/^\+?\d{1,15}$/', $phone)) {
+        if (!preg_match('/^\+?[0-9\s\-\(\)]+$/', $phone)) {
             $errors[] = "Numër i pasaktë telefoni!";
         }
         if ($password !== $passwordConfirm) {
