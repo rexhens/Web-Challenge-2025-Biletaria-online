@@ -1,5 +1,5 @@
 <?php
-require_once '../connections/db_connect.php'; // Database connection
+require_once '../../../config/db_connect.php';
 
 $query = 'SELECT * FROM shows ORDER BY start_date DESC';
 $result = $conn->query($query);
