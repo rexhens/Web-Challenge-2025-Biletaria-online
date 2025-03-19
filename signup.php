@@ -94,8 +94,8 @@ session_start();
 
         $name = trim($_POST['name']);
         $surname = trim($_POST['surname']);
-        $email = $_POST['email'];
-        $phone = $_POST['phone'];
+        $email = trim($_POST['email']);
+        $phone = trim($_POST['phone']);
         $password = trim($_POST['password']);
         $passwordConfirm = trim($_POST['password-confirm']);
         $verification_token = md5(uniqid(rand(), true));
@@ -146,9 +146,9 @@ session_start();
         if (empty($errors)) {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $stmt = $conn->prepare("INSERT INTO users (name, surname, email, password, verification_token) 
+            $stmt = $conn->prepare("INSERT INTO users (name, surname, email, phone, password, verification_token) 
                                           VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $name, $surname, $email, $hashedPassword, $verification_token);
+            $stmt->bind_param("sssss", $name, $surname, $email, $phone, $hashedPassword, $verification_token);
 
             if(!$stmt->execute()) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
