@@ -1,0 +1,206 @@
+:root {
+    --default-font: "Quicksand", sans-serif;
+    --heading-font: "Russo One", sans-serif;
+    --nav-font: "Afacad Flux", sans-serif;
+
+    --background-color: #1B1B1B;
+    --default-color: #785E5B;
+    --heading2-color: #836e4f;
+    --heading-color: #7C8598;
+    --accent2-color: rgb(130, 152, 145);
+    --accent-color: #8f793f;
+    --surface-color: #c8bbb3;
+    --text-color: #E4E4E4;
+    --error-color: #f44336;
+    --success-color: rgba(131, 173, 68);
+}
+
+body {
+    font-family: var(--default-font);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--background-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 0;
+    padding: 0 20px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.buttons button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.reserve {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.reserve:hover {
+    background-color: #e0b800;
+}
+
+.login {
+    background-color: #333;
+    color: var(--text-color);
+}
+
+.login:hover {
+    background-color: #444;
+}
+
+.hero {
+    background: url('../img/background-image.png') center/cover no-repeat;
+    color: white;
+    text-align: center;
+    padding: 80px 20px;
+    font-size: 32px;
+    font-weight: bold;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.info, .current-shows, .troupe {
+    padding: 40px;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.show {
+    background: var(--surface-color);
+    color: var(--background-color);
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.show h3 {
+    font-size: 24px;
+    color: var(--background-color);
+    margin: 0 0 10px 0;
+}
+
+.show p {
+    font-size: 16px;
+    color: var(--background-color);
+    margin: 0 0 20px 0;
+}
+
+.show button {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.show button:hover {
+    background-color: #e0b800;
+}
+
+.actors {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.actor img {
+    width: 150px;
+    border-radius: 10px;
+}
+
+.actor button {
+    display: block;
+    margin-top: 10px;
+    padding: 5px;
+    border: none;
+    background: var(--accent-color);
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero {
+        font-size: 24px;
+        padding: 40px 10px;
+    }
+
+    .show, .actors {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .actor img {
+        width: 100%;
+        max-width: 200px;
+    }
+}
