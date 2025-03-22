@@ -19,38 +19,111 @@
     <link href="../../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
     <link href="../../../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
     <link href="../../../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./index.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
     <link rel="stylesheet" href='../../../assets/css/actors.css'>
     <title>Actors Page</title>
     <style>
-        .team .member .social a.edit-btn,
-        .team .member .social a.delete-btn {
-            display: inline-block !important;
-            padding: 8px 15px !important;
-            font-size: 14px !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            border-radius: 5px !important;
-            transition: all 0.3s ease-in-out !important;
-            text-align: center !important;
-            width: 90px !important;
-            align-items: center !important;
+        body{
+                background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+        }
+        .team .member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100%;
+            background-color: #2d3748;
+            /* Dark background similar to the form */
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            overflow: hidden;
         }
 
+        .container a {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #fbbf24;
+            /* Gold background similar to the form button */
+            color: #2d3748;
+            /* Dark text */
+            font-weight: 600;
+            font-size: 16px;
+            text-transform: uppercase;
+            text-align: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            margin-top: 20px;
+        }
+
+        /* Add button hover effect */
+        .container a:hover {
+            background-color: #f59e0b;
+            /* Darker shade of gold */
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Matching card text color */
+        .team .member h4,
+        .team .member span,
+        .team .member p {
+            color: #fff;
+            /* White text for better contrast */
+        }
+
+        .team .member img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .team .member-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            margin-top: 16px;
+        }
+
+        .team .member h4,
+        .team .member span,
+        .team .member p {
+            margin: 0 0 8px;
+        }
+
+        .team .member .social {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .team .member .social a {
+            text-decoration: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
 
         .team .member .social .edit-btn {
             background-color: rgba(14, 21, 16, 0.4);
-            ;
             color: white;
             border: 2px solid rgba(14, 21, 16, 0.4);
         }
 
         .team .member .social .edit-btn:hover {
             background-color: white;
-            color: var(--accent-color);
+            color: #000;
             box-shadow: 0 4px 10px rgba(238, 162, 162, 0.4);
             transform: scale(1.1);
         }
@@ -67,6 +140,20 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transform: scale(1.1);
         }
+
+        /* Ensures consistent height for the cards */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .team .member .social a.edit-btn,
+        .team .member .social a.delete-btn {
+            display: inline-block !important;
+            width: 48%;
+        }
+
 
         /* Responsive Button Layout */
         @media (max-width: 768px) {

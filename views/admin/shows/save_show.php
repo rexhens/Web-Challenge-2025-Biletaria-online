@@ -1,6 +1,8 @@
 <?php
 require_once '../../../config/db_connect.php';
 
+header('Content-Type: application/json'); // Ensure the response is JSON
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $hall = $_POST["hall"];
@@ -24,13 +26,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssisssb", $title, $hall, $genre_id, $start_date, $end_date, $description, $poster);
 
         if ($stmt->execute()) {
-            echo "<script>alert('Show added successfully!'); window.location.href = 'index.php';</script>";
+            $show_id = $conn->insert_id; // Get the last inserted ID
+
+            // Return a JSON response with success and the inserted show ID
+            echo json_encode([
+                'success' => true,
+                'show_id' => $show_id
+            ]);
         } else {
-            echo "<script>alert('Error adding show!'); window.history.back();</script>";
+            // Log error for debugging
+            error_log("Error executing query: " . $stmt->error);
+
+            // Return an error response if insertion fails
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error adding show!'
+            ]);
         }
         $stmt->close();
     } else {
-        echo "<script>alert('Database error!'); window.history.back();</script>";
+        // Log error for debugging
+        error_log("Database error: " . $conn->error);
+
+        // Return a database error response
+        echo json_encode([
+            'success' => false,
+            'message' => 'Database error!'
+        ]);
     }
 
     $conn->close();

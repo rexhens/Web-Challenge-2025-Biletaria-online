@@ -1,3 +1,47 @@
+<?php
+require_once '../../../config/db_connect.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $title = $_POST["title"];
+    $hall = $_POST["hall"];
+    $genre_id = $_POST["genre_id"];
+    $start_date = $_POST["start_date"];
+    $end_date = $_POST["end_date"];
+    $description = $_POST["description"];
+
+    // Check if a file was uploaded
+    if (isset($_FILES["poster"]) && $_FILES["poster"]["error"] == 0) {
+        $poster = file_get_contents($_FILES["poster"]["tmp_name"]); // Read file content
+    } else {
+        $poster = null; // No file uploaded
+    }
+
+    // Prepare SQL query
+    $sql = "INSERT INTO shows (title, hall, genre_id, start_date, end_date, description, poster1) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    if ($stmt = $conn->prepare($sql)) {
+        $stmt->bind_param("ssisssb", $title, $hall, $genre_id, $start_date, $end_date, $description, $poster);
+
+        if ($stmt->execute()) {
+            $show_id = $conn->insert_id; // Get the last inserted ID
+            // Redirect after successful insert
+            header("Location: assign_actors.php?show_id=" . $show_id);
+            exit();
+        } else {
+            // Error during query execution
+            $error_message = "Error adding show: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        // Database error
+        $error_message = "Database error: " . $conn->error;
+    }
+
+    $conn->close();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,7 +55,7 @@
 <body class="bg-gray-900 text-gold-400 flex justify-center items-center min-h-screen">
     <div class="w-full max-w-lg p-6 bg-gray-800 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold text-center mb-4">Add New Show</h2>
-        <form id="showForm" action="save_show.php" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <form id="showForm" method="POST" enctype="multipart/form-data" class="space-y-4">
             <input type="hidden" id="id" name="id">
 
             <label class="block">Title:
@@ -50,9 +94,12 @@
                     onchange="previewImage(event)">
             </div>
 
-            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
-                Show</button>
+            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add Show</button>
         </form>
+
+        <?php if (isset($error_message)): ?>
+            <div class="mt-4 text-red-500"><?php echo $error_message; ?></div>
+        <?php endif; ?>
     </div>
 
     <script>
@@ -99,7 +146,6 @@
                 })
                 .catch(error => console.error("Error loading genres:", error));
         });
-
     </script>
 </body>
 
