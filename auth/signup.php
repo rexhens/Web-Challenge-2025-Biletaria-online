@@ -1,19 +1,19 @@
 <?php
 /** @var mysqli $conn */
-require "config/db_connect.php";
-require "functions.php";
+require "../config/db_connect.php";
+require "../includes/functions.php";
 session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php require 'includes/links.php'; ?>
-    <link rel="icon" type="image/x-icon" href="assets/img/metropol_icon.png">
+    <?php require '../includes/links.php'; ?>
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <title>Tetari Metropol | Regjistrohu</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
-            background: url('assets/img/background-image.png') no-repeat center center fixed;
+            background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -147,8 +147,8 @@ session_start();
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             $stmt = $conn->prepare("INSERT INTO users (name, surname, email, phone, password, verification_token) 
-                                          VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $name, $surname, $email, $phone, $hashedPassword, $verification_token);
+                                          VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssss", $name, $surname, $email, $phone, $hashedPassword, $verification_token);
 
             if(!$stmt->execute()) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
@@ -162,7 +162,7 @@ session_start();
             $body = "<h2>Regjistrimi juaj ishte i suksesshëm!</h2>
                      <p>Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar regjistrimin tuaj.</p>
                      <br>
-                     <a href='http://localhost/biletaria_online/verify-email.php?token=$verification_token'>Kliko këtu</a>";
+                     <a href='http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token'>Kliko këtu</a>";
 
             if(!sendEmail($email, $subject, $body)) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
@@ -189,7 +189,7 @@ session_start();
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="assets/js/functions.js"></script>
-<script src="assets/js/signupValidations.js"></script>
+<script src="/assets/js/functions.js"></script>
+<script src="/assets/js/signupValidations.js"></script>
 </body>
 </html>

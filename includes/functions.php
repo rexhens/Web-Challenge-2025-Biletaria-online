@@ -5,12 +5,12 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require 'assets/vendor/autoload.php';
+require '../assets/vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
 // Load environment variables
-$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 function sendEmail(string $email, string $subject, string $body): bool {
     $mail = new PHPMailer(true);
