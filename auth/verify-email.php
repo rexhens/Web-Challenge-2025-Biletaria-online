@@ -14,7 +14,7 @@ if(isset($_GET["token"])) {
         echo "<!DOCTYPE html>
               <html lang='en'>
               <head>";
-              require 'includes/links.php';
+              require '../includes/links.php';
         echo "<title>Teatri Metropol | Mesazh</title>
               <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
               <link rel='stylesheet' href='../assets/css/styles.css'>
@@ -40,7 +40,7 @@ if(isset($_GET["token"])) {
                 echo "<!DOCTYPE html>
                       <html lang='en'>
                       <head>";
-                require 'includes/links.php';
+                require '../includes/links.php';
                 echo "<title>Teatri Metropol | Mesazh</title>
                       <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
                       <link rel='stylesheet' href='../assets/css/styles.css'>
@@ -69,7 +69,7 @@ if(isset($_GET["token"])) {
     echo "<!DOCTYPE html>
           <html lang='en'>
           <head>";
-    require 'includes/links.php';
+    require '../includes/links.php';
     echo "<title>Teatri Metropol | Mesazh</title>
           <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
           <link rel='stylesheet' href='../assets/css/styles.css'>
