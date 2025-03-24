@@ -1,18 +1,18 @@
 <?php
 /** @var mysqli $conn */
-require "config/db_connect.php";
+require "../config/db_connect.php";
 session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php require 'includes/links.php'; ?>
-    <link rel="icon" type="image/x-icon" href="assets/img/metropol_icon.png">
+    <?php require '../includes/links.php'; ?>
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <title>Tetari Metropol | Identifikohu</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
-            background: url('assets/img/background-image.png') no-repeat center center fixed;
+            background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -153,9 +153,9 @@ session_start();
                             }
                             if(empty($errors)){
                                 if($user["role"] == "user") {
-                                    header("Location: index.php");
+                                    header("Location: ../index.php");
                                 } else {
-                                    header("Location: admin-home.php");
+                                    header("Location: admin-home.php"); ///////////////////
                                 }
                             }
                         }
@@ -183,7 +183,7 @@ session_start();
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="assets/js/functions.js"></script>
-<script src="assets/js/loginValidations.js"></script>
+<script src="/assets/js/functions.js"></script>
+<script src="/assets/js/loginValidations.js"></script>
 </body>
 </html>

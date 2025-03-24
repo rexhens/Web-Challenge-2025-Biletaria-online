@@ -1,3 +1,33 @@
+<?php
+require_once '../../../config/db_connect.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $birthdate = $_POST['birthdate'];
+    $biography = $_POST['biography'];
+
+    // Read image file as binary data
+    $photo = file_get_contents($_FILES['photo']['tmp_name']);
+
+    $stmt = $conn->prepare("INSERT INTO actors (name, birthdate, biography, photo) VALUES (?, ?, ?, ?)");
+    $full_name = $first_name . ' ' . $last_name;
+    $stmt->bind_param("sssb", $full_name, $birthdate, $biography, $null);
+    $stmt->send_long_data(3, $photo); // Send BLOB data
+
+    if ($stmt->execute()) {
+        echo "<script>alert('Actor added successfully!'); window.location.href='index.php';</script>";
+    } else {
+        echo "<script>alert('Error adding actor.');</script>";
+    }
+
+    $stmt->close();
+    $conn->close();
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -61,31 +91,3 @@
 
 </html>
 
-<?php
-require_once '../../../config/db_connect.php';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $birthdate = $_POST['birthdate'];
-    $biography = $_POST['biography'];
-
-    // Read image file as binary data
-    $photo = file_get_contents($_FILES['photo']['tmp_name']);
-
-    $stmt = $conn->prepare("INSERT INTO actors (name, birthdate, biography, photo) VALUES (?, ?, ?, ?)");
-    $full_name = $first_name . ' ' . $last_name;
-    $stmt->bind_param("sssb", $full_name, $birthdate, $biography, $null);
-    $stmt->send_long_data(3, $photo); // Send BLOB data
-
-    if ($stmt->execute()) {
-        echo "<script>alert('Actor added successfully!'); window.location.href='index.php';</script>";
-    } else {
-        echo "<script>alert('Error adding actor.');</script>";
-    }
-
-    $stmt->close();
-    $conn->close();
-}
-?>

@@ -1,18 +1,18 @@
 <?php
 /** @var mysqli $conn */
-require "config/db_connect.php";
-require "functions.php";
+require "../config/db_connect.php";
+require "../includes/functions.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php require 'includes/links.php'; ?>
-    <link rel="icon" type="image/x-icon" href="assets/img/metropol_icon.png">
+    <?php require '../includes/links.php'; ?>
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <title>Tetari Metropol | Ndrysho Falëkalimin</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
-            background: url('assets/img/background-image.png') no-repeat center center fixed;
+            background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -137,7 +137,7 @@ require "functions.php";
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="assets/js/functions.js"></script>
-<script src="assets/js/changePasswordValidations.js"></script>
+<script src="/assets/js/functions.js"></script>
+<script src="/assets/js/changePasswordValidations.js"></script>
 </body>
 </html>

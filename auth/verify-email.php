@@ -1,6 +1,6 @@
 <?php
 /** @var mysqli $conn */
-require "config/db_connect.php";
+require "../config/db_connect.php";
 
 if(isset($_GET["token"])) {
     $token = $_GET["token"];
@@ -14,13 +14,13 @@ if(isset($_GET["token"])) {
         echo "<!DOCTYPE html>
               <html lang='en'>
               <head>";
-              require 'includes/links.php';
+              require '../includes/links.php';
         echo "<title>Teatri Metropol | Mesazh</title>
-              <link rel='icon' type='image/x-icon' href='assets/img/metropol_icon.png'>
-              <link rel='stylesheet' href='assets/css/styles.css'>
+              <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
+              <link rel='stylesheet' href='../assets/css/styles.css'>
               <style>
                   body {
-                    background: url('assets/img/error.png') no-repeat center center fixed;
+                    background: url('../assets/img/error.png') no-repeat center center fixed;
                     background-size: cover;
                   }
               </style>
@@ -40,13 +40,13 @@ if(isset($_GET["token"])) {
                 echo "<!DOCTYPE html>
                       <html lang='en'>
                       <head>";
-                require 'includes/links.php';
+                require '../includes/links.php';
                 echo "<title>Teatri Metropol | Mesazh</title>
-                      <link rel='icon' type='image/x-icon' href='assets/img/metropol_icon.png'>
-                      <link rel='stylesheet' href='assets/css/styles.css'>
+                      <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
+                      <link rel='stylesheet' href='../assets/css/styles.css'>
                       <style>
                           body {
-                            background: url('assets/img/error.png') no-repeat center center fixed;
+                            background: url('../assets/img/error.png') no-repeat center center fixed;
                             background-size: cover;
                           }
                       </style>
@@ -69,13 +69,13 @@ if(isset($_GET["token"])) {
     echo "<!DOCTYPE html>
           <html lang='en'>
           <head>";
-    require 'includes/links.php';
+    require '../includes/links.php';
     echo "<title>Teatri Metropol | Mesazh</title>
-          <link rel='icon' type='image/x-icon' href='assets/img/metropol_icon.png'>
-          <link rel='stylesheet' href='assets/css/styles.css'>
+          <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
+          <link rel='stylesheet' href='../assets/css/styles.css'>
           <style>
               body {
-                background: url('assets/img/error.png') no-repeat center center fixed;
+                background: url('../assets/img/error.png') no-repeat center center fixed;
                 background-size: cover;
               }
           </style>

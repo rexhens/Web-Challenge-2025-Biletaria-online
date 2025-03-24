@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ssisssb", $title, $hall, $genre_id, $start_date, $end_date, $description, $poster);
-
+        $stmt->send_long_data(6,$poster);
         if ($stmt->execute()) {
             $show_id = $conn->insert_id; // Get the last inserted ID
             // Redirect after successful insert
