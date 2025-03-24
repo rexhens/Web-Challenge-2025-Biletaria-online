@@ -120,7 +120,7 @@ session_start();
         if ($password !== $passwordConfirm) {
             $errors[] = "Fjalëkalimet nuk përputhen.";
         }
-        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/', $password)) {
+        if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^_\-+=<>])[A-Za-z\d@$!%*?&#^_\-+=<>]{8,}$/', $password)) {
             $errors[] = "<strong>Kriteret e Fjalëkalimit : </strong><br>
                          Përmban të paktën 8 karaktere.<br>
                          Përmban të paktën një shkronjë të madhe.<br>
