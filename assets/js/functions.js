@@ -11,7 +11,7 @@ const isValidPhoneNumber = (element) => {
 }
 
 const isValidPassword = (element) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(element.value.trim());
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^_\-+=<>])[A-Za-z\d@$!%*?&#^_\-+=<>]{8,}$/.test(element.value.trim());
 }
 
 const checkEqualityOfPasswords = (pass, confPass) => {
