@@ -194,7 +194,7 @@ $result = $conn->query($query);
             <p class="show-description"><?php echo htmlspecialchars($row['description']); ?></p>
             <div class="btn-group">
               <a href="show_details.php?id=<?php echo $row['id']; ?>" class="btn">More Info</a>
-              <a href="reserve.php?id=<?php echo $row['id']; ?>" class="btn reserve">Reserve</a>
+              <a href="reserve.php?show_id=<?php echo $row['id']; ?>" class="btn reserve">Reserve</a>
             </div>
           </div>
         </div>
