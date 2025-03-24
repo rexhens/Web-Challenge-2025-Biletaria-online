@@ -137,7 +137,7 @@ require "../includes/functions.php";
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="/assets/js/functions.js"></script>
-<script src="/assets/js/changePasswordValidations.js"></script>
+<script src="../assets/js/functions.js"></script>
+<script src="../assets/js/changePasswordValidations.js"></script>
 </body>
 </html>

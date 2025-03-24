@@ -183,7 +183,7 @@ session_start();
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="/assets/js/functions.js"></script>
-<script src="/assets/js/loginValidations.js"></script>
+<script src="../assets/js/functions.js"></script>
+<script src="../assets/js/loginValidations.js"></script>
 </body>
 </html>
