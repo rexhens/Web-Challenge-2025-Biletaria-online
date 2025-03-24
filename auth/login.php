@@ -7,7 +7,7 @@ session_start();
 <html lang="en">
 <head>
     <?php require '../includes/links.php'; ?>
-    <link rel="icon" type="image/x-icon" href="/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <title>Tetari Metropol | Identifikohu</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
