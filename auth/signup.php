@@ -126,7 +126,7 @@ session_start();
                          Përmban të paktën një shkronjë të madhe.<br>
                          Përmban të paktën një shkronjë të vogël.<br>
                          Përmban të paktën një numër.<br>
-                         Përmban të paktën një karakter special. (p.sh., @, #, $, etj.).";
+                         Përmban të paktën një karakter special. (p.sh., @, #, $, % etj.).";
         }
 
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
