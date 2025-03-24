@@ -24,6 +24,119 @@
     <link rel="stylesheet" href='../../../assets/css/actors.css'>
     <title>Actors Page</title>
 
+    <style>
+        /* Styling */
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap');
+
+        :root {
+            --default-font: "Quicksand", sans-serif;
+            --heading-font: "Russo One", sans-serif;
+            --nav-font: "Afacad Flux", sans-serif;
+
+            --background-color: #1B1B1B;
+            --default-color: #785E5B;
+            --heading2-color: #836e4f;
+            --heading-color: #7C8598;
+            --accent2-color: rgb(130, 152, 145);
+            --accent-color: #8f793f;
+            --surface-color: #1e1d1d;
+            --text-color: #E4E4E4;
+            --error-color: #f44336;
+            --success-color: rgba(131, 173, 68);
+        }
+
+        body {
+            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: var(--default-font);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .team {
+            margin-top: 40px;
+        }
+
+        .team .member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.3s ease;
+        }
+
+        .team .member:hover {
+            transform: scale(1.05);
+        }
+
+        .team .member img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .team .member-content {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .team .member h4 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .team .member span,
+        .team .member p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .team .member .social a {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .team .member .social a:hover {
+            color: var(--accent-color);
+        }
+
+        .team .member .actor-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .team .member .actor-btns a {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: black;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+        }
+
+        .team .member .actor-btns a:hover {
+            background-color: #75612b;
+        }
+
+        .form-control {
+            margin-bottom: 30px;
+            width: 80%;
+            margin-left: 10%;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -51,7 +164,7 @@
                         ?>
                         <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
                             <div class="member">
-                                <img src="get_image.php?id=<?php echo $row['id']; ?>" class="img-fluid" alt="">
+                                <img src="get_image.php?id=<?php echo $row['id']; ?>" alt="">
                                 <div class="member-content">
                                     <h4><?php echo htmlspecialchars($row['name']); ?></h4>
                                     <span><?php echo "I lindur me: " . htmlspecialchars($row['birthdate']); ?></span>
@@ -74,7 +187,6 @@
             </div>
         </div><!-- End container -->
     </section><!-- /Team Section -->
-
     <script>
         function searchActors() {
             let input = document.getElementById('search').value.toLowerCase();
@@ -85,7 +197,7 @@
                 if (name.indexOf(input) > -1) {
                     actor.style.position = "relative"; // Actor takes space in layout
                     actor.style.visibility = "visible"; // Make actor visible
-                    actor.style.display = "block"; // Show actor
+                    actor.style.display = ""; // Show actor
                 } else {
                     actor.style.position = "absolute"; // Remove actor from layout
                     actor.style.visibility = "hidden"; // Hide actor visually
@@ -93,8 +205,6 @@
                 }
             });
         }
-
-
     </script>
 
 </body>

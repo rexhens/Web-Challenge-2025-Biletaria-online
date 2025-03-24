@@ -7,10 +7,11 @@ $result = $conn->query($query);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shows</title>
+  <title>shfaqjet</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap');
 
@@ -59,6 +60,19 @@ $result = $conn->query($query);
       margin: 0;
     }
 
+    span {
+      font-weight: 900;
+      color: #836e4f;
+    }
+
+    #paragraph {
+      color: white;
+    }
+
+    .show-card h3 {
+      color: white;
+    }
+
     .add-show-btn {
       background: var(--accent-color);
       color: black;
@@ -84,7 +98,8 @@ $result = $conn->query($query);
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
-      height: 500px; /* Bigger card height */
+      height: 500px;
+      /* Bigger card height */
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -157,49 +172,58 @@ $result = $conn->query($query);
       font-size: 1.2rem;
       color: var(--surface-color);
     }
-    .btn{
-    padding: 10px;
-    font-family: "Quicksand", sans-serif;
-    font-size: 17px;
-    color: var(--text-color);
-    border: none;
-    border-bottom: 2px solid rgb(143, 121, 63, 0.5);
-    outline: none;
-    background: none;
-    background-color: #836e4f;
-    font-weight: 300;
-    
+
+    .btn {
+      padding: 10px;
+      font-family: "Quicksand", sans-serif;
+      font-size: 17px;
+      color: var(--text-color);
+      border: none;
+      border-bottom: 2px solid rgb(143, 121, 63, 0.5);
+      outline: none;
+      background: none;
+      background-color: #836e4f;
+      font-weight: 300;
+
     }
   </style>
 </head>
+
 <body>
   <div class="shows-container">
     <header>
-      <h1>Upcoming Shows</h1>
-      <a href="./add.php" class="btn">+ Add New Show</a>
+      <h1>Te gjitha shfaqjet</h1>
+      <a href="./add.php" class="btn">+ Shto nje shfaqje</a>
     </header>
     <div class="shows-grid">
-      <?php if ($result->num_rows > 0) { while ($row = $result->fetch_assoc()) { 
+      <?php if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
           // Create the URL for the poster image.
           $posterUrl = "get_image.php?id=" . $row['id'];
           // Dates
           $start_date = date('d M Y', strtotime($row['start_date']));
           $end_date = date('d M Y', strtotime($row['end_date']));
           $dates = $start_date === $end_date ? $start_date : "$start_date - $end_date";
-      ?>
-        <div class="show-card" style="background-image: url('<?php echo $posterUrl; ?>');">
-          <div class="show-overlay">
-            <h3><?php echo htmlspecialchars($row['title']); ?></h3>
-            <p class="show-dates"><?php echo $dates; ?></p>
-            <p class="show-description"><?php echo htmlspecialchars($row['description']); ?></p>
-            <div class="btn-group">
-              <a href="show_details.php?id=<?php echo $row['id']; ?>" class="btn">More Info</a>
-              <a href="reserve.php?show_id=<?php echo $row['id']; ?>" class="btn reserve">Reserve</a>
+          ?>
+          <div class="show-card" style="background-image: url('<?php echo $posterUrl; ?>');">
+            <div class="show-overlay">
+              <h3><span>Titulli: </span> <span id="paragraph"><?php echo htmlspecialchars($row['title']); ?></span></h3>
+              <p class="show-dates"><span>Datat e shfaqjes: </span> <?php echo $dates; ?></p>
+              <p class="show-description"><span>Pershkrim i shkurter: </span>
+                <?php echo htmlspecialchars($row['description']); ?>
+              </p>
+              <div class="btn-group">
+                <a href="show_details.php?id=<?php echo $row['id']; ?>" class="btn">Kasti aktoreve</a>
+                <a href="reserve.php?id=<?php echo $row['id']; ?>" class="btn reserve">Kancelo</a>
+              </div>
             </div>
           </div>
-        </div>
-      <?php } } else { echo "<p class='no-shows'>No shows available at the moment.</p>"; } ?>
+        <?php }
+      } else {
+        echo "<p class='no-shows'>No shows available at the moment.</p>";
+      } ?>
     </div>
   </div>
 </body>
+
 </html>
