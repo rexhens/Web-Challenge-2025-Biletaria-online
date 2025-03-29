@@ -35,27 +35,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Actor</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: var(--default-font);
+            margin: 0;
+            padding: 20px;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-900 text-gold-400 flex justify-center items-center min-h-screen">
-    <div class="w-full max-w-lg p-6 bg-gray-800 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold text-center mb-4">Add New Actor</h2>
+<body class=" text-gold-400 flex justify-center items-center min-h-screen">
+    <div class="form-container" style="max-width: 700px;"">
+        <h2 class=" text-2xl font-bold text-center mb-4">Add New Actor</h2>
         <form id="actorForm" action="" method="POST" enctype="multipart/form-data" class="space-y-4">
-            <label class="block">First Name:
+            <label class="form-group">First Name:
                 <input type="text" name="first_name" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">Last Name:
+            <label class="form-group">Last Name:
                 <input type="text" name="last_name" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">Birthdate:
+            <label class="form-group">Birthdate:
                 <input type="date" name="birthdate" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">Biography:
-                <textarea name="biography" class="w-full p-2 bg-gray-700 text-white rounded h-40" style="height:120px" required></textarea>
+            <label class="form-group">Biography:
+                <textarea name="biography" class="w-full p-2 bg-gray-700 text-white rounded h-40"
+                    style="background-color: rgba(228, 228, 228, 0.04);" required></textarea>
             </label>
 
             <div class="mb-3 text-center">
@@ -90,4 +103,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
-

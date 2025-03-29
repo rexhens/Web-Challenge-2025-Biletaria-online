@@ -25,16 +25,23 @@
     <link rel="stylesheet" href='../../../assets/css/actors.css'>
     <title>Actors Page</title>
     <style>
-        body{
-                background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+        body {
+            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: var(--default-font);
+            margin: 0;
+            padding: 20px;
         }
+
         .team .member {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             height: 100%;
-            background-color: #2d3748;
+            background: rgba(228, 228, 228, 0.04);
+            -webkit-backdrop-filter: blur(5px);
             /* Dark background similar to the form */
             border-radius: 8px;
             padding: 16px;
@@ -116,7 +123,7 @@
         }
 
         .team .member .social .edit-btn {
-            background-color: rgba(14, 21, 16, 0.4);
+            background: #75612b;
             color: white;
             border: 2px solid rgba(14, 21, 16, 0.4);
         }
@@ -129,13 +136,14 @@
         }
 
         .team .member .social .delete-btn {
-            background-color: rgba(49, 70, 127, 0.4);
-            color: white;
-            border: 2px solid #444;
+            background: black;
+            border: 1px solid #8f793f;
+            color: #8f793f;
+
         }
 
         .team .member .social .delete-btn:hover {
-            background-color: white;
+            background-color: rgba(29, 26, 26, 0.3);
             color: #444;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             transform: scale(1.1);
