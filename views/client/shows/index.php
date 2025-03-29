@@ -250,24 +250,23 @@ $genreResult = $conn->query($genreQuery);
         <input class="search-bar" type="text" id="search" placeholder="Search for shows..." style="width:500px"
             onkeyup="searchShow()">
 
-        <form method=" GET" action="">
-            <div class="filter-container">
-                <select name="genre" onchange="this.form.submit()">
-                    <option value="">All Genres</option>
-                    <?php while ($genre = $genreResult->fetch_assoc()) { ?>
-                        <option value="<?php echo $genre['id']; ?>" <?php echo $genre['id'] == $filterGenre ? 'selected' : ''; ?>>
-                            <?php echo htmlspecialchars($genre['genre_name']) . "                                      "; ?>
-                        </option>
-                    <?php } ?>
-                </select>
+        <div class="filter-container">
+            <select id="genreFilter" onchange="filterShows()">
+                <option value="">All Genres</option>
+                <?php while ($genre = $genreResult->fetch_assoc()) { ?>
+                    <option value="<?php echo $genre['id']; ?>">
+                        <?php echo htmlspecialchars($genre['genre_name']); ?>
+                    </option>
+                <?php } ?>
+            </select>
 
-                <select name="date" onchange="this.form.submit()">
-                    <option value="">All Dates</option>
-                    <option value="upcoming" <?php echo $filterDate == 'upcoming' ? 'selected' : ''; ?>>Upcoming</option>
-                    <option value="past" <?php echo $filterDate == 'past' ? 'selected' : ''; ?>>Past</option>
-                </select>
-            </div>
-        </form>
+            <select id="dateFilter" onchange="filterShows()">
+                <option value="">All Dates</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="past">Past</option>
+                <option value="ongoing">Ongoing</option> <!-- Optional -->
+            </select>
+        </div>
 
         <div class="shows-grid" id="showGrid">
             <?php if ($result->num_rows > 0) {
@@ -277,19 +276,29 @@ $genreResult = $conn->query($genreQuery);
                     $end_date = date('d M Y', strtotime($row['end_date']));
                     $dates = $start_date === $end_date ? $start_date : "$start_date - $end_date";
                     ?>
-                    <div class="show-card" style="background-image: url('<?php echo $posterUrl; ?>');">
+                    <div class="show-card" style="background-image: url('<?php echo $posterUrl; ?>');"
+                        data-genre="<?php echo htmlspecialchars($row['genre_id']); ?>"
+                        data-start-date="<?php echo htmlspecialchars($row['start_date']); ?>"
+                        data-end-date="<?php echo htmlspecialchars($row['end_date']); ?>">
+
                         <div class="show-overlay">
-                            <h3><span>Titulli: </span> <span
-                                    id="paragraph"><?php echo htmlspecialchars($row['title']); ?></span></h3>
-                            <p class="show-dates"><span>Datat e shfaqjes: </span> <?php echo $dates; ?></p>
-                            <p class="show-description"><span>Pershkrim i shkurter: </span>
-                                <?php echo htmlspecialchars($row['description']); ?></p>
+                            <h3>
+                                <span>Titulli: </span>
+                                <span id="paragraph"><?php echo htmlspecialchars($row['title']); ?></span>
+                            </h3>
+                            <p class="show-dates">
+                                <span>Datat e shfaqjes: </span> <?php echo $dates; ?>
+                            </p>
+                            <p class="show-description">
+                                <span>Pershkrim i shkurter: </span> <?php echo htmlspecialchars($row['description']); ?>
+                            </p>
                             <div class="btn-group">
                                 <a href="show_details.php?id=<?php echo $row['id']; ?>" class="btn">Me shume info</a>
                                 <a href="reserve.php?id=<?php echo $row['id']; ?>" class="btn reserve">Rezervo</a>
                             </div>
                         </div>
                     </div>
+
                 <?php }
             } else {
                 echo "<p class='no-shows'>No shows available at the moment.</p>";
@@ -314,6 +323,37 @@ $genreResult = $conn->query($genreQuery);
                         show.style.display = "none"; // Hide the element
                     }
                 }
+            });
+        }
+
+        function filterShows() {
+            const genreFilter = document.getElementById("genreFilter").value;
+            const dateFilter = document.getElementById("dateFilter").value;
+            const currentDate = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD format
+            const shows = document.querySelectorAll(".show-card"); // ✅ Fix: Select show cards, not grid
+
+            shows.forEach(show => {
+                const showGenre = show.getAttribute("data-genre");
+                const startDate = show.getAttribute("data-start-date");
+                const endDate = show.getAttribute("data-end-date");
+                let showVisible = true;
+
+                // Filter by genre
+                if (genreFilter && showGenre !== genreFilter) {
+                    showVisible = false;
+                }
+
+                // Filter by date
+                if (dateFilter === "upcoming" && startDate <= currentDate) {
+                    showVisible = false;
+                } else if (dateFilter === "past" && endDate >= currentDate) {
+                    showVisible = false;
+                } else if (dateFilter === "ongoing" && (startDate > currentDate || endDate < currentDate)) {
+                    showVisible = false;
+                }
+
+                // Apply filter
+                show.style.display = showVisible ? "block" : "none";
             });
         }
 
