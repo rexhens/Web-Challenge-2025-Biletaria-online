@@ -95,6 +95,11 @@ $genreResult = $conn->query($genreQuery);
             margin: 0;
         }
 
+        span {
+            font-weight: 900;
+            color: #836e4f;
+        }
+
         .search-bar {
             padding: 15px;
             font-size: 18px;
@@ -231,6 +236,10 @@ $genreResult = $conn->query($genreQuery);
             color: var(--surface-color);
         }
 
+        #paragraph {
+            color: white;
+        }
+
         @keyframes fadeInUp {
             to {
                 opacity: 1;
@@ -353,7 +362,7 @@ $genreResult = $conn->query($genreQuery);
                 }
 
                 // Apply filter
-                show.style.display = showVisible ? "block" : "none";
+                show.style.display = showVisible ? "" : "none";
             });
         }
 
