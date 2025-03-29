@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("ssisssb", $title, $hall, $genre_id, $start_date, $end_date, $description, $poster);
-        $stmt->send_long_data(6,$poster);
+        $stmt->send_long_data(6, $poster);
         if ($stmt->execute()) {
             $show_id = $conn->insert_id; // Get the last inserted ID
             // Redirect after successful insert
@@ -50,39 +50,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Show</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <style>
+           body {
+      background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      font-family: var(--default-font);
+      margin: 0;
+      padding: 20px;
+    }
+
+    </style>
 </head>
 
-<body class="bg-gray-900 text-gold-400 flex justify-center items-center min-h-screen">
-    <div class="w-full max-w-lg p-6 bg-gray-800 rounded-lg shadow-lg">
+<body class=" flex justify-center items-center min-h-screen">
+    <div class="form-container" style="max-width: 700px;">
         <h2 class="text-2xl font-bold text-center mb-4">Add New Show</h2>
         <form id="showForm" method="POST" enctype="multipart/form-data" class="space-y-4">
             <input type="hidden" id="id" name="id">
 
-            <label class="block">Title:
+            <label class="form-group">Title:
                 <input type="text" name="title" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">Hall:
+            <label class="form-group">Hall:
                 <input type="text" name="hall" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">Genre:</label>
-            <div id="genresContainer" class="flex space-x-2 overflow-x-auto p-2 bg-gray-700 rounded">
+            <label class="form-group">Genre:</label>
+            <div id="genresContainer" class="flex space-x-2 overflow-x-auto p-2 bg-gray-700 rounded"
+                style="background-color: rgba(228, 228, 228, 0.04);">
                 <!-- Genres will be inserted here dynamically -->
             </div>
             <input type="hidden" name="genre_id" id="selectedGenre">
 
-            <label class="block">Start Date:
+            <label class="form-group">Start Date:
                 <input type="date" name="start_date" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">End Date:
+            <label class="form-group">End Date:
                 <input type="date" name="end_date" class="w-full p-2 bg-gray-700 text-white rounded" required>
             </label>
 
-            <label class="block">Description:
-                <textarea name="description" class="w-full p-2 bg-gray-700 text-white rounded" required></textarea>
+            <label class="form-group">Description:
+                <textarea name="description" class="w-full p-2 text-white rounded"
+                    style="background-color: rgba(228, 228, 228, 0.04);" required></textarea>
             </label>
+
+
 
             <div class="mb-3 text-center">
                 <label class="cursor-pointer block" onclick="document.getElementById('posterInput').click()">
@@ -94,7 +110,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     onchange="previewImage(event)">
             </div>
 
-            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add Show</button>
+            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
+                Show</button>
         </form>
 
         <?php if (isset($error_message)): ?>
@@ -128,6 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         genreDiv.textContent = genre.genre_name; // Make sure this matches your DB column
                         genreDiv.classList.add("px-4", "py-2", "rounded", "cursor-pointer", "bg-gray-600", "text-white", "hover:bg-gold-500", "transition", "duration-300");
                         genreDiv.dataset.id = genre.id;
+                        genreDiv.style.backgroundColor = "rgba(228, 228, 228, 0.04)"; 
 
                         genreDiv.addEventListener("click", function () {
                             // Remove selection from all genres
@@ -135,6 +153,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 div.classList.remove("bg-gold-500", "border-2", "border-gold-400", "p-3");
                                 div.classList.add("px-4", "py-2");
                             });
+                            genreDiv.style.backgroundColor = "rgba(228, 228, 228, 0.04)"; // Set your desired color
+
 
                             // Highlight the selected genre
                             genreDiv.classList.add("bg-gold-500", "border-2", "border-gold-400", "p-3");
