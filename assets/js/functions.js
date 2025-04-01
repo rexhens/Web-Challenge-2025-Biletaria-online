@@ -22,3 +22,11 @@ const showError = (elementError) => {
     elementError.classList.add("show");
     setTimeout(() => elementError.classList.remove("show"), 4500);
 }
+
+function redirectTo(page) {
+    window.location.href = page;
+}
+
+function toggleMenu() {
+    document.querySelector(".menu-bar").classList.toggle("open");
+}
