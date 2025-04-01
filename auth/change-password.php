@@ -4,16 +4,18 @@ require "../config/db_connect.php";
 require "../includes/functions.php";
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 <head>
     <?php require '../includes/links.php'; ?>
+    <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Tetari Metropol | Ndrysho Falëkalimin</title>
+    <title>Metropol Ticketing | Ndrysho Falëkalimin</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
             background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
+            justify-content: center;
         }
 
         button {
@@ -96,7 +98,7 @@ require "../includes/functions.php";
             $body = "<h2>Ndryshimi i fjalëkalimit u krye me sukses!</h2>
                      <p>Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar me ndryshimin e fjalëkalimit.</p>
                      <br>
-                     <a href='http://localhost/biletaria_online/verify-email.php?token=$verification_token'>Kliko këtu</a>";
+                     <a href='http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token'>Kliko këtu</a>";
 
             if(!sendEmail($email, $subject, $body)) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";

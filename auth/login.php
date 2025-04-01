@@ -4,16 +4,18 @@ require "../config/db_connect.php";
 session_start();
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 <head>
     <?php require '../includes/links.php'; ?>
+    <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Tetari Metropol | Identifikohu</title>
+    <title>Metropol Ticketing | Identifikohu</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
             background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
+            justify-content: center;
         }
 
         h1 {

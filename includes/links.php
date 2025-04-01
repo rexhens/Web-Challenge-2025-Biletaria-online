@@ -1,5 +1,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:description" content="Teatri Metropol - Your theater experience in Albania.">
+<meta name="description" content="Teatri Metropol - Your theater experience in Albania.">
+<meta property="og:title" content="Teatri Metropol">
 <meta property="og:description" content="Your theater experience in Albania.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
