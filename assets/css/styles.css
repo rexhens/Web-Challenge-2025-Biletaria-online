@@ -207,13 +207,8 @@ input[type="checkbox"]:hover {
     height: 70px;
     background-color: rgba(27, 27, 27, 0.6);
     box-shadow: 0 5px 20px rgba(200, 187, 179, 0.2);
-    z-index: 1;
-    transition: backdrop-filter 0.3s;
-    overflow: hidden;
-}
-
-.blurred {
     backdrop-filter: blur(40px);
+    z-index: 1;
 }
 
 .menu-bar {
