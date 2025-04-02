@@ -41,12 +41,8 @@ body {
     background-color: rgba(27, 27, 27, 0.6);
     box-shadow: 0 5px 20px rgba(200, 187, 179, 0.2);
     z-index: 1;
-    transition: backdrop-filter 0.3s;
-    overflow: hidden;
-}
-
-.blurred {
     backdrop-filter: blur(40px);
+    overflow: hidden;
 }
 
 .menu-bar {
@@ -148,6 +144,65 @@ button:active {
     display: none;
 }
 
+.video-container {
+    width: 100%;
+    max-width: 100%;
+    background: black;
+    position: relative;
+    top: 70px;
+    margin-bottom: 70px;
+}
+
+.video-container::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    transform: translateY(-50%);
+}
+
+.control-button {
+    color: #8f793f;
+    border: none;
+    padding: 20px;
+    font-size: 50px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.control-button:hover {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .video-container {
+        height: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .video-container {
+        height: calc(100vh - 70px);
+    }
+}
 
 
 
@@ -170,7 +225,6 @@ button:active {
     gap: 20px;
     flex-wrap: wrap;
     width: 100%;
-    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -246,7 +300,6 @@ button:active {
 
     .actor img {
         width: 100%;
-        max-width: 200px;
     }
 }
 

@@ -15,42 +15,6 @@
             font-size: 17px;
             width: 140px;
         }
-        .video-container {
-            width: 100vw;
-            height: 100vh;
-            background: black;
-            margin-bottom: 100vh;
-        }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .controls {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            transform: translateY(-50%);
-        }
-        .control-button {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 20px;
-            font-size: 30px;
-            cursor: pointer;
-            opacity: 0.7;
-        }
-        .control-button:hover {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
@@ -75,85 +39,15 @@
     </div>
 
     <div class="video-container">
-        <iframe id="videoPlayer" src="https://www.youtube.com/embed/MpcE70VvyEI?autoplay=1" allow="autoplay" frameborder="0"></iframe>
+        <div id="player"></div>
 
         <div class="controls">
-            <button class="control-button" id="prevBtn">&#10094;</button>
-            <button class="control-button" id="nextBtn">&#10095;</button>
+            <div class="control-button" id="prevBtn">&#10094;</div>
+            <div class="control-button" id="nextBtn">&#10095;</div>
         </div>
     </div>
 
-    <section id="info" class="info">
-        <h2>INFORMACION</h2>
-        <h3>DHE HISTORI</h3>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit...</p>
-    </section>
-
-    <section id="current-shows" class="current-shows">
-        <h2>SHFAQJET</h2>
-        <h3>AKTUALE</h3>
-        <div class="show">
-            <img src="assets/img/shows/show-image.jpg" alt="Poster for Show 1">
-            <div class="show-details">
-                <h3>SHFAQJA 1</h3>
-                <p>molestiae officiis in itaque quod explicabo velit libero quisquam...</p>
-                <button class="reserve">REZERVO TANI</button>
-                <button class="more-info">ME SHUME INFO</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="troupe" class="troupe">
-        <h2>TRUPA</h2>
-        <h3>TEATRALE</h3>
-        <div class="actors">
-            <div class="actor">
-                <img src="assets/img/actors/team-1.jpg" alt="Actor 1">
-                <button>Me shume info</button>
-            </div>
-            <div class="actor">
-                <img src="assets/img/actors/team-2.jpg" alt="Actor 2">
-                <button>Me shume info</button>
-            </div>
-            <div class="actor">
-                <img src="assets/img/actors/team-3.jpg" alt="Actor 3">
-                <button>Me shume info</button>
-            </div>
-        </div>
-    </section>
     <script src="assets/js/functions.js"></script>
-    <script>
-        window.addEventListener("scroll", function() {
-            let navbar = document.getElementsByClassName("navbar")[0];
-            if (window.scrollY > 50) {
-                navbar.classList.add("blurred");
-            } else {
-                navbar.classList.remove("blurred");
-            }
-        });
-    </script>
-    <script>
-        // Array of video IDs
-        const videoIds = ["8zgOVbc1Yko", "a8gsni1c-To"];
-        let currentIndex = 0;
-
-        // Function to change the video based on the current index
-        function changeVideo() {
-            const iframe = document.getElementById('videoPlayer');
-            iframe.src = `https://www.youtube.com/embed/${videoIds[currentIndex]}?autoplay=1`;
-        }
-
-        // Next button functionality
-        document.getElementById('nextBtn').addEventListener('click', function() {
-            currentIndex = (currentIndex + 1) % videoIds.length; // Loop back to first video if last one
-            changeVideo();
-        });
-
-        // Previous button functionality
-        document.getElementById('prevBtn').addEventListener('click', function() {
-            currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length; // Loop to last video if first one
-            changeVideo();
-        });
-    </script>
+    <script src="assets/js/load-trailers.js"></script>
 </body>
 </html>
