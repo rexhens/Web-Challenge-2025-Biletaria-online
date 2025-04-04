@@ -41,6 +41,7 @@ body {
     box-shadow: 5px 5px 20px rgba(0, 0, 0);
     width: 100%;
     max-width: 400px;
+    margin: auto;
     animation: fadeIn 0.5s ease-in-out;
 }
 
@@ -87,6 +88,29 @@ h1 {
 }
 
 .form-group input:focus {
+    border-color: var(--accent-color);
+}
+
+textarea {
+    padding: 10px;
+    font-size: 20px;
+    min-height: 70px;
+    border: 2px solid rgb(143, 121, 63, 0.5);
+    border-radius: 5px;
+    outline: none;
+    background: none;
+    backdrop-filter: blur(5px);
+    font-family: "Poiret One", sans-serif;
+    color: var(--text-color);
+}
+
+textarea::placeholder {
+    font-family: var(--default-font);
+    font-size: 16px;
+    color: var(--surface-color);
+}
+
+textarea:focus {
     border-color: var(--accent-color);
 }
 
@@ -195,6 +219,77 @@ input[type="checkbox"]:hover {
     cursor: pointer;
 }
 
+select {
+    padding: 10px;
+    font-size: 20px;
+    border: none;
+    border-bottom: 2px solid rgb(143, 121, 63, 0.5);
+    outline: none;
+    background: none;
+    font-family: var(--default-font);
+    color: var(--surface-color);
+}
+
+select:hover {
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: var(--accent-color);
+}
+
+option {
+    background-color: var(--background-color);
+}
+
+.flatpickr-calendar {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.flatpickr-day {
+    font-family: var(--default-font);
+    color: var(--text-color);
+    border-radius: 6px;
+    padding: 8px;
+    transition: background-color 0.3s ease;
+}
+
+.flatpickr-day:hover {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+}
+
+.flatpickr-day.selected {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+}
+
+.flatpickr-months .flatpickr-month {
+    color: white !important;
+}
+
+.flatpickr-monthDropdown-months,
+.flatpickr-current-month input.cur-year {
+    color: var(--text-color) !important;
+    background-color: var(--background-color) !important;
+    border: none !important;
+}
+.flatpickr-prev-month svg,
+.flatpickr-next-month svg {
+    stroke: var(--accent-color) !important;
+}
+
+.flatpickr-weekday {
+    color: var(--surface-color) !important;
+}
+
+.flatpickr-prev-month, .flatpickr-next-month {
+    color: var(--accent-color);
+}
+
 .navbar {
     display: flex;
     flex-direction: row;
@@ -283,15 +378,13 @@ button {
     width: 180px;
     border: none;
     border-radius: 10px;
-    background-image: linear-gradient(to bottom, var(--heading2-color) , #947c3d);
-    backdrop-filter: blur(70px);
+    background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 button:hover {
     cursor: pointer;
-    background-image: linear-gradient(to bottom, #b59b55, #75612b);
-    backdrop-filter: blur(80px);
+    background-image: linear-gradient(to bottom, var(--heading2-color), #ad8d39);
 }
 
 button:active {

@@ -1,13 +1,19 @@
 <?php
-require_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require "../../../config/db_connect.php";
+session_start();
+?>
 
+<?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $hall = $_POST["hall"];
-    $genre_id = $_POST["genre_id"];
+    $genre_id = $_POST["select-genre"];
     $start_date = $_POST["start_date"];
     $end_date = $_POST["end_date"];
+    $time = $_POST["time"];
     $description = $_POST["description"];
+    $trailer = $_POST["trailer"];
 
     // Check if a file was uploaded
     if (isset($_FILES["poster"]) && $_FILES["poster"]["error"] == 0) {
@@ -17,11 +23,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Prepare SQL query
-    $sql = "INSERT INTO shows (title, hall, genre_id, start_date, end_date, description, poster1) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO shows (title, hall, genre_id, start_date, end_date, time, description, poster1, trailer) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("ssisssb", $title, $hall, $genre_id, $start_date, $end_date, $description, $poster);
+        $stmt->bind_param("ssissssbs", $title, $hall, $genre_id, $start_date, $end_date, $time, $description, $poster, $trailer);
         $stmt->send_long_data(6, $poster);
         if ($stmt->execute()) {
             $show_id = $conn->insert_id; // Get the last inserted ID
@@ -29,12 +35,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: assign_actors.php?show_id=" . $show_id);
             exit();
         } else {
-            // Error during query execution
             $error_message = "Error adding show: " . $stmt->error;
         }
         $stmt->close();
     } else {
-        // Database error
         $error_message = "Database error: " . $conn->error;
     }
 
@@ -43,81 +47,92 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Show</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <?php require '../../../includes/links.php'; ?>
+    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../../../assets/img/metropol_icon.png">
+    <title>Metropol Ticketing | Shto Shfaqe</title>
+    <link rel="stylesheet" href="../../../assets/css/flatpickr.min.css">
     <link rel="stylesheet" href="../../../assets/css/styles.css">
     <style>
-           body {
-      background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
-      background-color: var(--background-color);
-      color: var(--text-color);
-      font-family: var(--default-font);
-      margin: 0;
-      padding: 20px;
-    }
+        body {
+            background: url('../../../assets/img/background-image.png') no-repeat center center fixed;
+            background-size: cover;
+            justify-content: flex-start;
+        }
 
+        h1 {
+            font-weight: lighter;
+        }
+
+        h1 {
+            font-size: 25px;
+        }
+
+        h1 span {
+            font-size: 34px;
+        }
     </style>
 </head>
 
-<body class=" flex justify-center items-center min-h-screen">
-    <div class="form-container" style="max-width: 700px;">
-        <h2 class="text-2xl font-bold text-center mb-4">Add New Show</h2>
-        <form id="showForm" method="POST" enctype="multipart/form-data" class="space-y-4">
-            <input type="hidden" id="id" name="id">
+<body>
+<form id="showForm" method="POST" enctype="multipart/form-data" class="form-container">
+    <h1>Shtoni një shfaqje në <br>
+        <span>Teatrin Metropol</span>
+    </h1>
+    <input type="hidden" id="id" name="id">
 
-            <label class="form-group">Title:
-                <input type="text" name="title" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
-
-            <label class="form-group">Hall:
-                <input type="text" name="hall" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
-
-            <label class="form-group">Genre:</label>
-            <div id="genresContainer" class="flex space-x-2 overflow-x-auto p-2 bg-gray-700 rounded"
-                style="background-color: rgba(228, 228, 228, 0.04);">
-                <!-- Genres will be inserted here dynamically -->
-            </div>
-            <input type="hidden" name="genre_id" id="selectedGenre">
-
-            <label class="form-group">Start Date:
-                <input type="date" name="start_date" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
-
-            <label class="form-group">End Date:
-                <input type="date" name="end_date" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
-
-            <label class="form-group">Description:
-                <textarea name="description" class="w-full p-2 text-white rounded"
-                    style="background-color: rgba(228, 228, 228, 0.04);" required></textarea>
-            </label>
-
-
-
-            <div class="mb-3 text-center">
-                <label class="cursor-pointer block" onclick="document.getElementById('posterInput').click()">
-                    <img id="posterPreview" class="photo-preview hidden mx-auto w-40 h-40 object-cover rounded-lg"
-                        src="#" alt="Preview">
-                    <p class="text-sm text-gray-400 mt-2">Click to upload photo</p>
-                </label>
-                <input type="file" name="poster" id="posterInput" accept="image/*" class="hidden" required
-                    onchange="previewImage(event)">
-            </div>
-
-            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
-                Show</button>
-        </form>
-
-        <?php if (isset($error_message)): ?>
-            <div class="mt-4 text-red-500"><?php echo $error_message; ?></div>
-        <?php endif; ?>
+    <div class="form-group">
+        <input type="text" name="title" id="title" placeholder=" " required>
+        <label for="title">Titulli</label>
     </div>
+
+    <div class="form-group">
+        <input type="text" name="hall" id="hall" placeholder=" " required>
+        <label for="hall">Salla</label>
+    </div>
+
+    <div class="form-group">
+        <select name="select-genre" id="select-genre">
+            <option value="" disabled selected>-- Zgjidhni zhanrin --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <input type="text" name="start_date" id="start_date" placeholder=" " required>
+        <label for="start_date">Data e fillimit</label>
+    </div>
+
+    <div class="form-group">
+        <input type="text" name="end_date" id="end_date" placeholder=" " required>
+        <label for="end_date">Data e mbarimit</label>
+    </div>
+
+    <div class="form-group">
+        <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
+    </div>
+
+
+
+    <div class="mb-3 text-center">
+        <label class="cursor-pointer block" onclick="document.getElementById('posterInput').click()">
+            <img id="posterPreview" class="photo-preview hidden mx-auto w-40 h-40 object-cover rounded-lg"
+                 src="#" alt="Preview">
+            <p class="text-sm text-gray-400 mt-2">Click to upload photo</p>
+        </label>
+        <input type="file" name="poster" id="posterInput" accept="image/*" class="hidden" required
+               onchange="previewImage(event)">
+    </div>
+
+    <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
+        Show</button>
+</form>
+
+<?php if (isset($error_message)): ?>
+    <div class="mt-4 text-red-500"><?php echo $error_message; ?></div>
+<?php endif; ?>
 
     <script>
         function previewImage(event) {
@@ -134,39 +149,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            const genresContainer = document.getElementById("genresContainer");
-            const selectedGenreInput = document.getElementById("selectedGenre");
+            const genreSelect = document.getElementById("select-genre");
 
-            fetch("../genres/get_genres.php")
-                .then(response => response.json())
-                .then(genres => {
-                    genres.forEach(genre => {
-                        const genreDiv = document.createElement("div");
-                        genreDiv.textContent = genre.genre_name; // Make sure this matches your DB column
-                        genreDiv.classList.add("px-4", "py-2", "rounded", "cursor-pointer", "bg-gray-600", "text-white", "hover:bg-gold-500", "transition", "duration-300");
-                        genreDiv.dataset.id = genre.id;
-                        genreDiv.style.backgroundColor = "rgba(228, 228, 228, 0.04)"; 
-
-                        genreDiv.addEventListener("click", function () {
-                            // Remove selection from all genres
-                            document.querySelectorAll("#genresContainer div").forEach(div => {
-                                div.classList.remove("bg-gold-500", "border-2", "border-gold-400", "p-3");
-                                div.classList.add("px-4", "py-2");
-                            });
-                            genreDiv.style.backgroundColor = "rgba(228, 228, 228, 0.04)"; // Set your desired color
-
-
-                            // Highlight the selected genre
-                            genreDiv.classList.add("bg-gold-500", "border-2", "border-gold-400", "p-3");
-                            selectedGenreInput.value = genre.id;
-                        });
-
-                        genresContainer.appendChild(genreDiv);
+            fetch(`../genres/get_genres.php`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then((genres) => {
+                    genreSelect.innerHTML = '<option value="">-- Zgjidhni zhanrin --</option>';
+                    genres.forEach((genre) => {
+                        const option = document.createElement("option");
+                        option.value = genre.id;
+                        option.textContent = genre.genre_name;
+                        genreSelect.appendChild(option);
                     });
                 })
-                .catch(error => console.error("Error loading genres:", error));
+                .catch((error) => {
+                    alert("Dështoi marrja e zhanreve! Provoni përsëri!");
+                });
         });
     </script>
-</body>
 
+<script src="../../../assets/js/flatpickr.min.js"></script>
+<script src="../../../assets/js/functions.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#start_date", {
+            dateFormat: "d/m/Y",
+            disableMobile: true
+        });
+        flatpickr("#end_date", {
+            dateFormat: "d/m/Y",
+            disableMobile: true
+        });
+    });
+</script>
+</body>
 </html>

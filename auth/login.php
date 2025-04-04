@@ -15,7 +15,6 @@ session_start();
         body {
             background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
-            justify-content: center;
         }
 
         h1 {
