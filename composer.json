@@ -1,0 +1,9 @@
+{
+    "require": {
+        "phpmailer/phpmailer": "^6.9",
+        "vlucas/phpdotenv": "^5.6",
+      "ext-mysqli": "*",
+      "ext-pdo": "*",
+        "paypal/paypal-checkout-sdk": "^1.0"
+    }
+}

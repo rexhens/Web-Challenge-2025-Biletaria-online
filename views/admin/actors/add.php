@@ -1,31 +1,29 @@
 <?php
 require_once '../../../config/db_connect.php';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = $_POST['name'] . $_POST['surname'];
+
+
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
     $birthdate = $_POST['birthdate'];
     $biography = $_POST['biography'];
 
-    // Check if file is uploaded
-    if (!isset($_FILES['photo']) || $_FILES['photo']['error'] != 0) {
-        die("Error: No file uploaded or file upload error.");
-    }
+    // Read image file as binary data
+    $photo = file_get_contents($_FILES['photo']['tmp_name']);
 
-    // Read the image as binary data
-    $image = file_get_contents($_FILES['photo']['tmp_name']);
-
-    // Fix the SQL query by correctly adding 4 values
-    $sql = "INSERT INTO actors (name, birthdate, biography, photo) VALUES (?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssb", $name, $birthdate, $biography, $null);
-    $stmt->send_long_data(3, $image); // Send BLOB data
+    $stmt = $conn->prepare("INSERT INTO actors (name, birthdate, biography, photo) VALUES (?, ?, ?, ?)");
+    $full_name = $first_name . ' ' . $last_name;
+    $stmt->bind_param("sssb", $full_name, $birthdate, $biography, $null);
+    $stmt->send_long_data(3, $photo); // Send BLOB data
 
     if ($stmt->execute()) {
-        header('Location: index.php'); // Redirect to actors list
-        exit();
+        echo "<script>alert('Actor added successfully!'); window.location.href='index.php';</script>";
     } else {
-        echo "Error: " . $conn->error;
+        echo "<script>alert('Error adding actor.');</script>";
     }
+
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
@@ -36,117 +34,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Actor</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="./add.ccs">
+    <title>Add New Actor</title>
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: var(--default-font);
             margin: 0;
-        }
-
-        .form-container {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .form-control,
-        textarea {
-            height: 45px;
-            font-size: 16px;
-        }
-
-        .form-control:focus,
-        textarea:focus {
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            border-color: #007bff;
-        }
-
-        .photo-upload {
-            border: 2px dashed #007bff;
-            padding: 25px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 18px;
-        }
-
-        .photo-upload:hover {
-            background: rgba(0, 123, 255, 0.1);
-        }
-
-        .photo-preview {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            margin: 15px auto;
-        }
-
-        button {
-            font-size: 18px;
-            padding: 12px;
+            padding: 20px;
         }
     </style>
 </head>
 
-<body>
+<body class=" text-gold-400 flex justify-center items-center min-h-screen">
+    <div class="form-container" style="max-width: 700px;"">
+        <h2 class=" text-2xl font-bold text-center mb-4">Add New Actor</h2>
+        <form id="actorForm" action="" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <label class="form-group">First Name:
+                <input type="text" name="first_name" class="w-full p-2 bg-gray-700 text-white rounded" required>
+            </label>
 
-    <div class="form-container">
-        <h2 class="text-center mb-4">Shto nje aktor te ri ne teatrin Metropol</h2>
-        <form method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label">Emri</label>
-                <input type="text" name="name" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Mbiemri</label>
-                <input type="text" name="surname" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Data e lindjes</label>
-                <input type="date" name="birthdate" class="form-control" required>
-            </div>
+            <label class="form-group">Last Name:
+                <input type="text" name="last_name" class="w-full p-2 bg-gray-700 text-white rounded" required>
+            </label>
 
-            <div class="mb-3">
-                <label class="form-label">Biografia</label>
-                <textarea name="biography" class="form-control" style=" height: 120px; " rows="10" required></textarea>
-            </div>
+            <label class="form-group">Birthdate:
+                <input type="date" name="birthdate" class="w-full p-2 bg-gray-700 text-white rounded" required>
+            </label>
 
+            <label class="form-group">Biography:
+                <textarea name="biography" class="w-full p-2 bg-gray-700 text-white rounded h-40"
+                    style="background-color: rgba(228, 228, 228, 0.04);" required></textarea>
+            </label>
 
             <div class="mb-3 text-center">
-                <label class="photo-upload" onclick="document.getElementById('photoInput').click()">
-                    <img id="photoPreview" class="photo-preview d-none" src="#" alt="Preview">
-                    <p>Kliko per te shkarkuar foto</p>
+                <label class="cursor-pointer block" onclick="document.getElementById('photoInput').click()">
+                    <img id="photoPreview" class="photo-preview hidden mx-auto w-40 h-40 object-cover rounded-lg"
+                        src="#" alt="Preview">
+                    <p class="text-sm text-gray-400 mt-2">Click to upload photo</p>
                 </label>
-                <input type="file" id="photoInput" name="photo" accept="image/*" class="d-none" required
+                <input type="file" name="photo" id="photoInput" accept="image/*" class="hidden" required
                     onchange="previewImage(event)">
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Add Actor</button>
+            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
+                Actor</button>
         </form>
     </div>
 
@@ -158,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     preview.src = e.target.result;
-                    preview.classList.remove('d-none');
+                    preview.classList.remove('hidden');
                 };
                 reader.readAsDataURL(input.files[0]);
             }

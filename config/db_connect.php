@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "biletariaonline";
+$database = "theater_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $database);
