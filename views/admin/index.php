@@ -452,34 +452,28 @@ $shows_result = $conn->query($shows_query);
                                             <th>#</th>
                                             <th>Emri</th>
                                             <th>Email</th>
+                                            <th>Numri i cel</th>
                                             <th>Roli</th>
                                             <th>Statusi</th>
                                             <th>Veprime</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Arben Hoxha</td>
-                                            <td>arben@example.com</td>
-                                            <td>Administrator</td>
-                                            <td><span class="badge badge-success">Aktiv</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary">Edito</button>
-                                                <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Rea Dervishi</td>
-                                            <td>rea@example.com</td>
-                                            <td>Përdorues</td>
-                                            <td><span class="badge badge-warning">Pezulluar</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-secondary">Edito</button>
-                                                <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                            </td>
-                                        </tr>
+                                        <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                            <tr>
+                                                <td><?php echo $row['id'] ?></td>
+                                                <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
+                                                <td><?php echo $row['email'] ?></td>
+                                                <td><?php echo $row['phone'] ?></td>
+                                                <td><?php echo $row['role'] ?></td>
+                                                <td><span class="badge badge-success">Aktiv</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-secondary">Edito</button>
+                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                       
                                         <!-- Add more rows here -->
                                     </tbody>
                                 </table>
