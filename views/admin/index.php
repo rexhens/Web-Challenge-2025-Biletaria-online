@@ -1,8 +1,11 @@
 <?php
 require_once '../../config/db_connect.php';
 
-$query = 'SELECT * FROM users';
-$result = $conn->query($query);
+$users_query = 'SELECT * FROM users';
+$users_result = $conn->query($users_query);
+
+$shows_query = 'SELECT * FROM shows ORDER BY start_date DESC';
+$shows_result = $conn->query($shows_query);
 ?>
 
 <!DOCTYPE html>
@@ -16,8 +19,11 @@ $result = $conn->query($query);
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>Paneli i Adminit</title>
 
+    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
+
+    <link rel="icon" type="image/x-icon" href="../../assets/img/metropol_icon.png">
     <!-- Custom fonts for this template-->
     <link href="/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
@@ -26,6 +32,15 @@ $result = $conn->query($query);
 
     <!-- Custom styles for this template-->
     <link href="/biletaria_online/assets/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <style>
+        .custom-size {
+            width: 183px;
+            height: 75px;
+            object-fit: cover;
+            /* Ensures images are resized without distortion */
+        }
+    </style>
 
 </head>
 
@@ -421,8 +436,7 @@ $result = $conn->query($query);
                         </div>
                     </div>
 
-                    <!-- Tabela e Aktoreve -->
-                    <!-- Tabela e userave -->
+
                     <!-- Tabela e userave -->
 
                     <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
@@ -472,6 +486,84 @@ $result = $conn->query($query);
                             </div>
                         </div>
                     </div>
+
+                    <!-- Shfaqjet -->
+
+                    <section class="w3l-grids">
+                        <div class="grids-main py-5">
+                            <div class="container py-lg-3">
+                                <div class="headerhny-title">
+                                    <div class="w3l-title-grids">
+                                        <div class="headerhny-left">
+                                            <h3 class="hny-title">Menaxho Shfaqjet</h3>
+                                        </div>
+                                        <div class="headerhny-right text-lg-right">
+                                            <h4><a class="show-title" href="movies.html">Te gjitha</a></h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="owl-three owl-carousel owl-theme owl-loaded owl-drag">
+
+
+
+
+
+
+                                    <div class="owl-stage-outer">
+                                        <div class="owl-stage"
+                                            style="transform: translate3d(-701px, 0px, 0px); transition: 1s; width: 2805px;">
+
+                                            <?php while ($row = $shows_result->fetch_assoc()) { ?>
+                                                <div class="owl-item cloned" style="width: 213.667px; margin-right: 20px;">
+                                                    <div class="item vhny-grid">
+                                                        <div class="box16 mb-0">
+                                                            <a href="movies.html">
+                                                                <figure>
+                                                                    <img src="./shows/get_image.php?id=<?php echo $row['id']; ?>"
+                                                                        alt=""
+                                                                        style="object-fit: cover; width: 183px; height: 175px;">
+
+                                                                </figure>
+                                                                <div class=" box-content">
+
+                                                                    <h4> <span class="post"><span class="fa fa-clock-o">
+                                                                            </span> 2 Hr 4min
+
+                                                                        </span>
+
+                                                                    </h4>
+                                                                </div>
+
+                                                            </a>
+                                                        </div>
+                                                        <h3> <a class="title-gd"
+                                                                href="movies.html"><?php echo $row['title']; ?></a></h3>
+                                                        <p><?php echo $row['description']; ?> ....</p>
+                                                        <div class="button-center text-center mt-4">
+                                                            <a href="movies.html" class="btn watch-button">Shiko
+                                                                rezervimet</a>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                    <div class="owl-nav"><button type="button" role="presentation"
+                                            class="owl-prev"><span aria-label="Previous"> <span
+                                                    class="fa fa-angle-left"></span>
+                                            </span></button><button type="button" role="presentation"
+                                            class="owl-next"><span aria-label="Next">
+                                                <span class="fa fa-angle-right"></span> </span></button></div>
+                                    <div class="owl-dots"><button role="button"
+                                            class="owl-dot active"><span></span></button><button role="button"
+                                            class="owl-dot"><span></span></button></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
 
 
 
