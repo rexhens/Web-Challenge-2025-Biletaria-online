@@ -22,11 +22,11 @@ session_start();
         }
 
         h1 {
-            font-size: 25px;
+            font-size: 20px;
         }
 
         h1 span {
-            font-size: 34px;
+            font-size: 30px;
         }
     </style>
 </head>

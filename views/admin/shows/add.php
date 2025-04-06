@@ -9,37 +9,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $hall = $_POST["hall"];
     $genre_id = $_POST["select-genre"];
-    $start_date = $_POST["start_date"];
-    $end_date = $_POST["end_date"];
+    $dates = explode(",", $_POST['show_dates']);
     $time = $_POST["time"];
     $description = $_POST["description"];
     $trailer = $_POST["trailer"];
+    $price = $_POST["price"];
 
-    // Check if a file was uploaded
-    if (isset($_FILES["poster"]) && $_FILES["poster"]["error"] == 0) {
-        $poster = file_get_contents($_FILES["poster"]["tmp_name"]); // Read file content
-    } else {
-        $poster = null; // No file uploaded
+    $errors = [];
+
+    if(empty($title) || empty($hall) || empty($genre_id) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price)) {
+        $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
-    // Prepare SQL query
-    $sql = "INSERT INTO shows (title, hall, genre_id, start_date, end_date, time, description, poster1, trailer) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-    if ($stmt = $conn->prepare($sql)) {
-        $stmt->bind_param("ssissssbs", $title, $hall, $genre_id, $start_date, $end_date, $time, $description, $poster, $trailer);
-        $stmt->send_long_data(6, $poster);
-        if ($stmt->execute()) {
-            $show_id = $conn->insert_id; // Get the last inserted ID
-            // Redirect after successful insert
-            header("Location: assign_actors.php?show_id=" . $show_id);
-            exit();
+    if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
+        if (!empty($_FILES['file-input']['name'])) {
+            $check = getimagesize($_FILES['file-input']['tmp_name']);
+            if ($check !== false) {
+                $poster = file_get_contents($_FILES["file-input"]["tmp_name"]);
+            } else {
+                $errors[] = "Skedari nuk është një imazh i vlefshëm.";
+            }
         } else {
-            $error_message = "Error adding show: " . $stmt->error;
+            $errors[] = "Ju duhet të zgjidhni një imazh për të ngarkuar.";
         }
-        $stmt->close();
     } else {
-        $error_message = "Database error: " . $conn->error;
+        $errors[] = "Nuk u ngarkua asnjë skedar.";
+    }
+
+    if(empty($errors)){
+        $sql = "INSERT INTO shows (title, hall, genre_id, time, description, poster, trailer, price) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        if ($stmt = $conn->prepare($sql)) {
+            $stmt->bind_param("ssissbsi", $title, $hall, $genre_id, $time, $description, $poster, $trailer, $price);
+            $stmt->send_long_data(5, $poster);
+            if ($stmt->execute()) {
+                $show_id = $conn->insert_id;
+                foreach ($dates as $date) {
+                    $stmt = $conn->prepare("INSERT INTO show_dates (show_id, show_date) VALUES (?, ?)");
+                    $stmt->bind_param("is", $show_id, $date);
+                    if(!$stmt->execute()) {
+                        $errors[] = "Një problem ndodhi! Provoni më vonë!";
+                    }
+                }
+                if(empty($errors)) {
+                    header("Location: assign_actors.php?show_id=" . $show_id);
+                    exit();
+                }
+            } else {
+                $errors[] = "Një problem ndodhi! Provoni më vonë!";
+            }
+            $stmt->close();
+        } else {
+            $errors[] = "Një problem ndodhi! Provoni më vonë!";
+        }
     }
 
     $conn->close();
@@ -60,132 +83,137 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         body {
             background: url('../../../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
-            justify-content: flex-start;
-        }
-
-        h1 {
-            font-weight: lighter;
-        }
-
-        h1 {
-            font-size: 25px;
-        }
-
-        h1 span {
-            font-size: 34px;
         }
     </style>
 </head>
 
 <body>
-<form id="showForm" method="POST" enctype="multipart/form-data" class="form-container">
-    <h1>Shtoni një shfaqje në <br>
-        <span>Teatrin Metropol</span>
-    </h1>
-    <input type="hidden" id="id" name="id">
 
-    <div class="form-group">
-        <input type="text" name="title" id="title" placeholder=" " required>
-        <label for="title">Titulli</label>
+<div class="space"></div>
+
+<form id="showForm" method="POST" enctype="multipart/form-data">
+    <h1 style="font-size: 25px; margin-top: -10px; margin-bottom: 3px;">Shtoni një <span>Shfaqje</span></h1>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="form-group">
+                <input type="text" name="title" id="title" placeholder=" " required>
+                <label for="title">Titulli</label>
+            </div>
+
+            <div class="form-group">
+                <input type="text" name="hall" id="hall" placeholder=" " required>
+                <label for="hall">Salla</label>
+            </div>
+
+            <div class="form-group">
+                <select name="select-genre" id="select-genre" required>
+                    <option value="" disabled selected>-- Zgjidh zhanrin --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="show_dates" name="show_dates" placeholder=" " readonly required>
+                <label for="show_dates">Datat</label>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="time" name="time" placeholder=" " required>
+                <label for="time">Ora</label>
+            </div>
+
+            <div class="form-group">
+                <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="trailer" name="trailer" placeholder=" " required>
+                <label for="trailer">Trailer</label>
+            </div>
+
+            <div class="form-group">
+                <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " required>
+                <label for="price">Çmimi i biletës</label>
+                <div class="custom-spinner">
+                    <div class="plus" onclick="document.querySelector('.custom-number').stepUp()">+</div>
+                    <div class="minus" onclick="document.querySelector('.custom-number').stepDown()">−</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-container">
+            <div class="photo-container">
+                <img src="../../../assets/img/show-icon.png" alt="profile" id="picture"></img>
+                <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
+                <button type="button" id="change-photo" name="change-photo">Ngarko Poster</button>
+            </div>
+        </div>
+
+        <button type="submit" name="submit">Shto Shfaqje</button>
+
     </div>
 
-    <div class="form-group">
-        <input type="text" name="hall" id="hall" placeholder=" " required>
-        <label for="hall">Salla</label>
-    </div>
-
-    <div class="form-group">
-        <select name="select-genre" id="select-genre">
-            <option value="" disabled selected>-- Zgjidhni zhanrin --</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <input type="text" name="start_date" id="start_date" placeholder=" " required>
-        <label for="start_date">Data e fillimit</label>
-    </div>
-
-    <div class="form-group">
-        <input type="text" name="end_date" id="end_date" placeholder=" " required>
-        <label for="end_date">Data e mbarimit</label>
-    </div>
-
-    <div class="form-group">
-        <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
-    </div>
-
-
-
-    <div class="mb-3 text-center">
-        <label class="cursor-pointer block" onclick="document.getElementById('posterInput').click()">
-            <img id="posterPreview" class="photo-preview hidden mx-auto w-40 h-40 object-cover rounded-lg"
-                 src="#" alt="Preview">
-            <p class="text-sm text-gray-400 mt-2">Click to upload photo</p>
-        </label>
-        <input type="file" name="poster" id="posterInput" accept="image/*" class="hidden" required
-               onchange="previewImage(event)">
-    </div>
-
-    <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
-        Show</button>
 </form>
 
-<?php if (isset($error_message)): ?>
-    <div class="mt-4 text-red-500"><?php echo $error_message; ?></div>
-<?php endif; ?>
-
-    <script>
-        function previewImage(event) {
-            const input = event.target;
-            const preview = document.getElementById('posterPreview');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+<div class="info-container">
+    <?php
+    if(!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<div class='errors show'><p>$error</p></div>";
         }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const genreSelect = document.getElementById("select-genre");
-
-            fetch(`../genres/get_genres.php`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.json();
-                })
-                .then((genres) => {
-                    genreSelect.innerHTML = '<option value="">-- Zgjidhni zhanrin --</option>';
-                    genres.forEach((genre) => {
-                        const option = document.createElement("option");
-                        option.value = genre.id;
-                        option.textContent = genre.genre_name;
-                        genreSelect.appendChild(option);
-                    });
-                })
-                .catch((error) => {
-                    alert("Dështoi marrja e zhanreve! Provoni përsëri!");
-                });
-        });
-    </script>
-
-<script src="../../../assets/js/flatpickr.min.js"></script>
-<script src="../../../assets/js/functions.js"></script>
+    }
+    ?>
+</div>
+<script>
+    const elementsToHide = document.getElementsByClassName("show");
+    setTimeout(() => {
+        Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
+    }, 4500);
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        flatpickr("#start_date", {
-            dateFormat: "d/m/Y",
-            disableMobile: true
+        const genreSelect = document.getElementById("select-genre");
+
+        fetch(`../genres/get_genres.php`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((genres) => {
+                genres.forEach((genre) => {
+                    const option = document.createElement("option");
+                    option.value = genre.id;
+                    option.textContent = genre.genre_name;
+                    genreSelect.appendChild(option);
+                });
+            })
+            .catch((error) => {
+                alert("Dështoi marrja e zhanreve! Provoni përsëri!");
+            });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#show_dates", {
+            mode: "multiple",
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            locale: "sq"
         });
-        flatpickr("#end_date", {
-            dateFormat: "d/m/Y",
-            disableMobile: true
+
+        flatpickr("#time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true,
+            theme: "dark"
         });
     });
 </script>
+<script src="../../../assets/js/flatpickr.min.js"></script>
+<script src="../../../assets/js/functions.js"></script>
+<script src="../../../assets/js/uploadPicture.js"></script>
 </body>
 </html>
