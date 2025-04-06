@@ -11,10 +11,6 @@
         h1 {
             font-weight: lighter;
         }
-        button {
-            font-size: 17px;
-            width: 140px;
-        }
     </style>
 </head>
 <body>
@@ -31,8 +27,8 @@
                 <a href="#" class="nav">KONTAKT</a>
             </div>
             <div class="buttons">
-                <button aria-label="Identifikohu" onclick="redirectTo('auth/login.php')">Identifikohu</button>
-                <button class="black-btn" aria-label="Regjistrohu" onclick="redirectTo('auth/signup.php')">Regjistrohu</button>
+                <button aria-label="Identifikohu" onclick="redirectTo('auth/login.php')" style="font-size: 17px; width: 140px;">Identifikohu</button>
+                <button class="black-btn" aria-label="Regjistrohu" onclick="redirectTo('auth/signup.php')" style="font-size: 17px; width: 140px;">Regjistrohu</button>
             </div>
         </div>
         <div class="menu-icon" onclick="toggleMenu()">&#9776;</div>
