@@ -34,7 +34,7 @@ session_start();
 <body>
 <form action="signup.php" method="post" id="signup-form" class="form-container">
     <h1>Krijoni llogari në <br>
-        <span>Teatrin Metropol</span>
+        <span>Metropol Ticketing</span>
     </h1>
     <div class="form-group">
         <input type="text" name="name" id="name" placeholder=" " required>

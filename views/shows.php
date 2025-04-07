@@ -1,10 +1,16 @@
 <?php
-require_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require "../config/db_connect.php";
+require "../auth/auth.php";
+require "../includes/functions.php";
+redirectIfNotLoggedIn();
+?>
 
+<?php
 // Handle search and filter requests
-$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
-$filterGenre = isset($_GET['genre']) ? $_GET['genre'] : '';
-$filterDate = isset($_GET['date']) ? $_GET['date'] : '';
+$searchTerm = $_GET['search'] ?? '';
+$filterGenre = $_GET['genre'] ?? '';
+$filterDate = $_GET['date'] ?? '';
 
 $query = "SELECT * FROM shows WHERE title LIKE ?";
 
@@ -39,12 +45,14 @@ $genreResult = $conn->query($genreQuery);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shfaqjet</title>
+    <?php require '../includes/links.php'; ?>
+    <meta property="og:image" content="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <title>Metropol Ticketing | Shfaqjet</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap');
@@ -67,7 +75,7 @@ $genreResult = $conn->query($genreQuery);
 
 
         body {
-            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+            background: url('../assets/img/background-image.png') no-repeat center center/cover;
             background-color: var(--background-color);
             color: var(--text-color);
             font-family: var(--default-font);
@@ -252,7 +260,12 @@ $genreResult = $conn->query($genreQuery);
 <body>
     <div class="shows-container">
         <header>
-            <h1>Shfaqjet ne teater</h1>
+            <h1>Shfaqjet në teatër</h1>
+            <?php
+            if(checkAdmin($conn)) { ?>
+                <button onclick="redirectTo('add-show.php')">Shto një shfaqje</button>
+            <?php }
+            ?>
         </header>
 
         <!-- Search Bar with Live Search functionality -->
@@ -302,7 +315,7 @@ $genreResult = $conn->query($genreQuery);
                                 <span>Pershkrim i shkurter: </span> <?php echo htmlspecialchars($row['description']); ?>
                             </p>
                             <div class="btn-group">
-                                <a href="show_details.php?id=<?php echo $row['id']; ?>" class="btn">Me shume info</a>
+                                <a href="client/shows/show_details.php?id=<?php echo $row['id']; ?>" class="btn">Me shume info</a>
                                 <a href="reserve.php?id=<?php echo $row['id']; ?>" class="btn reserve">Rezervo</a>
                             </div>
                         </div>
@@ -310,7 +323,9 @@ $genreResult = $conn->query($genreQuery);
 
                 <?php }
             } else {
-                echo "<p class='no-shows'>No shows available at the moment.</p>";
+                echo "<div class='errors show'>
+                          <p>Aktualisht nuk ka shfaqje!</p>
+                      </div>";
             } ?>
         </div>
     </div>
@@ -365,9 +380,39 @@ $genreResult = $conn->query($genreQuery);
                 show.style.display = showVisible ? "" : "none";
             });
         }
-
-
     </script>
-</body>
+    <!--
+    <script>
+        const cardContainer = document.getElementById('showGrid');
+        const dateFilter = document.getElementById("dateFilter");
 
+        async function fetchShows(filter) {
+            try {
+                const response = await fetch('shows.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `filter=${encodeURIComponent(filter)}`,
+                });
+
+                cardContainer.innerHTML = await response.text();
+            } catch (error) {
+                console.error('Error fetching shows:', error);
+                cardContainer.innerHTML = '<div class="errors show"><p>Një problem ndodhi! Provoni më vonë!</p></div>';
+            }
+        }
+
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filter = button.getAttribute('data-filter');
+                fetchPets(filter);
+            });
+        });
+
+        fetchPets('all');
+    </script>
+    -->
+    <script src="../assets/js/functions.js"></script>
+</body>
 </html>

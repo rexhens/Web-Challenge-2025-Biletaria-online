@@ -12,7 +12,7 @@ if(isset($_GET["token"])) {
     $stmt->close();
     if(!$row) {
         echo "<!DOCTYPE html>
-              <html lang='en'>
+              <html lang='sq'>
               <head>";
               require '../includes/links.php';
         echo "<title>Metropol Ticketing | Mesazh</title>
@@ -22,12 +22,13 @@ if(isset($_GET["token"])) {
                   body {
                     background: url('../assets/img/error.png') no-repeat center center fixed;
                     background-size: cover;
+                    justify-content: center;
                   }
               </style>
               </head>
               <body>
-              <div class='errors show' style='background-color: #f44336'>
-                    <p style='color: #E4E4E4;'>Kod i gabuar verifikimi.</p>
+              <div class='errors show'>
+                    <p>Kod i gabuar verifikimi.</p>
               </div>
               </body>
               </html>";
@@ -38,7 +39,7 @@ if(isset($_GET["token"])) {
 
             if (!$stmt->execute()) {
                 echo "<!DOCTYPE html>
-                      <html lang='en'>
+                      <html lang='sq'>
                       <head>";
                 require '../includes/links.php';
                 echo "<title>Metropol Ticketing | Mesazh</title>
@@ -48,12 +49,13 @@ if(isset($_GET["token"])) {
                           body {
                             background: url('../assets/img/error.png') no-repeat center center fixed;
                             background-size: cover;
+                            justify-content: center;
                           }
                       </style>
                       </head>
                       <body>
-                      <div class='errors show' style='background-color: #f44336'>
-                            <p style='color: #E4E4E4;'>Një problem ndodhi! Provoni më vonë!.</p>
+                      <div class='errors show'>
+                            <p>Një problem ndodhi! Provoni më vonë!.</p>
                       </div>
                       </body>
                       </html>";
@@ -67,7 +69,7 @@ if(isset($_GET["token"])) {
     }
 } else {
     echo "<!DOCTYPE html>
-          <html lang='en'>
+          <html lang='sq'>
           <head>";
     require '../includes/links.php';
     echo "<title>Metropol Ticketing | Mesazh</title>
@@ -77,12 +79,13 @@ if(isset($_GET["token"])) {
               body {
                 background: url('../assets/img/error.png') no-repeat center center fixed;
                 background-size: cover;
+                justify-content: center;
               }
           </style>
           </head>
           <body>
-          <div class='errors show' style='background-color: #f44336'>
-                <p style='color: #E4E4E4;'>Nuk ka një kod për verifikim.</p>
+          <div class='errors show' >
+                <p >Nuk ka një kod për verifikim.</p>
           </div>
           </body>
           </html>";
