@@ -1,7 +1,10 @@
 <?php
 /** @var mysqli $conn */
-require "../../../config/db_connect.php";
-session_start();
+require "../config/db_connect.php";
+require "../auth/auth.php";
+require "../includes/functions.php";
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 ?>
 
 <?php
@@ -73,15 +76,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="sq">
 
 <head>
-    <?php require '../../../includes/links.php'; ?>
-    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../../../assets/img/metropol_icon.png">
+    <?php require '../includes/links.php'; ?>
+    <meta property="og:image" content="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <title>Metropol Ticketing | Shto Shfaqe</title>
-    <link rel="stylesheet" href="../../../assets/css/flatpickr.min.css">
-    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/flatpickr.min.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
-            background: url('../../../assets/img/background-image.png') no-repeat center center fixed;
+            background: url('../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
     </style>
@@ -89,10 +92,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-<div class="space"></div>
-
 <form id="showForm" method="POST" enctype="multipart/form-data">
-    <h1 style="font-size: 25px; margin-top: -10px; margin-bottom: 3px;">Shtoni një <span>Shfaqje</span></h1>
+    <h1 style="font-size: 25px;">Shtoni një <span>Shfaqje</span></h1>
 
     <div class="container">
         <div class="form-container">
@@ -102,8 +103,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="form-group">
-                <input type="text" name="hall" id="hall" placeholder=" " required>
-                <label for="hall">Salla</label>
+                <select name="hall" id="hall" required>
+                    <option value="" disabled selected>-- Zgjidh sallën --</option>
+                    <option value="Shakespare">Shakespare</option>
+                    <option value="Cehov">Cehov</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -143,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="side-container">
             <div class="photo-container">
-                <img src="../../../assets/img/show-icon.png" alt="profile" id="picture"></img>
+                <img src="../assets/img/show-icon.png" alt="profile" id="picture"></img>
                 <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
                 <button type="button" id="change-photo" name="change-photo">Ngarko Poster</button>
             </div>
@@ -174,7 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     document.addEventListener("DOMContentLoaded", function () {
         const genreSelect = document.getElementById("select-genre");
 
-        fetch(`../genres/get_genres.php`)
+        fetch(`get_genres.php`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -212,8 +216,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
     });
 </script>
-<script src="../../../assets/js/flatpickr.min.js"></script>
-<script src="../../../assets/js/functions.js"></script>
-<script src="../../../assets/js/uploadPicture.js"></script>
+<script src="../assets/js/flatpickr.min.js"></script>
+<script src="../assets/js/functions.js"></script>
+<script src="../assets/js/uploadPicture.js"></script>
 </body>
 </html>
