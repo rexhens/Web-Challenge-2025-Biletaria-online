@@ -38,11 +38,11 @@ body {
     left: 0;
     width: 100%;
     height: 70px;
+    margin-bottom: 70px;
     background-color: rgba(27, 27, 27, 0.6);
     box-shadow: 0 5px 20px rgba(200, 187, 179, 0.2);
-    z-index: 1;
     backdrop-filter: blur(40px);
-    overflow: hidden;
+    z-index: 100;
 }
 
 .menu-bar {
@@ -117,15 +117,13 @@ button {
     width: 180px;
     border: none;
     border-radius: 10px;
-    background-image: linear-gradient(to bottom, var(--heading2-color) , #947c3d);
-    backdrop-filter: blur(70px);
+    background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
     transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 button:hover {
     cursor: pointer;
-    background-image: linear-gradient(to bottom, #b59b55, #75612b);
-    backdrop-filter: blur(80px);
+    background-image: linear-gradient(to bottom, var(--heading2-color), #ad8d39);
 }
 
 button:active {
@@ -151,6 +149,7 @@ button:active {
     position: relative;
     top: 70px;
     margin-bottom: 70px;
+    z-index: 1;
 }
 
 .video-container::before {
@@ -192,122 +191,6 @@ button:active {
     opacity: 1;
 }
 
-@media (max-width: 768px) {
-    .video-container {
-        height: auto;
-    }
-}
-
-@media (min-width: 1024px) {
-    .video-container {
-        height: calc(100vh - 70px);
-    }
-}
-
-
-
-.info, .current-shows, .troupe {
-    padding: 40px;
-    text-align: center;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.show {
-    background: var(--surface-color);
-    color: var(--background-color);
-    padding: 20px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.show h3 {
-    font-size: 24px;
-    color: var(--background-color);
-    margin: 0 0 10px 0;
-}
-
-.show p {
-    font-size: 16px;
-    color: var(--background-color);
-    margin: 0 0 20px 0;
-}
-
-.show button {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.show button:hover {
-    background-color: #e0b800;
-}
-
-.actors {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.actor img {
-    width: 150px;
-    border-radius: 10px;
-}
-
-.actor button {
-    display: block;
-    margin-top: 10px;
-    padding: 5px;
-    border: none;
-    background: var(--accent-color);
-    color: var(--text-color);
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    nav ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .hero {
-        font-size: 24px;
-        padding: 40px 10px;
-    }
-
-    .show, .actors {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .actor img {
-        width: 100%;
-    }
-}
-
-
-
-
-
-
 @media (max-width: 1290px) {
     .menu-bar {
         margin-left: 5%;
@@ -331,18 +214,17 @@ button:active {
 
     .menu-bar {
         display: none;
+        flex-direction: column;
+        align-items: center;
         position: fixed;
         top: 70px;
         right: 0;
         width: 250px;
         height: auto;
-        flex-direction: column;
-        align-items: center;
         gap: 10px;
-        background-color: rgba(27, 27, 27, 0.6);
+        background-color: rgba(27, 27, 27, 0.8);
         box-shadow: 0 5px 20px rgba(200, 187, 179, 0.2);
-        backdrop-filter: blur(40px);
-        z-index: 1;
+        z-index: 9999;
     }
 
     .menu {
@@ -364,6 +246,7 @@ button:active {
         gap: 10px;
         margin-right: 0;
         margin-bottom: 15px;
+        width: 100%;
     }
 
     .menu-bar.open {
@@ -376,5 +259,17 @@ button:active {
         margin-right: 10px;
         cursor: pointer;
         color: var(--accent-color);
+    }
+}
+
+@media (min-width: 1024px) {
+    .video-container {
+        height: calc(100vh - 70px);
+    }
+}
+
+@media (max-width: 768px) {
+    .video-container {
+        height: auto;
     }
 }

@@ -18,7 +18,8 @@ function onYouTubeIframeAPIReady() {
             'autoplay': 1,
             'controls': 0,
             'rel': 0,
-            'showinfo': 0
+            'showinfo': 0,
+            'wmode': 'transparent'
         },
         events: {
             'onStateChange': onPlayerStateChange
@@ -45,12 +46,4 @@ function prevVideo() {
 document.getElementById('nextBtn').addEventListener('click', nextVideo);
 document.getElementById('prevBtn').addEventListener('click', prevVideo);
 
-document.addEventListener('keydown', function (event) {
-    if (event.key === 'ArrowRight') {
-        nextVideo();
-    } else if (event.key === 'ArrowLeft') {
-        prevVideo();
-    }
-});
-
-loadYouTubeAPI()
+loadYouTubeAPI();
