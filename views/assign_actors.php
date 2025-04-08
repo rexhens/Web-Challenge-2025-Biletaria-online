@@ -1,5 +1,5 @@
 <?php
-require_once '../../../config/db_connect.php';
+require_once '../config/db_connect.php';
 
 // Get the show ID from the URL
 if (!isset($_GET['show_id']) || empty($_GET['show_id'])) {

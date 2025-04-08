@@ -50,10 +50,10 @@ $actorsResult = $stmtActors->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($row['title']); ?></title>
-    <link rel="stylesheet" href="../../../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
-            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
+            background: url('../assets/img/background-image.png') no-repeat center center/cover;
             background-color: var(--background-color);
             color: var(--text-color);
             font-family: var(--default-font);
@@ -192,7 +192,7 @@ $actorsResult = $stmtActors->get_result();
     <div class="show-container">
         <!-- Poster Section (Left) -->
         <div class="show-poster">
-            <img src="get_image.php?id=<?php echo $row['id']; ?>" alt="Poster">
+            <img src="client/shows/get_image.php?id=<?php echo $row['id']; ?>" alt="Poster">
         </div>
 
         <!-- Description and Actors Section (Right) -->
@@ -209,7 +209,7 @@ $actorsResult = $stmtActors->get_result();
         <?php if ($actorsResult && $actorsResult->num_rows > 0): ?>
             <?php while ($actor = $actorsResult->fetch_assoc()): ?>
                 <div class="actor-card">
-                    <img src="get_image.php?id=<?php echo $actor['id']; ?>"
+                    <img src="client/shows/get_image.php?id=<?php echo $actor['id']; ?>"
                         alt="<?php echo htmlspecialchars($actor['name']); ?>">
                     <h4><?php echo htmlspecialchars($actor['name']); ?></h4>
                     <p>I lindur me: <?php echo htmlspecialchars($actor['birthdate']); ?></p>
