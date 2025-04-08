@@ -68,7 +68,7 @@ if($result->num_rows > 0){
 
         $groupedDates = groupDates($dates);
 
-        echo "<div class='show-card hidden' style='background-image: url($posterUrl);' data-genre='" . htmlspecialchars($show['genre_id']) . "'>
+        echo "<div class='show-card' style='background-image: url($posterUrl);' data-genre='" . htmlspecialchars($show['genre_id']) . "'>
             <div class='show-overlay'>
                 <h3><span>Titulli: </span>" . htmlspecialchars($show['title']) . "</h3>
                 <p class='show-dates'><span>Datat: </span>" . implode(', ', $groupedDates) . "</p>

@@ -94,6 +94,18 @@ $genreResult = $conn->query($genreQuery);
         }
     </script>
     <script>
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+    </script>
+    <script>
         const genreFilter = document.getElementById("genreFilter");
         const dateFilter = document.getElementById("dateFilter");
 
@@ -114,13 +126,9 @@ $genreResult = $conn->query($genreQuery);
                 const showsContainer = document.getElementById("shows-container");
                 showsContainer.innerHTML = html;
 
-                const newCards = showsContainer.querySelectorAll('.show-card.hidden');
-
-                setTimeout(() => {
-                    newCards.forEach(card => {
-                        card.classList.remove('hidden');
-                    });
-                }, 500);
+                document.querySelectorAll('.show-card').forEach(card => {
+                    observer.observe(card);
+                });
 
             } catch (error) {
                 document.getElementById("shows-container").innerHTML = "<div class='errors show'><p>Gabim gjatë filtrimit!</p></div>";
