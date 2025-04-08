@@ -147,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="side-container">
             <div class="photo-container">
-                <img src="../assets/img/show-icon.png" alt="profile" id="picture"></img>
+                <img src="../assets/img/show-icon.png" alt="poster" id="picture"></img>
                 <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
                 <button type="button" id="change-photo" name="change-photo">Ngarko Poster</button>
             </div>
