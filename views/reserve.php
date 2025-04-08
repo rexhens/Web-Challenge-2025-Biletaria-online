@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require_once '../../../config/db_connect.php';  // Adjust the path as needed
+require_once '../config/db_connect.php';  // Adjust the path as needed
 
 // 1. Check if user is logged in
 /*
@@ -102,11 +102,11 @@ mysqli_close($conn);
     <meta name="description" content="Teatri Metropol - Your theater experience in Albania.">
     <meta property="og:title" content="Teatri Metropol">
     <meta property="og:description" content="Your theater experience in Albania.">
-    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../../../assets/img/metropol_icon.png">
+    <meta property="og:image" content="=../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
 
     <!-- Your main homepage CSS -->
-    <link rel="stylesheet" href="../../../assets/css/homepagestyles.css">
+    <link rel="stylesheet" href="../assets/css/styles.css">
 
     <!-- Additional styling for the reservation section -->
     <style>
@@ -288,7 +288,7 @@ mysqli_close($conn);
         <div class="buttons">
             <!-- Adjust these if you have different paths -->
             <button class="reserve" aria-label="Reserve tickets"
-                onclick="window.location.href='../../../index.php'">
+                onclick="window.location.href='../index.php'">
                 REZERVO
             </button>
             <button class="login" aria-label="Log in to your account"
@@ -373,7 +373,7 @@ mysqli_close($conn);
             </div>
         </form>
 
-        <a href="../../../index.php" class="back-link">Kthehu në faqen kryesore</a>
+        <a href="../index.php" class="back-link">Kthehu në faqen kryesore</a>
     </section>
 
     <script>

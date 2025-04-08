@@ -18,6 +18,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $trailer = $_POST["trailer"];
     $price = $_POST["price"];
 
+    echo "Textarea length: " . strlen($_POST['description']);
+
     $errors = [];
 
     if(empty($title) || empty($hall) || empty($genre_id) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price)) {

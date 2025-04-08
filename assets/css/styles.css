@@ -24,6 +24,7 @@ body {
     height: 100vh;
     margin: 0;
     padding: 0;
+    gap: 10px;
     font-family: var(--default-font);
     color: var(--text-color);
 }
@@ -198,6 +199,159 @@ textarea::-webkit-scrollbar-thumb {
 textarea::-webkit-scrollbar-thumb:hover {
     background: var(--accent-color);
     cursor: pointer;
+}
+
+.search-container {
+    position: relative;
+    align-self: flex-start;
+    width: 300px;
+}
+
+.search-container input[type="text"] {
+    width: 100%;
+    padding: 15px 15px 10px 40px;
+    border: 2px solid rgb(143, 121, 63, 0.5);
+    border-radius: 10px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.search-container input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.search-container input[type="text"]::placeholder {
+    color: var(--surface-color);
+}
+
+.search-container .fa-search {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--accent-color);
+    font-size: 18px;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.filter-container {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-self: flex-start;
+    width: 358px;
+}
+
+.filter-container select {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    width: 50%;
+    border: 2px solid rgb(143, 121, 63, 0.5);
+    background-color: var(--background-color);
+    color: var(--surface-color);
+}
+
+.filter-container select:focus {
+    border-color: var(--accent-color);
+}
+
+.shows-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 30px;
+}
+
+.show-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+    height: 550px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.4s ease;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.show-card:nth-child(even) {
+    animation-delay: 0.2s;
+}
+
+.show-card:nth-child(odd) {
+    animation-delay: 0.4s;
+}
+
+.show-card:hover {
+    transform: scale(1.02);
+}
+
+.show-overlay {
+    background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.2) 10%,
+    rgba(0, 0, 0, 0.4) 20%,
+    rgba(0, 0, 0, 0.6) 40%,
+    rgba(0, 0, 0, 0.8) 60%,
+    rgba(0, 0, 0, 0.9) 80%,
+    rgba(0, 0, 0, 1) 100%);
+    padding: 20px;
+    color: var(--text-color);
+}
+
+.show-overlay h3 {
+    font-family: var(--heading-font);
+    margin: 0 0 10px;
+    font-size: 1.8rem;
+}
+
+.show-dates {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.show-description {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.btn-group button {
+    font-size: 15px;
 }
 
 .photo-container {
@@ -547,13 +701,6 @@ option {
     cursor: pointer;
 }
 
-.buttons {
-    margin-right: 10px;
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
-}
-
 button {
     font-family: var(--default-font);
     font-size: 18px;
@@ -587,9 +734,13 @@ button:active {
     display: none;
 }
 
-@media (max-width: 1290px) {
+@media (max-width: 1300px) {
     .menu-bar {
         margin-left: 5%;
+    }
+
+    .show-card {
+        width: 31%;
     }
 }
 
@@ -656,17 +807,9 @@ button:active {
         cursor: pointer;
         color: var(--accent-color);
     }
-}
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-50px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .show-card {
+        width: 47%;
     }
 }
 
@@ -701,8 +844,43 @@ button:active {
     }
 }
 
+@media (max-width: 700px) {
+    .show-card {
+        width: 425px;
+    }
+}
+
 @media (max-width: 560px) {
     .info-container {
         width: 300px;
+    }
+
+    .search-container {
+        width: 80%;
+    }
+
+    .filter-container {
+        width: calc(80% + 58px);
+    }
+
+    .show-card {
+        width: calc(80% + 58px);
+        height: 500px;
+    }
+
+    .btn-group button {
+        width: 50%;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
