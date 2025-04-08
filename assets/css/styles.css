@@ -290,20 +290,26 @@ header {
     justify-content: flex-end;
     background-size: cover;
     background-position: center;
-    transition: transform 0.4s ease;
-    animation: fadeIn 0.5s ease-in-out;
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.show-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .hidden {
     opacity: 0;
 }
 
-.show-card:nth-child(even) {
-    animation-delay: 0.2s;
+.show-card.in-view:nth-child(even) {
+    transition-delay: 0.1s;
 }
 
-.show-card:nth-child(odd) {
-    animation-delay: 0.4s;
+.show-card.in-view:nth-child(odd) {
+    transition-delay: 0.3s;
 }
 
 .show-card:hover {
