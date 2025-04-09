@@ -35,7 +35,7 @@ require "../includes/functions.php";
     </div>
     <div class="form-group">
         <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
-        <label for="password-confirm">Konfirmoni Fjalëkalimin e Ri</label>
+        <label for="password-confirm">Konfirmoni Fjalëkalimin</label>
     </div>
     <button type="submit" name="submit" id="change">Ndrysho</button>
 </form>

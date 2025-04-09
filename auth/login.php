@@ -22,18 +22,18 @@ session_start();
         }
 
         h1 {
-            font-size: 25px;
+            font-size: 20px;
         }
 
         h1 span {
-            font-size: 34px;
+            font-size: 30px;
         }
     </style>
 </head>
 <body>
 <form action="login.php" method="post" id="login-form" class="form-container">
     <h1>Mirë se vini në <br>
-        <span>Teatrin Metropol</span>
+        <span>Metropol Ticketing</span>
     </h1>
     <div class="form-group">
         <input type="email" name="email" id="email" placeholder=" " required>
@@ -84,7 +84,7 @@ session_start();
 
         if(empty($errors)){
             $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->bind_param("s", $email); // "s" means string
+            $stmt->bind_param("s", $email);
 
             $stmt->execute();
             $result = $stmt->get_result();
@@ -131,7 +131,7 @@ session_start();
                             }
 
                             $stmt->close();
-                            $_SESSION["id"] = $user["id"];
+                            $_SESSION["user_id"] = $user["id"];
                             if($rememberMe) {
                                 try {
                                     $rememberToken = bin2hex(random_bytes(32));
@@ -144,7 +144,7 @@ session_start();
                                         session_unset();
                                         session_destroy();
                                     } else {
-                                        setcookie('remember_me', $rememberToken, time() + (86400 * 30), "/");
+                                        setcookie('remember_me', $rememberToken, time() + (86400 * 90), "/");
                                     }
 
                                     $stmt->close();
@@ -152,13 +152,14 @@ session_start();
                                     $errors[] = "Një problem ndodhi! Provoni më vonë!";
                                 }
                             }
-                            if(empty($errors)){
-                                if($user["role"] == "user") {
-                                    header("Location: ../index.php");
-                                } else {
-                                    header("Location: admin-home.php"); ///////////////////
-                                }
+                            if (isset($_SESSION['redirect_after_login'])) {
+                                $redirect = $_SESSION['redirect_after_login'];
+                                unset($_SESSION['redirect_after_login']);
+                                header("Location: $redirect");
+                            } else {
+                                header("Location: ../index.php");
                             }
+                            exit();
                         }
                     }
                 }

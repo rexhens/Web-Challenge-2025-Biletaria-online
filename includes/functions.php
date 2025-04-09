@@ -40,80 +40,34 @@ function sendEmail(string $email, string $subject, string $body): bool {
     }
 }
 
-function authenticateUser($connection): bool {
+function checkAdmin($conn): bool {
 
-    if(isset($_SESSION['id'])) {
-        if($_SESSION['id'] == 1) {
-            header("Location: index.php");
-            exit();
-        }
-        return true;
+    $user_id = $_SESSION['user_id'];
+
+    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($role);
+    $stmt->fetch();
+
+    if ($role !== 'admin') {
+        return false;
     }
 
-    if(isset($_COOKIE['remember_me'])) {
-        $token = $_COOKIE['remember_me'];
-        $sql = "SELECT * FROM `users` WHERE `remember_token` = '$token'";
-        $result = mysqli_query($connection, $sql);
-
-        if(mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
-            $_SESSION['id'] = $user['id'];
-
-            if($user['role'] == 'admin') {
-                header("Location: index.php");
-            }
-            return true;
-        }
-    }
-
-    header("Location: login.php");
-    exit();
-
+    return true;
 }
 
-function authenticateAdmin($connection): bool {
-
-    if(isset($_SESSION['id'])) {
-        if($_SESSION['id'] != 1) {
-            header("Location: index.php");
-            exit();
-        }
-        return true;
+function redirectIfNotLoggedIn(): void {
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header("Location: ../auth/login.php");
+        exit;
     }
-
-    if(isset($_COOKIE['remember_me'])) {
-        $token = $_COOKIE['remember_me'];
-        $sql = "SELECT * FROM `users` WHERE `remember_token` = '$token'";
-        $result = mysqli_query($connection, $sql);
-
-        if(mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
-            $_SESSION['id'] = $user['id'];
-
-            if($user['role'] == 'user') {
-                header("Location: index.php");
-            }
-            return true;
-        }
-    }
-
-    header("Location: login.php");
-    exit();
-
 }
 
-function checkSessionTimeout(): void {
-
-    $sessionTimeout = 900;
-    if (isset($_SESSION['LAST_ACTIVITY'])) {
-        $inactivityDuration = time() - $_SESSION['LAST_ACTIVITY'];
-        if ($inactivityDuration > $sessionTimeout) {
-            session_unset();
-            session_destroy();
-            header("Location: index.php");
-            exit;
-        }
+function redirectIfNotAdmin($conn): void {
+    if(!checkAdmin($conn)) {
+        header("Location: ../auth/no-access.php");
+        exit;
     }
-
-    $_SESSION['LAST_ACTIVITY'] = time();
 }
