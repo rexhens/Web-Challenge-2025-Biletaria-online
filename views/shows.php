@@ -3,7 +3,7 @@
 require "../config/db_connect.php";
 require "../auth/auth.php";
 require "../includes/functions.php";
-redirectIfNotLoggedIn();
+
 ?>
 
 <?php
@@ -26,6 +26,7 @@ $genreResult = $conn->query($genreQuery);
             padding: 0 127px;
             align-items: flex-start;
         }
+
         @media (max-width: 1300px) {
             body {
                 padding: 0 30px;
@@ -35,39 +36,39 @@ $genreResult = $conn->query($genreQuery);
 </head>
 
 <body>
-        <header>
-            <h1><span>Shfaqjet në teatër</span></h1>
-            <?php
-            if(checkAdmin($conn)) { ?>
-                <button onclick="redirectTo('add-show.php')">Shto një shfaqje</button>
-            <?php }
-            ?>
-        </header>
+    <header>
+        <h1><span>Shfaqjet në teatër</span></h1>
+        <?php
+        if (checkAdmin($conn)) { ?>
+            <button onclick="redirectTo('add-show.php')">Shto një shfaqje</button>
+        <?php }
+        ?>
+    </header>
 
-        <div class="search-container">
-            <i class="fa fa-search"></i>
-            <input class="search-bar" type="text" id="search" placeholder="Search for shows..." onkeyup="searchShow()">
-        </div>
+    <div class="search-container">
+        <i class="fa fa-search"></i>
+        <input class="search-bar" type="text" id="search" placeholder="Search for shows..." onkeyup="searchShow()">
+    </div>
 
 
-        <div class="filter-container">
-            <select id="genreFilter">
-                <option value="">Të gjithë zhanret</option>
-                <?php while ($genre = $genreResult->fetch_assoc()) { ?>
-                    <option value="<?php echo $genre['id']; ?>">
-                        <?php echo htmlspecialchars($genre['genre_name']); ?>
-                    </option>
-                <?php } ?>
-            </select>
+    <div class="filter-container">
+        <select id="genreFilter">
+            <option value="">Të gjithë zhanret</option>
+            <?php while ($genre = $genreResult->fetch_assoc()) { ?>
+                <option value="<?php echo $genre['id']; ?>">
+                    <?php echo htmlspecialchars($genre['genre_name']); ?>
+                </option>
+            <?php } ?>
+        </select>
 
-            <select id="dateFilter">
-                <option value="available">Në vazhdim</option>
-                <option value="past">Të shkuarat</option>
-                <option value="all">Të gjitha</option>
-            </select>
-        </div>
+        <select id="dateFilter">
+            <option value="available">Në vazhdim</option>
+            <option value="past">Të shkuarat</option>
+            <option value="all">Të gjitha</option>
+        </select>
+    </div>
 
-        <div class="shows-container" id="shows-container"></div>
+    <div class="shows-container" id="shows-container"></div>
 
     <script>
         function searchShow() {
@@ -141,4 +142,5 @@ $genreResult = $conn->query($genreQuery);
     </script>
     <script src="../assets/js/functions.js"></script>
 </body>
+
 </html>
