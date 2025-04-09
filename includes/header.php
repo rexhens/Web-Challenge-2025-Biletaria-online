@@ -49,7 +49,7 @@
                             <a class="nav-link" href="index.php">Home</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'events.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="events.php">Evente</a>
+                            <a class="nav-link" href="views/shows.php">Shfaqje</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : ''; ?>">
                             <a class="nav-link" href="about.php">Rreth Nesh</a>

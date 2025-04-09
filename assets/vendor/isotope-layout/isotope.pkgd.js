@@ -2436,7 +2436,7 @@ return Item;
 
   /**
    * get columnWidth or rowHeight
-   * segment: 'column' or 'row'
+   * segment: 'column' or 'show'
    * size 'Width' or 'Height'
   **/
   proto.getSegmentSize = function( segment, size ) {
@@ -2668,7 +2668,7 @@ return Item;
   proto._getHorizontalColPosition = function( colSpan, item ) {
     var col = this.horizontalColIndex % this.cols;
     var isOver = colSpan > 1 && col + colSpan > this.cols;
-    // shift to next row if item can't fit on current row
+    // shift to next show if item can't fit on current show
     col = isOver ? 0 : col;
     // don't let zero-size items take up space
     var hasSize = item.size.outerWidth && item.size.outerHeight;
@@ -2858,7 +2858,7 @@ proto._getItemLayoutPosition = function( item ) {
   item.getSize();
 
   var itemWidth = item.size.outerWidth + this.gutter;
-  // if this element cannot fit in the current row
+  // if this element cannot fit in the current show
   var containerWidth = this.isotope.size.innerWidth + this.gutter;
   if ( this.x !== 0 && itemWidth + this.x > containerWidth ) {
     this.x = 0;

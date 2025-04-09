@@ -37,6 +37,7 @@ body {
     max-width: 950px;
     justify-content: center;
     gap: 20px;
+    margin: auto 0;
     animation: fadeIn 0.5s ease-in-out;
     transition: width 0.3s ease;
 }
@@ -292,7 +293,7 @@ header {
     background-position: center;
     opacity: 0;
     transform: translateY(-50px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transition: opacity 0.6s ease-out, transform 0.5s ease-out;
 }
 
 .show-card.in-view {
@@ -300,23 +301,19 @@ header {
     transform: translateY(0);
 }
 
-.hidden {
-    opacity: 0;
-}
-
 .show-card.in-view:nth-child(even) {
-    transition-delay: 0.1s;
-}
-
-.show-card.in-view:nth-child(odd) {
     transition-delay: 0.3s;
 }
 
-.show-card:hover {
-    transform: scale(1.02);
+.show-card.in-view:nth-child(odd) {
+    transition-delay: 0.1s;
 }
 
-.show-overlay {
+.show-card:hover {
+    transform: scale(1.04);
+}
+
+.overlay {
     background: linear-gradient(to bottom,
     transparent 0%,
     rgba(0, 0, 0, 0.2) 10%,
@@ -327,9 +324,10 @@ header {
     rgba(0, 0, 0, 1) 100%);
     padding: 20px;
     color: var(--text-color);
+    z-index: 5;
 }
 
-.show-overlay h3 {
+h3 {
     font-family: var(--heading-font);
     margin: 0 0 10px;
     font-size: 1.8rem;
@@ -411,7 +409,7 @@ header {
     flex-direction: column;
     gap: 10px;
     width: 500px;
-    z-index: 1;
+    z-index: 20;
 }
 
 .errors {
@@ -717,6 +715,7 @@ button {
     border-radius: 10px;
     background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
     transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 100;
 }
 
 button:hover {
@@ -740,6 +739,95 @@ button:active {
     display: none;
 }
 
+.video-container {
+    width: 100%;
+    max-width: 100%;
+    background: black;
+    position: relative;
+}
+
+.video-container::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+.video-container .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: calc(100% - 40px);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: flex-start;
+    max-height: 30%;
+}
+
+.show-poster {
+    width: 30%;
+    min-width: 235px;
+    margin-right: 50px;
+    position: relative;
+    transform: translateY(55%);
+    z-index: 5;
+}
+
+.show-poster img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 10px 5px 15px rgba(255, 255, 255, 0.2);
+}
+
+.show-reserve {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 65%;
+    height: auto;
+}
+
+.show-reserve button {
+    font-size: 16px;
+    width: 130px;
+    z-index: 400 !important;
+}
+
+.show-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin: 40px 5% 40px 34%;
+}
+
+.hidden {
+    display: none;
+}
+
 @media (max-width: 1300px) {
     .menu-bar {
         margin-left: 5%;
@@ -757,6 +845,10 @@ button:active {
 
     .menu-bar {
         margin-left: 10%;
+    }
+
+    .show-container {
+        margin: 40px 5% 40px 36%;
     }
 }
 
@@ -817,6 +909,16 @@ button:active {
     .show-card {
         width: 47%;
     }
+
+    .video-container .overlay {
+        max-height: 15%;
+    }
+}
+
+@media (min-width: 1024px) {
+    .video-container {
+        height: calc(100vh - 70px);
+    }
 }
 
 @media (max-width: 945px) {
@@ -848,11 +950,38 @@ button:active {
     .form-group {
         width: 70%;
     }
+
+    .show-poster {
+        transform: translateY(70%);
+    }
+
+    .show-container {
+        margin: 40px 5% 40px 38%;
+    }
+}
+
+@media (max-width: 768px) {
+    .video-container {
+        height: auto;
+    }
 }
 
 @media (max-width: 700px) {
     .show-card {
         width: 425px;
+    }
+
+    .show-reserve button {
+        display: none;
+    }
+
+    .show-container {
+        margin: 40px 5% 40px 5%;
+    }
+
+    .show-info {
+        margin-left: 55%;
+        margin-bottom: 70px;
     }
 }
 
@@ -876,6 +1005,36 @@ button:active {
 
     .btn-group button {
         width: 50%;
+    }
+
+    .show-poster {
+        min-width: 180px;
+    }
+
+    .show-poster {
+        transform: translateY(80%);
+    }
+
+    .video-container .overlay {
+        max-height: 5%;
+    }
+
+    .show-reserve {
+        display: none;
+    }
+
+    .hidden {
+        display: block;
+    }
+
+    .show-info {
+        margin: -20px 5% 0 55%;
+    }
+}
+
+@media (max-width: 450px) {
+    .show-poster {
+        min-width: 150px;
     }
 }
 

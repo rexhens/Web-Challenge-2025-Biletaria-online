@@ -47,35 +47,35 @@ $mysql = mysqli_connect('localhost', 'username', 'password');
 mysqli_select_db($mysql, 'mydb');
 $result = mysqli_query($mysql, 'SELECT full_name, email, photo FROM mailinglist WHERE sent = FALSE');
 
-foreach ($result as $row) {
+foreach ($result as $show) {
     try {
-        $mail->addAddress($row['email'], $row['full_name']);
+        $mail->addAddress($show['email'], $show['full_name']);
     } catch (Exception $e) {
-        echo 'Invalid address skipped: ' . htmlspecialchars($row['email']) . '<br>';
+        echo 'Invalid address skipped: ' . htmlspecialchars($show['email']) . '<br>';
         continue;
     }
-    if (!empty($row['photo'])) {
+    if (!empty($show['photo'])) {
         //Assumes the image data is stored in the DB
-        $mail->addStringAttachment($row['photo'], 'YourPhoto.jpg');
+        $mail->addStringAttachment($show['photo'], 'YourPhoto.jpg');
     }
     $mail->replaceCustomHeader(
         'List-Unsubscribe',
         '<mailto:unsubscribes@example.com>, <https://www.example.com/unsubscribe.php?email=' .
-        rawurlencode($row['email']) . '>'
+        rawurlencode($show['email']) . '>'
     );
 
     try {
         $mail->send();
-        echo 'Message sent to :' . htmlspecialchars($row['full_name']) . ' (' .
-            htmlspecialchars($row['email']) . ')<br>';
+        echo 'Message sent to :' . htmlspecialchars($show['full_name']) . ' (' .
+            htmlspecialchars($show['email']) . ')<br>';
         //Mark it as sent in the DB
         mysqli_query(
             $mysql,
             "UPDATE mailinglist SET sent = TRUE WHERE email = '" .
-            mysqli_real_escape_string($mysql, $row['email']) . "'"
+            mysqli_real_escape_string($mysql, $show['email']) . "'"
         );
     } catch (Exception $e) {
-        echo 'Mailer Error (' . htmlspecialchars($row['email']) . ') ' . $mail->ErrorInfo . '<br>';
+        echo 'Mailer Error (' . htmlspecialchars($show['email']) . ') ' . $mail->ErrorInfo . '<br>';
         //Reset the connection to abort sending this message
         //The loop will continue trying to send to the rest of the list
         $mail->getSMTPInstance()->reset();

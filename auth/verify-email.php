@@ -1,6 +1,7 @@
 <?php
 /** @var mysqli $conn */
 require "../config/db_connect.php";
+require "../includes/functions.php";
 
 if(isset($_GET["token"])) {
     $token = $_GET["token"];
@@ -11,54 +12,14 @@ if(isset($_GET["token"])) {
     $row = $result->fetch_assoc();
     $stmt->close();
     if(!$row) {
-        echo "<!DOCTYPE html>
-              <html lang='sq'>
-              <head>";
-              require '../includes/links.php';
-        echo "<title>Metropol Ticketing | Mesazh</title>
-              <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
-              <link rel='stylesheet' href='../assets/css/styles.css'>
-              <style>
-                  body {
-                    background: url('../assets/img/error.png') no-repeat center center fixed;
-                    background-size: cover;
-                    justify-content: center;
-                  }
-              </style>
-              </head>
-              <body>
-              <div class='errors show'>
-                    <p>Kod i gabuar verifikimi.</p>
-              </div>
-              </body>
-              </html>";
+        showError("Kod i gabuar verifikimi.");
     } else {
         if($row["is_verified"] == 0) {
             $stmt = $conn->prepare("UPDATE users SET is_verified = 1 WHERE verification_token = ?");
             $stmt->bind_param("s", $token);
 
             if (!$stmt->execute()) {
-                echo "<!DOCTYPE html>
-                      <html lang='sq'>
-                      <head>";
-                require '../includes/links.php';
-                echo "<title>Metropol Ticketing | Mesazh</title>
-                      <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
-                      <link rel='stylesheet' href='../assets/css/styles.css'>
-                      <style>
-                          body {
-                            background: url('../assets/img/error.png') no-repeat center center fixed;
-                            background-size: cover;
-                            justify-content: center;
-                          }
-                      </style>
-                      </head>
-                      <body>
-                      <div class='errors show'>
-                            <p>Një problem ndodhi! Provoni më vonë!.</p>
-                      </div>
-                      </body>
-                      </html>";
+                showError("Një problem ndodhi! Provoni më vonë!");
                 $stmt->close();
             } else {
                 header("location: login.php");
@@ -68,27 +29,7 @@ if(isset($_GET["token"])) {
         }
     }
 } else {
-    echo "<!DOCTYPE html>
-          <html lang='sq'>
-          <head>";
-    require '../includes/links.php';
-    echo "<title>Metropol Ticketing | Mesazh</title>
-          <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
-          <link rel='stylesheet' href='../assets/css/styles.css'>
-          <style>
-              body {
-                background: url('../assets/img/error.png') no-repeat center center fixed;
-                background-size: cover;
-                justify-content: center;
-              }
-          </style>
-          </head>
-          <body>
-          <div class='errors show' >
-                <p >Nuk ka një kod për verifikim.</p>
-          </div>
-          </body>
-          </html>";
+    showError("Nuk ka një kod për verifikim.");
 }
 
 mysqli_close($conn);

@@ -94,71 +94,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-<form id="showForm" method="POST" enctype="multipart/form-data">
-    <h1 style="font-size: 25px;">Shtoni një <span>Shfaqje</span></h1>
-
-    <div class="container">
-        <div class="form-container">
-            <div class="form-group">
-                <input type="text" name="title" id="title" placeholder=" " required>
-                <label for="title">Titulli</label>
-            </div>
-
-            <div class="form-group">
-                <select name="hall" id="hall" required>
-                    <option value="" disabled selected>-- Zgjidh sallën --</option>
-                    <option value="Shakespare">Shakespare</option>
-                    <option value="Cehov">Cehov</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <select name="select-genre" id="select-genre" required>
-                    <option value="" disabled selected>-- Zgjidh zhanrin --</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <input type="text" id="show_dates" name="show_dates" placeholder=" " readonly required>
-                <label for="show_dates">Datat</label>
-            </div>
-
-            <div class="form-group">
-                <input type="text" id="time" name="time" placeholder=" " required>
-                <label for="time">Ora</label>
-            </div>
-
-            <div class="form-group">
-                <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <input type="text" id="trailer" name="trailer" placeholder=" " required>
-                <label for="trailer">Trailer</label>
-            </div>
-
-            <div class="form-group">
-                <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " required>
-                <label for="price">Çmimi i biletës</label>
-                <div class="custom-spinner">
-                    <div class="plus" onclick="document.querySelector('.custom-number').stepUp()">+</div>
-                    <div class="minus" onclick="document.querySelector('.custom-number').stepDown()">−</div>
-                </div>
-            </div>
+<form id="showForm" method="POST" enctype="multipart/form-data" class="container">
+    <h1 style="font-size: 25px; width: 100%;">Shtoni një <span>Shfaqje</span></h1>
+    <div class="form-container">
+        <div class="form-group">
+            <input type="text" name="title" id="title" placeholder=" " required>
+            <label for="title">Titulli</label>
         </div>
 
-        <div class="side-container">
-            <div class="photo-container">
-                <img src="../assets/img/show-icon.png" alt="poster" id="picture"></img>
-                <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
-                <button type="button" id="change-photo" name="change-photo">Ngarko Poster</button>
-            </div>
+        <div class="form-group">
+            <select name="hall" id="hall" required>
+                <option value="" disabled selected>-- Zgjidh sallën --</option>
+                <option value="Shakespare">Shakespare</option>
+                <option value="Cehov">Cehov</option>
+            </select>
         </div>
 
-        <button type="submit" name="submit">Shto Shfaqje</button>
+        <div class="form-group">
+            <select name="select-genre" id="select-genre" required>
+                <option value="" disabled selected>-- Zgjidh zhanrin --</option>
+            </select>
+        </div>
 
+        <div class="form-group">
+            <input type="text" id="show_dates" name="show_dates" placeholder=" " readonly required>
+            <label for="show_dates">Datat</label>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="time" name="time" placeholder=" " required>
+            <label for="time">Ora</label>
+        </div>
+
+        <div class="form-group">
+            <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="trailer" name="trailer" placeholder=" " required>
+            <label for="trailer">Trailer</label>
+        </div>
+
+        <div class="form-group">
+            <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " required>
+            <label for="price">Çmimi i biletës</label>
+            <div class="custom-spinner">
+                <div class="plus" onclick="document.querySelector('.custom-number').stepUp()">+</div>
+                <div class="minus" onclick="document.querySelector('.custom-number').stepDown()">−</div>
+            </div>
+        </div>
     </div>
 
+    <div class="side-container">
+        <div class="photo-container">
+            <img src="../assets/img/show-icon.png" alt="poster" id="picture"></img>
+            <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
+            <button type="button" id="change-photo" name="change-photo">Ngarko Poster</button>
+        </div>
+    </div>
+
+    <button type="submit" name="submit">Shto Shfaqje</button>
 </form>
 
 <div class="info-container">

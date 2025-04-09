@@ -28,13 +28,13 @@ $actors_result = $conn->query($actors_query);
 
     <link rel="icon" type="image/x-icon" href="../../assets/img/metropol_icon.png">
     <!-- Custom fonts for this template-->
-    <link href="/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="/biletaria_online/assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../../assets/css/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
         .custom-size {
@@ -194,7 +194,7 @@ $actors_result = $conn->query($actors_query);
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
                                         <img class="rounded-circle"
-                                            src="/biletaria_online/assets/img/admin/undraw_profile_1.svg" alt="...">
+                                            src="../../assets/img/admin/undraw_profile_1.svg" alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -206,7 +206,7 @@ $actors_result = $conn->query($actors_query);
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
                                         <img class="rounded-circle"
-                                            src="/biletaria_online/assets/img/admin//undraw_profile_2.svg" alt="...">
+                                            src="../../assets/img/admin//undraw_profile_2.svg" alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -218,7 +218,7 @@ $actors_result = $conn->query($actors_query);
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
                                         <img class="rounded-circle"
-                                            src="/biletaria_online/assets/img/admin/undraw_profile_3.svg" alt="...">
+                                            src="../../assets/img/admin/undraw_profile_3.svg" alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -251,7 +251,7 @@ $actors_result = $conn->query($actors_query);
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Teatri</span>
                                 <img class="img-profile rounded-circle"
-                                    src="/biletaria_online/assets/img/admin/undraw_profile.svg">
+                                    src="../../assets/img/admin/undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -653,21 +653,21 @@ $actors_result = $conn->query($actors_query);
 
 
     <!-- Bootstrap core JavaScript-->
-    <script src="/biletaria_online/assets/vendor/jquery/jquery.min.js"></script>
-    <script src="/biletaria_online/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/vendor/jquery/jquery.min.js"></script>
+    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+    <script src="../../assets/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="/biletaria_online/assets/vendor/chart.js/Chart.min.js"></script>
+    <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="/biletaria_online/assets/js/demo/chart-area-demo.js"></script>
-    <script src="/biletaria_online/assets/js/demo/chart-pie-demo.js?v=2"></script>
+    <script src="../../assets/js/demo/chart-area-demo.js"></script>
+    <script src="../../assets/js/demo/chart-pie-demo.js?v=2"></script>
     <!-- DataTables CSS and JS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
