@@ -89,16 +89,7 @@ if ($result->num_rows > 0) {
     </div>
 </div>";
 
-            <div class='overlay'>
-                <h3><span>Titulli: </span>" . htmlspecialchars($show['title']) . "</h3>
-                <p class='show-dates'><span>Datat: </span>" . implode(', ', $groupedDates) . "</p>
-                <p class='show-description'><span>Përshkrim: </span>" . htmlspecialchars($show['description']) . "</p>
-                <div class='btn-group'>
-                    <button onclick=\"redirectTo('show_details.php?id=" . $show['id'] . "')\">Më shumë info</button>
-                    <button onclick=\"redirectTo('reserve.php?id=" . $show['id'] . "')\" class='black-btn'>Rezervo</button>
-                </div>
-            </div>
-        </div>";
+
     }
 } else {
     echo "<div class='errors show'>
@@ -106,60 +97,6 @@ if ($result->num_rows > 0) {
           </div>";
 }
 
-function groupDates($dates): array
-{
-    if (empty($dates))
-        return [];
 
-    $grouped = [];
-    $start = $end = new DateTime($dates[0]);
 
-    for ($i = 1; $i < count($dates); $i++) {
-        $current = new DateTime($dates[$i]);
-        $diff = (int) $end->diff($current)->format("%a");
-
-        if ($diff === 1) {
-            $end = $current;
-        } else {
-            $grouped[] = formatDateRange($start, $end);
-            $start = $end = $current;
-        }
-    }
-
-    $grouped[] = formatDateRange($start, $end);
-    return $grouped;
-}
-
-function formatDateRange($start, $end): string
-{
-    $muajiStart = muajiNeShqip($start->format('M'));
-    $muajiEnd = muajiNeShqip($end->format('M'));
-
-    if ($start == $end) {
-        return $start->format('j') . " " . $muajiStart;
-    } elseif ($muajiStart === $muajiEnd) {
-        return $start->format('j') . "-" . $end->format('j') . " " . $muajiStart;
-    } else {
-        return $start->format('j') . " " . $muajiStart . " - " . $end->format('j') . " " . $muajiEnd;
-    }
-}
-
-function muajiNeShqip($muajiAnglisht): string
-{
-    $muajt = [
-        'Jan' => 'Janar',
-        'Feb' => 'Shkurt',
-        'Mar' => 'Mars',
-        'Apr' => 'Prill',
-        'May' => 'Maj',
-        'Jun' => 'Qershor',
-        'Jul' => 'Korrik',
-        'Aug' => 'Gusht',
-        'Sep' => 'Shtator',
-        'Oct' => 'Tetor',
-        'Nov' => 'Nëntor',
-        'Dec' => 'Dhjetor'
-    ];
-    return $muajt[$muajiAnglisht] ?? $muajiAnglisht;
-}
 
