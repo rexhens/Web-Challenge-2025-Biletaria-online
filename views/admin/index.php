@@ -6,6 +6,9 @@ $users_result = $conn->query($users_query);
 
 $shows_query = 'SELECT * FROM shows ORDER BY start_date DESC';
 $shows_result = $conn->query($shows_query);
+
+$actors_query = 'SELECT * FROM actors';
+$actors_result = $conn->query($actors_query);
 ?>
 
 <!DOCTYPE html>
@@ -39,6 +42,24 @@ $shows_result = $conn->query($shows_query);
             height: 75px;
             object-fit: cover;
             /* Ensures images are resized without distortion */
+        }
+
+        .dataTables_filter {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_filter label {
+            width: 100%;
+            display: flex;
+        }
+
+        .dataTables_filter input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            height: 50px;
         }
     </style>
 
@@ -266,7 +287,8 @@ $shows_result = $conn->query($shows_query);
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                        <a href="generate_report.php"
+                            class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
                     </div>
 
@@ -438,7 +460,6 @@ $shows_result = $conn->query($shows_query);
 
 
                     <!-- Tabela e userave -->
-
                     <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
@@ -473,7 +494,7 @@ $shows_result = $conn->query($shows_query);
                                                 </td>
                                             </tr>
                                         <?php } ?>
-                                       
+
                                         <!-- Add more rows here -->
                                     </tbody>
                                 </table>
@@ -481,8 +502,7 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </div>
 
-                    <!-- Shfaqjet -->
-
+                    <!-- Menaxhimi i Shfaqjeve -->
                     <section class="w3l-grids">
                         <div class="grids-main py-5">
                             <div class="container py-lg-3">
@@ -559,6 +579,48 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </section>
 
+                    <!-- Menaxhimi i aktoreve -->
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 5%; margin-right: 5%;">
+                        <div
+                            class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                            <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>
+                            <button class="btn btn-sm btn-outline-primary">+ Shto Aktor</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
+                                    <thead class="table-light text-secondary small text-uppercase">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Emri</th>
+                                            <th>Email</th>
+                                            <th>Datëlindja</th>
+                                            <th>Biografia</th>
+                                            <th class="text-end">Veprime</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-dark">
+                                        <?php while ($row = $actors_result->fetch_assoc()) { ?>
+                                            <tr>
+                                                <td class="text-muted"><?php echo $row['id']; ?></td>
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                                <td><?php echo date("d M Y", strtotime($row['birthdate'])); ?></td>
+                                                <td class="text-truncate" style="max-width: 200px;">
+                                                    <?php echo mb_strimwidth(strip_tags($row['biography']), 0, 80, "..."); ?>
+                                                </td>
+                                                <td class="text-end">
+                                                    <button class="btn btn-sm btn-outline-secondary">Shiko</button>
+                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
 
 
 
@@ -616,8 +678,10 @@ $shows_result = $conn->query($shows_query);
             $('#userTable').DataTable({
                 "pageLength": 5,
                 "lengthChange": false,
+                "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
                 "language": {
-                    "search": "Kërko:",
+                    "search": "",
+                    "searchPlaceholder": "Kërko perdorues...",
                     "paginate": {
                         "previous": "‹",
                         "next": "›"
@@ -628,6 +692,26 @@ $shows_result = $conn->query($shows_query);
                 }
             });
         });
+        $('#actorsTable').DataTable({
+            "pageLength": 5,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko aktorë...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            },
+            "columnDefs": [
+                { "orderable": false, "targets": 5 }
+            ]
+        });
+
     </script>
 
 
