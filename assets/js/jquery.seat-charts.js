@@ -201,7 +201,7 @@
 										e.preventDefault();
 
 										/*
-										 * This is a recursive, immediate function which searches for the first "focusable" row.
+										 * This is a recursive, immediate function which searches for the first "focusable" show.
 										 * 
 										 * We're using immediate function because we want a convenient access to some DOM elements
 										 * We're using recursion because sometimes we may hit an empty space rather than a seat.
@@ -210,13 +210,13 @@
 										$newSeat = (function findAvailable($rows, $seats, $currentRow) {
 											var $newRow;
 
-											//let's determine which row should we move to
+											//let's determine which show should we move to
 
 											if (!$rows.index($currentRow) && e.which == 38) {
-												//if this is the first row and user has pressed up arrow, move to the last row
+												//if this is the first show and user has pressed up arrow, move to the last show
 												$newRow = $rows.last();
 											} else if ($rows.index($currentRow) == $rows.length - 1 && e.which == 40) {
-												//if this is the last row and user has pressed down arrow, move to the first row
+												//if this is the last show and user has pressed down arrow, move to the first show
 												$newRow = $rows.first();
 											} else {
 												//using eq to get an element at the desired index position
@@ -226,7 +226,7 @@
 												);
 											}
 
-											//now that we know the row, let's get the seat using the current column position
+											//now that we know the show, let's get the seat using the current column position
 											$newSeat = $newRow.find('.seatCharts-seat,.seatCharts-space').eq($seats.index($seat));
 
 											//if the seat we found is a space, keep looking further
@@ -236,13 +236,13 @@
 										})($seat
 											//get a reference to the parent container and then select all rows but the header
 											.parents('.seatCharts-container')
-											.find('.seatCharts-row:not(.seatCharts-header)'),
+											.find('.seatCharts-show:not(.seatCharts-header)'),
 											$seat
-											//get a reference to the parent row and then find all seat cells (both seats & spaces)
-											.parents('.seatCharts-row:first')
+											//get a reference to the parent show and then find all seat cells (both seats & spaces)
+											.parents('.seatCharts-show:first')
 											.find('.seatCharts-seat,.seatCharts-space'),
-											//get a reference to the current row
-											$seat.parents('.seatCharts-row:not(.seatCharts-header)')
+											//get a reference to the current show
+											$seat.parents('.seatCharts-show:not(.seatCharts-header)')
 										);
 
 										//we couldn't determine the new seat, so we better give up
@@ -266,7 +266,7 @@
 										/*
 										 * The logic here is slightly different from the one for up/down arrows.
 										 * User will be able to browse the whole map using just left/right arrow, because
-										 * it will move to the next row when we reach the right/left-most seat.
+										 * it will move to the next show when we reach the right/left-most seat.
 										 */
 										$newSeat = (function ($seats) {
 
@@ -304,7 +304,7 @@
 							};
 
 						})(fn, fn.node()));
-					//.appendTo(seatCharts.find('.' + row));
+					//.appendTo(seatCharts.find('.' + show));
 
 				}
 			})(fn, settings);
@@ -314,7 +314,7 @@
 		//true -> deep copy!
 		$.extend(true, settings, setup);
 
-		//Generate default row ids unless user passed his own
+		//Generate default show ids unless user passed his own
 		settings.naming.rows = settings.naming.rows || (function (length) {
 			var rows = [];
 			for (var i = 1; i <= length; i++) {
@@ -352,7 +352,7 @@
 
 		fn.append($headerRow);
 
-		//do this for each map row
+		//do this for each map show
 		$.each(settings.map, function (row, characters) {
 
 			var $row = $('<div></div>').addClass('seatCharts-row');

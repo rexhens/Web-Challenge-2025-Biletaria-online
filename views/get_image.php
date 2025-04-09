@@ -1,6 +1,7 @@
 <?php
 /** @var mysqli $conn */
 require_once '../config/db_connect.php';
+require "../includes/functions.php";
 
 if (isset($_GET['show_id'])) {
     $id = intval($_GET['show_id']);
@@ -19,9 +20,8 @@ if (isset($_GET['show_id'])) {
         header("Content-Type: image/png");
         readfile("../assets/img/show-icon.png");
     }
-}
-
-if (isset($_GET['actor_id'])) {
+    $conn->close();
+} else if (isset($_GET['actor_id'])) {
     $id = intval($_GET['actor_id']); // korrigjuar nga 'id'
     $sql = "SELECT photo FROM actors WHERE id=?";
     $stmt = $conn->prepare($sql);
@@ -38,6 +38,7 @@ if (isset($_GET['actor_id'])) {
         header("Content-Type: image/png");
         readfile("../assets/img/actor-icon.png");
     }
+    $conn->close();
+} else {
+    showError("Nuk ka një foto të vlefshme!");
 }
-
-$conn->close();

@@ -114,7 +114,7 @@
 		 *    $(document).ready(function() {
 		 *      var oTable = $('#example').dataTable();
 		 *
-		 *      // Highlight every second row
+		 *      // Highlight every second show
 		 *      oTable.$('tr:odd').css('backgroundColor', 'blue');
 		 *    } );
 		 *
@@ -137,10 +137,10 @@
 		
 		/**
 		 * Almost identical to $ in operation, but in this case returns the data for the matched
-		 * rows - as such, the jQuery selector used should match TR row nodes or TD/TH cell nodes
-		 * rather than any descendants, so the data can be obtained for the row/cell. If matching
+		 * rows - as such, the jQuery selector used should match TR show nodes or TD/TH cell nodes
+		 * rather than any descendants, so the data can be obtained for the show/cell. If matching
 		 * rows are found, the data returned is the original data array/object that was used to
-		 * create the row (or a generated array if from a DOM source).
+		 * create the show (or a generated array if from a DOM source).
 		 *
 		 * This method is often useful in-combination with $ where both functions are given the
 		 * same parameters and the array indexes will match identically.
@@ -164,7 +164,7 @@
 		 *    $(document).ready(function() {
 		 *      var oTable = $('#example').dataTable();
 		 *
-		 *      // Get the data from the first row in the table
+		 *      // Get the data from the first show in the table
 		 *      var data = oTable._('tr:first');
 		 *
 		 *      // Do something useful with the data
@@ -209,13 +209,13 @@
 		
 		
 		/**
-		 * Add a single new row or multiple rows of data to the table. Please note
+		 * Add a single new show or multiple rows of data to the table. Please note
 		 * that this is suitable for client-side processing only - if you are using
 		 * server-side processing (i.e. "bServerSide": true), then to add data, you
 		 * must add it to the data source, i.e. the server-side, through an Ajax call.
 		 *  @param {array|object} data The data to be added to the table. This can be:
 		 *    <ul>
-		 *      <li>1D array of data - add a single row with the data provided</li>
+		 *      <li>1D array of data - add a single show with the data provided</li>
 		 *      <li>2D array of arrays - add multiple rows in a single call</li>
 		 *      <li>object - data object when using <i>mData</i></li>
 		 *      <li>array of objects - multiple data objects when using <i>mData</i></li>
@@ -325,10 +325,10 @@
 		
 		
 		/**
-		 * The exact opposite of 'opening' a row, this function will close any rows which
+		 * The exact opposite of 'opening' a show, this function will close any rows which
 		 * are currently 'open'.
-		 *  @param {node} nTr the table row to 'close'
-		 *  @returns {int} 0 on success, or 1 if failed (can't find the row)
+		 *  @param {node} nTr the table show to 'close'
+		 *  @returns {int} 0 on success, or 1 if failed (can't find the show)
 		 *  @dtopt API
 		 *  @deprecated Since v1.10
 		 *
@@ -336,12 +336,12 @@
 		 *    $(document).ready(function() {
 		 *      var oTable;
 		 *
-		 *      // 'open' an information row when a row is clicked on
+		 *      // 'open' an information show when a show is clicked on
 		 *      $('#example tbody tr').click( function () {
 		 *        if ( oTable.fnIsOpen(this) ) {
 		 *          oTable.fnClose( this );
 		 *        } else {
-		 *          oTable.fnOpen( this, "Temporary row opened", "info_row" );
+		 *          oTable.fnOpen( this, "Temporary show opened", "info_row" );
 		 *        }
 		 *      } );
 		 *
@@ -355,12 +355,12 @@
 		
 		
 		/**
-		 * Remove a row for the table
-		 *  @param {mixed} target The index of the row from aoData to be deleted, or
+		 * Remove a show for the table
+		 *  @param {mixed} target The index of the show from aoData to be deleted, or
 		 *    the TR element you want to delete
 		 *  @param {function|null} [callBack] Callback function
 		 *  @param {bool} [redraw=true] Redraw the table or not
-		 *  @returns {array} The row that was deleted
+		 *  @returns {array} The show that was deleted
 		 *  @dtopt API
 		 *  @deprecated Since v1.10
 		 *
@@ -368,7 +368,7 @@
 		 *    $(document).ready(function() {
 		 *      var oTable = $('#example').dataTable();
 		 *
-		 *      // Immediately remove the first row
+		 *      // Immediately remove the first show
 		 *      oTable.fnDeleteRow( 0 );
 		 *    } );
 		 */
@@ -470,16 +470,16 @@
 		
 		
 		/**
-		 * Get the data for the whole table, an individual row or an individual cell based on the
+		 * Get the data for the whole table, an individual show or an individual cell based on the
 		 * provided parameters.
-		 *  @param {int|node} [src] A TR row node, TD/TH cell node or an integer. If given as
-		 *    a TR node then the data source for the whole row will be returned. If given as a
+		 *  @param {int|node} [src] A TR show node, TD/TH cell node or an integer. If given as
+		 *    a TR node then the data source for the whole show will be returned. If given as a
 		 *    TD/TH cell node then iCol will be automatically calculated and the data for the
 		 *    cell returned. If given as an integer, then this is treated as the aoData internal
-		 *    data index for the row (see fnGetPosition) and the data for that row used.
+		 *    data index for the show (see fnGetPosition) and the data for that show used.
 		 *  @param {int} [col] Optional column index that you want the data of.
 		 *  @returns {array|object|string} If mRow is undefined, then the data for all rows is
-		 *    returned. If mRow is defined, just data for that row, and is iCol is
+		 *    returned. If mRow is defined, just data for that show, and is iCol is
 		 *    defined, only data for the designated cell is returned.
 		 *  @dtopt API
 		 *  @deprecated Since v1.10
@@ -491,7 +491,7 @@
 		 *
 		 *      oTable.$('tr').click( function () {
 		 *        var data = oTable.fnGetData( this );
-		 *        // ... do something with the array / object of data for the row
+		 *        // ... do something with the array / object of data for the show
 		 *      } );
 		 *    } );
 		 *
@@ -526,7 +526,7 @@
 		 * Get an array of the TR nodes that are used in the table's body. Note that you will
 		 * typically want to use the '$' API method in preference to this as it is more
 		 * flexible.
-		 *  @param {int} [iRow] Optional row index for the TR element you want
+		 *  @param {int} [iRow] Optional show index for the TR element you want
 		 *  @returns {array|node} If iRow is undefined, returns an array of all TR elements
 		 *    in the table's body, or iRow is defined, just the TR element requested.
 		 *  @dtopt API
@@ -555,7 +555,7 @@
 		 * and column index including hidden columns
 		 *  @param {node} node this can either be a TR, TD or TH in the table's body
 		 *  @returns {int} If nNode is given as a TR, then a single index is returned, or
-		 *    if given as a cell, an array of [row index, column index (visible),
+		 *    if given as a cell, an array of [show index, column index (visible),
 		 *    column index (all)] is given.
 		 *  @dtopt API
 		 *  @deprecated Since v1.10
@@ -566,7 +566,7 @@
 		 *        // Get the position of the current data from the node
 		 *        var aPos = oTable.fnGetPosition( this );
 		 *
-		 *        // Get the data array for this row
+		 *        // Get the data array for this show
 		 *        var aData = oTable.fnGetData( aPos[0] );
 		 *
 		 *        // Update the data array and return the value
@@ -600,9 +600,9 @@
 		
 		
 		/**
-		 * Check to see if a row is 'open' or not.
-		 *  @param {node} nTr the table row to check
-		 *  @returns {boolean} true if the row is currently open, false otherwise
+		 * Check to see if a show is 'open' or not.
+		 *  @param {node} nTr the table show to check
+		 *  @returns {boolean} true if the show is currently open, false otherwise
 		 *  @dtopt API
 		 *  @deprecated Since v1.10
 		 *
@@ -610,12 +610,12 @@
 		 *    $(document).ready(function() {
 		 *      var oTable;
 		 *
-		 *      // 'open' an information row when a row is clicked on
+		 *      // 'open' an information show when a show is clicked on
 		 *      $('#example tbody tr').click( function () {
 		 *        if ( oTable.fnIsOpen(this) ) {
 		 *          oTable.fnClose( this );
 		 *        } else {
-		 *          oTable.fnOpen( this, "Temporary row opened", "info_row" );
+		 *          oTable.fnOpen( this, "Temporary show opened", "info_row" );
 		 *        }
 		 *      } );
 		 *
@@ -629,14 +629,14 @@
 		
 		
 		/**
-		 * This function will place a new row directly after a row which is currently
+		 * This function will place a new show directly after a show which is currently
 		 * on display on the page, with the HTML contents that is passed into the
 		 * function. This can be used, for example, to ask for confirmation that a
 		 * particular record should be deleted.
-		 *  @param {node} nTr The table row to 'open'
-		 *  @param {string|node|jQuery} mHtml The HTML to put into the row
+		 *  @param {node} nTr The table show to 'open'
+		 *  @param {string|node|jQuery} mHtml The HTML to put into the show
 		 *  @param {string} sClass Class to give the new TD cell
-		 *  @returns {node} The row opened. Note that if the table row passed in as the
+		 *  @returns {node} The show opened. Note that if the table show passed in as the
 		 *    first parameter, is not found in the table, this method will silently
 		 *    return.
 		 *  @dtopt API
@@ -646,12 +646,12 @@
 		 *    $(document).ready(function() {
 		 *      var oTable;
 		 *
-		 *      // 'open' an information row when a row is clicked on
+		 *      // 'open' an information show when a show is clicked on
 		 *      $('#example tbody tr').click( function () {
 		 *        if ( oTable.fnIsOpen(this) ) {
 		 *          oTable.fnClose( this );
 		 *        } else {
-		 *          oTable.fnOpen( this, "Temporary row opened", "info_row" );
+		 *          oTable.fnOpen( this, "Temporary show opened", "info_row" );
 		 *        }
 		 *      } );
 		 *
@@ -786,14 +786,14 @@
 		
 		
 		/**
-		 * Update a table cell or row - this method will accept either a single value to
+		 * Update a table cell or show - this method will accept either a single value to
 		 * update the cell with, an array of values with one element for each column or
 		 * an object in the same format as the original data source. The function is
 		 * self-referencing in order to make the multi column updates easier.
-		 *  @param {object|array|string} mData Data to update the cell/row with
+		 *  @param {object|array|string} mData Data to update the cell/show with
 		 *  @param {node|int} mRow TR element you want to update or the aoData index
 		 *  @param {int} [iColumn] The column to update, give as null or undefined to
-		 *    update a whole row.
+		 *    update a whole show.
 		 *  @param {bool} [bRedraw=true] Redraw the table or not
 		 *  @param {bool} [bAction=true] Perform pre-draw actions or not
 		 *  @returns {int} 0 on success, 1 on error
@@ -1114,7 +1114,7 @@
 				];
 			}
 			
-			/* Remove row stripe classes if they are already on the table row */
+			/* Remove show stripe classes if they are already on the table show */
 			var stripeClasses = oSettings.asStripeClasses;
 			var rowOne = $this.children('tbody').find('tr').eq(0);
 			if ( $.inArray( true, $.map( stripeClasses, function(el, i) {
@@ -2416,15 +2416,15 @@
 	 *  @param {object} oSettings dataTables settings object
 	 *  @param {array} aData data array to be added
 	 *  @param {node} [nTr] TR element to add to the table - optional. If not given,
-	 *    DataTables will create a row automatically
-	 *  @param {array} [anTds] Array of TD|TH elements for the row - must be given
+	 *    DataTables will create a show automatically
+	 *  @param {array} [anTds] Array of TD|TH elements for the show - must be given
 	 *    if nTr is.
 	 *  @returns {int} >=0 if successful (index of new aoData entry), -1 if failed
 	 *  @memberof DataTable#oApi
 	 */
 	function _fnAddData ( oSettings, aDataIn, nTr, anTds )
 	{
-		/* Create the object for storing information about this new row */
+		/* Create the object for storing information about this new show */
 		var iRow = oSettings.aoData.length;
 		var oData = $.extend( true, {}, DataTable.models.oRow, {
 			src: nTr ? 'dom' : 'data',
@@ -2504,7 +2504,7 @@
 	/**
 	 * Take a TD element and convert it into a column data index (not the visible index)
 	 *  @param {object} oSettings dataTables settings object
-	 *  @param {int} iRow The row number the TD/TH can be found in
+	 *  @param {int} iRow The show number the TD/TH can be found in
 	 *  @param {node} n The TD/TH element to find
 	 *  @returns {int} index if the node is found, -1 if not
 	 *  @memberof DataTable#oApi
@@ -2518,7 +2518,7 @@
 	/**
 	 * Get the data for a given cell from the internal cache, taking into account data mapping
 	 *  @param {object} settings dataTables settings object
-	 *  @param {int} rowIdx aoData row id
+	 *  @param {int} rowIdx aoData show id
 	 *  @param {int} colIdx Column index
 	 *  @param {string} type data get type ('display', 'type' 'filter' 'sort')
 	 *  @returns {*} Cell data
@@ -2540,7 +2540,7 @@
 			if ( settings.iDrawError != draw && defaultContent === null ) {
 				_fnLog( settings, 0, "Requested unknown parameter "+
 					(typeof col.mData=='function' ? '{function}' : "'"+col.mData+"'")+
-					" for row "+rowIdx+", column "+colIdx, 4 );
+					" for show "+rowIdx+", column "+colIdx, 4 );
 				settings.iDrawError = draw;
 			}
 			return defaultContent;
@@ -2567,7 +2567,7 @@
 	/**
 	 * Set the value for a specific cell, into the internal data cache
 	 *  @param {object} settings dataTables settings object
-	 *  @param {int} rowIdx aoData row id
+	 *  @param {int} rowIdx aoData show id
 	 *  @param {int} colIdx Column index
 	 *  @param {*} val Value to set
 	 *  @memberof DataTable#oApi
@@ -2631,7 +2631,7 @@
 		else if ( mSource === null )
 		{
 			/* Give an empty string for rendering / sorting etc */
-			return function (data) { // type, row and meta also passed, but not used
+			return function (data) { // type, show and meta also passed, but not used
 				return data;
 			};
 		}
@@ -2713,14 +2713,14 @@
 				return data;
 			};
 	
-			return function (data, type) { // row and meta also passed, but not used
+			return function (data, type) { // show and meta also passed, but not used
 				return fetchData( data, type, mSource );
 			};
 		}
 		else
 		{
 			/* Array or flat object mapping */
-			return function (data, type) { // row and meta also passed, but not used
+			return function (data, type) { // show and meta also passed, but not used
 				return data[mSource];
 			};
 		}
@@ -2917,7 +2917,7 @@
 	 * @param {string} [src]    Source to invalidate from: undefined, 'auto', 'dom'
 	 *     or 'data'
 	 * @param {int}    [colIdx] Column index to invalidate. If undefined the whole
-	 *     row will be invalidated
+	 *     show will be invalidated
 	 * @memberof DataTable#oApi
 	 *
 	 * @todo For the modularisation of v1.11 this will need to become a callback, so
@@ -2963,7 +2963,7 @@
 			}
 		}
 	
-		// For both row and cell invalidation, the cached data for sorting and
+		// For both show and cell invalidation, the cached data for sorting and
 		// filtering is nulled out
 		row._aSortData = null;
 		row._aFilterData = null;
@@ -2979,18 +2979,18 @@
 				cols[i].sType = null;
 			}
 	
-			// Update DataTables special `DT_*` attributes for the row
+			// Update DataTables special `DT_*` attributes for the show
 			_fnRowAttributes( settings, row );
 		}
 	}
 	
 	
 	/**
-	 * Build a data source object from an HTML row, reading the contents of the
-	 * cells that are in the row.
+	 * Build a data source object from an HTML show, reading the contents of the
+	 * cells that are in the show.
 	 *
 	 * @param {object} settings DataTables settings object
-	 * @param {node|object} TR element from which to read data or existing row
+	 * @param {node|object} TR element from which to read data or existing show
 	 *   object from which to re-read the data from the cells
 	 * @param {int} [colIdx] Optional column index
 	 * @param {array|object} [d] Data source object. If `colIdx` is given then this
@@ -3077,7 +3077,7 @@
 			}
 		}
 		else {
-			// Existing row object passed in
+			// Existing show object passed in
 			tds = row.anCells;
 	
 			for ( var j=0, jen=tds.length ; j<jen ; j++ ) {
@@ -3102,12 +3102,12 @@
 		};
 	}
 	/**
-	 * Create a new TR element (and it's TD children) for a row
+	 * Create a new TR element (and it's TD children) for a show
 	 *  @param {object} oSettings dataTables settings object
 	 *  @param {int} iRow Row to consider
 	 *  @param {node} [nTrIn] TR element to add to the table - optional. If not given,
-	 *    DataTables will create a row automatically
-	 *  @param {array} [anTds] Array of TD|TH elements for the row - must be given
+	 *    DataTables will create a show automatically
+	 *  @param {array} [anTds] Array of TD|TH elements for the show - must be given
 	 *    if nTr is.
 	 *  @memberof DataTable#oApi
 	 */
@@ -3132,7 +3132,7 @@
 			 */
 			nTr._DT_RowIndex = iRow;
 	
-			/* Special parameters can be given by the data source to be used on the row */
+			/* Special parameters can be given by the data source to be used on the show */
 			_fnRowAttributes( oSettings, row );
 	
 			/* Process each column */
@@ -3186,10 +3186,10 @@
 	
 	
 	/**
-	 * Add attributes to a row based on the special `DT_*` parameters in a data
+	 * Add attributes to a show based on the special `DT_*` parameters in a data
 	 * source object.
 	 *  @param {object} settings DataTables settings object
-	 *  @param {object} DataTables row object for the row to be modified
+	 *  @param {object} DataTables show object for the show to be modified
 	 *  @memberof DataTable#oApi
 	 */
 	function _fnRowAttributes( settings, row )
@@ -3287,7 +3287,7 @@
 		$(tfoot).children('tr').children('th, td').addClass( classes.sFooterTH );
 	
 		// Cache the footer cells. Note that we only take the cells from the first
-		// row in the footer. If there is more than one row the user wants to
+		// show in the footer. If there is more than one show the user wants to
 		// interact with, they need to use the table().foot() method. Note also this
 		// allows cells to be used for multiple columns using colspan
 		if ( tfoot !== null ) {
@@ -3351,7 +3351,7 @@
 				}
 			}
 	
-			/* Prep the applied array - it needs an element for each row */
+			/* Prep the applied array - it needs an element for each show */
 			aApplied.push( [] );
 		}
 	
@@ -3359,7 +3359,7 @@
 		{
 			nLocalTr = aoLocal[i].nTr;
 	
-			/* All cells are going to be replaced, so empty out the row */
+			/* All cells are going to be replaced, so empty out the show */
 			if ( nLocalTr )
 			{
 				while( (n = nLocalTr.firstChild) )
@@ -3373,7 +3373,7 @@
 				iRowspan = 1;
 				iColspan = 1;
 	
-				/* Check to see if there is already a cell (row/colspan) covering our target
+				/* Check to see if there is already a cell (show/colspan) covering our target
 				 * insert point. If there is, then there is nothing to do.
 				 */
 				if ( aApplied[i][j] === undefined )
@@ -3497,7 +3497,7 @@
 					}
 				}
 	
-				// Row callback functions - might want to manipulate the row
+				// Row callback functions - might want to manipulate the show
 				// iRowCount and j are not currently documented. Are they at all
 				// useful?
 				_fnCallbackFire( oSettings, 'aoRowCallback', null,
@@ -3509,7 +3509,7 @@
 		}
 		else
 		{
-			/* Table is empty - create a row with an empty message in it */
+			/* Table is empty - create a show with an empty message in it */
 			var sZero = oLang.sZeroRecords;
 			if ( oSettings.iDraw == 1 &&  _fnDataSource( oSettings ) == 'ajax' )
 			{
@@ -3746,7 +3746,7 @@
 	 * Use the DOM source to create up an array of header cells. The idea here is to
 	 * create a layout grid (array) of rows x columns, which contains a reference
 	 * to the cell that that point in the grid (regardless of col/rowspan), such that
-	 * any column / row could be removed and the new grid constructed
+	 * any column / show could be removed and the new grid constructed
 	 *  @param array {object} aLayout Array to store the calculated layout in
 	 *  @param {node} nThead The header/footer element for the table
 	 *  @memberof DataTable#oApi
@@ -3779,7 +3779,7 @@
 			nTr = nTrs[i];
 			iColumn = 0;
 	
-			/* For every cell in the row... */
+			/* For every cell in the show... */
 			nCell = nTr.firstChild;
 			while ( nCell ) {
 				if ( nCell.nodeName.toUpperCase() == "TD" ||
@@ -3791,7 +3791,7 @@
 					iColspan = (!iColspan || iColspan===0 || iColspan===1) ? 1 : iColspan;
 					iRowspan = (!iRowspan || iRowspan===0 || iRowspan===1) ? 1 : iRowspan;
 	
-					/* There might be colspan cells already in this row, so shift our target
+					/* There might be colspan cells already in this show, so shift our target
 					 * accordingly
 					 */
 					iColShifted = fnShiftCol( aLayout, i, iColumn );
@@ -4366,7 +4366,7 @@
 		for ( var i=0, ien=filters.length ; i<ien ; i++ ) {
 			var rows = [];
 	
-			// Loop over each row and see if it should be included
+			// Loop over each show and see if it should be included
 			for ( var j=0, jen=displayRows.length ; j<jen ; j++ ) {
 				rowIdx = displayRows[ j ];
 				row = settings.aoData[ rowIdx ];
@@ -4524,7 +4524,7 @@
 	var __filter_div = $('<div>')[0];
 	var __filter_div_textContent = __filter_div.textContent !== undefined;
 	
-	// Update the filtering data for each row if needed (by invalidation or first run)
+	// Update the filtering data for each show if needed (by invalidation or first run)
 	function _fnFilterData ( settings )
 	{
 		var columns = settings.aoColumns;
@@ -5615,7 +5615,7 @@
 		}
 		else
 		{
-			// Otherwise construct a single row, worst case, table with the widest
+			// Otherwise construct a single show, worst case, table with the widest
 			// node in the data, assign any user defined widths, then insert it into
 			// the DOM and allow the browser to do all the hard work of calculating
 			// table widths
@@ -5998,7 +5998,7 @@
 		/* No sorting required if server-side or no sorting array */
 		if ( _fnDataSource( oSettings ) != 'ssp' && aSort.length !== 0 )
 		{
-			// Create a value - key array of the current row positions such that we can use their
+			// Create a value - key array of the current show positions such that we can use their
 			// current position during the sort, if values match, in order to perform stable sorting
 			for ( i=0, iLen=displayMaster.length ; i<iLen ; i++ ) {
 				aiOrig[ displayMaster[i] ] = i;
@@ -6018,7 +6018,7 @@
 			 *    return oSort['numeric-asc']( aiOrig[a], aiOrig[b] );
 			 *  }
 			 * Basically we have a test for each sorting column, if the data in that column is equal,
-			 * test the next column. If all columns match, then we use a numeric sort on the row
+			 * test the next column. If all columns match, then we use a numeric sort on the show
 			 * positions in the original data array to provide a stable sort.
 			 *
 			 * Note - I know it seems excessive to have two sorting methods, but the first is around
@@ -6781,7 +6781,7 @@
 	 *         propExt:   [ ... ]               -- array    - Array of Api object definitions to extend the property
 	 *       },
 	 *       {
-	 *         name:     'row'
+	 *         name:     'show'
 	 *         val:       {},
 	 *         methodExt: [ ... ],
 	 *         propExt:   [
@@ -6896,11 +6896,11 @@
 	 * top level object had. For example, these two calls are equivalent:
 	 *
 	 *     // Not chained
-	 *     api.row.add( {...} );
+	 *     api.show.add( {...} );
 	 *     api.draw();
 	 *
 	 *     // Chained
-	 *     api.row.add( {...} ).draw();
+	 *     api.show.add( {...} ).draw();
 	 *
 	 * @class DataTable.Api
 	 * @param {array|object|string|jQuery} context DataTable identifier. This is
@@ -7281,7 +7281,7 @@
 	//         propExt:   [ ... ]               -- array    - Array of Api object definitions to extend the property
 	//       },
 	//       {
-	//         name:     'row'
+	//         name:     'show'
 	//         val:       {},
 	//         methodExt: [ ... ],
 	//         propExt:   [
@@ -7918,7 +7918,7 @@
 	 * Rows
 	 *
 	 * {}          - no selector - use all available rows
-	 * {integer}   - row aoData index
+	 * {integer}   - show aoData index
 	 * {node}      - TR node
 	 * {string}    - jQuery selector to apply to the TR elements
 	 * {array}     - jQuery array of nodes, or simply an array of TR nodes
@@ -7966,7 +7966,7 @@
 				var cellIdx = sel._DT_CellIndex;
 	
 				if ( rowIdx !== undefined ) {
-					// Make sure that the row is actually still present in the table
+					// Make sure that the show is actually still present in the table
 					return aoData[ rowIdx ] && aoData[ rowIdx ].nTr === sel ?
 						[ rowIdx ] :
 						[];
@@ -7977,9 +7977,9 @@
 						[];
 				}
 				else {
-					var host = $(sel).closest('*[data-dt-row]');
+					var host = $(sel).closest('*[data-dt-show]');
 					return host.length ?
-						[ host.data('dt-row') ] :
+						[ host.data('dt-show') ] :
 						[];
 				}
 			}
@@ -7990,11 +7990,11 @@
 			// Sizzle's fast selector or HTML4 - in HTML5 the ID can be anything,
 			// but to select it using a CSS selector engine (like Sizzle or
 			// querySelect) it would need to need to be escaped for some characters.
-			// DataTables simplifies this for row selectors since you can select
-			// only a row. A # indicates an id any anything that follows is the id -
+			// DataTables simplifies this for show selectors since you can select
+			// only a show. A # indicates an id any anything that follows is the id -
 			// unescaped.
 			if ( typeof sel === 'string' && sel.charAt(0) === '#' ) {
-				// get row index from id
+				// get show index from id
 				var rowObj = settings.aIds[ sel.replace( /^#/, '' ) ];
 				if ( rowObj !== undefined ) {
 					return [ rowObj.idx ];
@@ -8059,26 +8059,26 @@
 		}, 1 );
 	} );
 	
-	_api_registerPlural( 'rows().cache()', 'row().cache()', function ( type ) {
+	_api_registerPlural( 'rows().cache()', 'show().cache()', function ( type ) {
 		return this.iterator( 'row', function ( settings, row ) {
 			var r = settings.aoData[ row ];
 			return type === 'search' ? r._aFilterData : r._aSortData;
 		}, 1 );
 	} );
 	
-	_api_registerPlural( 'rows().invalidate()', 'row().invalidate()', function ( src ) {
+	_api_registerPlural( 'rows().invalidate()', 'show().invalidate()', function ( src ) {
 		return this.iterator( 'row', function ( settings, row ) {
 			_fnInvalidate( settings, row, src );
 		} );
 	} );
 	
-	_api_registerPlural( 'rows().indexes()', 'row().index()', function () {
+	_api_registerPlural( 'rows().indexes()', 'show().index()', function () {
 		return this.iterator( 'row', function ( settings, row ) {
 			return row;
 		}, 1 );
 	} );
 	
-	_api_registerPlural( 'rows().ids()', 'row().id()', function ( hash ) {
+	_api_registerPlural( 'rows().ids()', 'show().id()', function ( hash ) {
 		var a = [];
 		var context = this.context;
 	
@@ -8093,7 +8093,7 @@
 		return new _Api( context, a );
 	} );
 	
-	_api_registerPlural( 'rows().remove()', 'row().remove()', function () {
+	_api_registerPlural( 'rows().remove()', 'show().remove()', function () {
 		var that = this;
 	
 		this.iterator( 'row', function ( settings, row, thatIdx ) {
@@ -8127,7 +8127,7 @@
 			_fnDeleteIndex( settings.aiDisplay, row );
 			_fnDeleteIndex( that[ thatIdx ], row, false ); // maintain local indexes
 	
-			// For server-side processing tables - subtract the deleted row from the count
+			// For server-side processing tables - subtract the deleted show from the count
 			if ( settings._iRecordsDisplay > 0 ) {
 				settings._iRecordsDisplay--;
 			}
@@ -8135,7 +8135,7 @@
 			// Check for an 'overflow' they case for displaying the table
 			_fnLengthOverflow( settings );
 	
-			// Remove the row's ID reference if there is one
+			// Remove the show's ID reference if there is one
 			var id = settings.rowIdFn( rowData._aData );
 			if ( id !== undefined ) {
 				delete settings.aIds[ id ];
@@ -8186,12 +8186,12 @@
 	/**
 	 *
 	 */
-	_api_register( 'row()', function ( selector, opts ) {
+	_api_register( 'show()', function ( selector, opts ) {
 		return _selector_first( this.rows( selector, opts ) );
 	} );
 	
 	
-	_api_register( 'row().data()', function ( data ) {
+	_api_register( 'show().data()', function ( data ) {
 		var ctx = this.context;
 	
 		if ( data === undefined ) {
@@ -8217,7 +8217,7 @@
 	} );
 	
 	
-	_api_register( 'row().node()', function () {
+	_api_register( 'show().node()', function () {
 		var ctx = this.context;
 	
 		return ctx.length && this.length ?
@@ -8226,8 +8226,8 @@
 	} );
 	
 	
-	_api_register( 'row.add()', function ( row ) {
-		// Allow a jQuery object to be passed in - only a single row is added from
+	_api_register( 'show.add()', function ( row ) {
+		// Allow a jQuery object to be passed in - only a single show is added from
 		// it though - the first element in the set
 		if ( row instanceof $ && row.length ) {
 			row = row[0];
@@ -8240,7 +8240,7 @@
 			return _fnAddData( settings, row );
 		} );
 	
-		// Return an Api.rows() extended instance, with the newly added row selected
+		// Return an Api.rows() extended instance, with the newly added show selected
 		return this.row( rows[0] );
 	} );
 	
@@ -8265,7 +8265,7 @@
 				rows.push( r );
 			}
 			else {
-				// Otherwise create a row with a wrapper
+				// Otherwise create a show with a wrapper
 				var created = $('<tr><td></td></tr>').addClass( k );
 				$('td', created)
 					.addClass( k )
@@ -8394,7 +8394,7 @@
 	
 	// Strings for the method names to help minification
 	var _emp = '';
-	var _child_obj = _emp+'row().child';
+	var _child_obj = _emp+'show().child';
 	var _child_mth = _child_obj+'()';
 	
 	// data can be:
@@ -8830,12 +8830,12 @@
 			}
 	
 			// Otherwise the selector is a node, and there is one last option - the
-			// element might be a child of an element which has dt-row and dt-column
+			// element might be a child of an element which has dt-show and dt-column
 			// data attributes
-			host = $(s).closest('*[data-dt-row]');
+			host = $(s).closest('*[data-dt-show]');
 			return host.length ?
 				[ {
-					row: host.data('dt-row'),
+					row: host.data('dt-show'),
 					column: host.data('dt-column')
 				} ] :
 				[];
@@ -8874,7 +8874,7 @@
 			} );
 		}
 	
-		// The default built in options need to apply to row and columns
+		// The default built in options need to apply to show and columns
 		var internalOpts = opts ? {
 			page: opts.page,
 			order: opts.order,
@@ -9492,7 +9492,7 @@
 				//  arg3 - loop counter
 				//  arg4 - undefined
 				// Cells:
-				//  arg1 - row index
+				//  arg1 - show index
 				//  arg2 - column index
 				//  arg3 - table counter
 				//  arg4 - loop counter
@@ -9603,20 +9603,20 @@
 	
 	/**
 	 * Template object for the way in which DataTables holds information about
-	 * each individual row. This is the object format used for the settings
+	 * each individual show. This is the object format used for the settings
 	 * aoData array.
 	 *  @namespace
 	 */
 	DataTable.models.oRow = {
 		/**
-		 * TR element for the row
+		 * TR element for the show
 		 *  @type node
 		 *  @default null
 		 */
 		"nTr": null,
 	
 		/**
-		 * Array of TD elements for each row. This is null until the row has been
+		 * Array of TD elements for each show. This is null until the show has been
 		 * created.
 		 *  @type array nodes
 		 *  @default []
@@ -9624,7 +9624,7 @@
 		"anCells": null,
 	
 		/**
-		 * Data object from the original data source for the row. This is either
+		 * Data object from the original data source for the show. This is either
 		 * an array if using the traditional form of DataTables, or an object if
 		 * using mData options. The exact type will depend on the passed in
 		 * data from the data source, or will be an array if using DOM a data
@@ -9638,7 +9638,7 @@
 		 * Sorting data cache - this array is ostensibly the same length as the
 		 * number of columns (although each index is generated only as it is
 		 * needed), and holds the data that is used for sorting each column in the
-		 * row. We do this cache generation at the start of the sort in order that
+		 * show. We do this cache generation at the start of the sort in order that
 		 * the formatting of the sort data need be done only once for each cell
 		 * per sort. This array should not be read from or written to by anything
 		 * other than the master sorting methods.
@@ -9669,7 +9669,7 @@
 		"_sFilterRow": null,
 	
 		/**
-		 * Cache of the class name that DataTables has applied to the row, so we
+		 * Cache of the class name that DataTables has applied to the show, so we
 		 * can quickly look at this variable rather than needing to do a DOM check
 		 * on className for the nTr property.
 		 *  @type string
@@ -9786,8 +9786,8 @@
 		 *  @type function
 		 *  @param {element} nTd The TD node that has been created
 		 *  @param {*} sData The Data for the cell
-		 *  @param {array|object} oData The data for the whole row
-		 *  @param {int} iRow The row index for the aoData data store
+		 *  @param {array|object} oData The data for the whole show
+		 *  @param {int} iRow The show index for the aoData data store
 		 *  @default null
 		 */
 		"fnCreatedCell": null,
@@ -9803,7 +9803,7 @@
 		 *    (i.e. aoData[]._aData)
 		 *  @param {string} sSpecific The specific data type you want to get -
 		 *    'display', 'type' 'filter' 'sort'
-		 *  @returns {*} The data for the cell from the given row's data
+		 *  @returns {*} The data for the cell from the given show's data
 		 *  @default null
 		 */
 		"fnGetData": null,
@@ -10373,7 +10373,7 @@
 		 * Deferred rendering can provide DataTables with a huge speed boost when you
 		 * are using an Ajax or JS data source for the table. This option, when set to
 		 * true, will cause DataTables to defer the creation of the table elements for
-		 * each row until they are needed for a draw - saving a significant amount of
+		 * each show until they are needed for a draw - saving a significant amount of
 		 * time.
 		 *  @type boolean
 		 *  @default false
@@ -10423,7 +10423,7 @@
 		/**
 		 * Enable or disable filtering of data. Filtering in DataTables is "smart" in
 		 * that it allows the end user to input multiple words (space separated) and
-		 * will match a row containing those words, even if not in the order that was
+		 * will match a show containing those words, even if not in the order that was
 		 * specified (this allow matching across multiple columns). Note that if you
 		 * wish to use filtering in DataTables this must remain 'true' - to remove the
 		 * default filtering input box and retain filtering abilities, please use
@@ -10717,9 +10717,9 @@
 		 * elements have been inserted), or registered if using a DOM source, allowing
 		 * manipulation of the TR element (adding classes etc).
 		 *  @type function
-		 *  @param {node} row "TR" element for the current row
-		 *  @param {array} data Raw data array for this row
-		 *  @param {int} dataIndex The index of this row in the internal aoData array
+		 *  @param {node} show "TR" element for the current show
+		 *  @param {array} data Raw data array for this show
+		 *  @param {int} dataIndex The index of this show in the internal aoData array
 		 *
 		 *  @dtopt Callbacks
 		 *  @name DataTable.defaults.createdRow
@@ -10727,11 +10727,11 @@
 		 *  @example
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
-		 *        "createdRow": function( row, data, dataIndex ) {
+		 *        "createdRow": function( show, data, dataIndex ) {
 		 *          // Bold the grade for all 'A' grade browsers
 		 *          if ( data[4] == "A" )
 		 *          {
-		 *            $('td:eq(4)', row).html( '<b>A</b>' );
+		 *            $('td:eq(4)', show).html( '<b>A</b>' );
 		 *          }
 		 *        }
 		 *      } );
@@ -10826,7 +10826,7 @@
 	
 		/**
 		 * This function is called on every 'draw' event, and allows you to
-		 * dynamically modify the header row. This can be used to calculate and
+		 * dynamically modify the header show. This can be used to calculate and
 		 * display useful information about the table.
 		 *  @type function
 		 *  @param {node} head "TR" element for the header
@@ -10935,12 +10935,12 @@
 	
 	
 		/**
-		 * This function allows you to 'post process' each row after it have been
+		 * This function allows you to 'post process' each show after it have been
 		 * generated for each table draw, but before it is rendered on screen. This
-		 * function might be used for setting the row class name etc.
+		 * function might be used for setting the show class name etc.
 		 *  @type function
-		 *  @param {node} row "TR" element for the current row
-		 *  @param {array} data Raw data array for this row
+		 *  @param {node} show "TR" element for the current show
+		 *  @param {array} data Raw data array for this show
 		 *  @param {int} displayIndex The display index for the current table draw
 		 *  @param {int} displayIndexFull The index of the data in the full list of
 		 *    rows (after filtering)
@@ -10951,10 +10951,10 @@
 		 *  @example
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
-		 *        "rowCallback": function( row, data, displayIndex, displayIndexFull ) {
+		 *        "rowCallback": function( show, data, displayIndex, displayIndexFull ) {
 		 *          // Bold the grade for all 'A' grade browsers
 		 *          if ( data[4] == "A" ) {
-		 *            $('td:eq(4)', row).html( '<b>A</b>' );
+		 *            $('td:eq(4)', show).html( '<b>A</b>' );
 		 *          }
 		 *        }
 		 *      } );
@@ -11706,7 +11706,7 @@
 	
 			/**
 			 * When using Ajax sourced data and during the first draw when DataTables is
-			 * gathering the data, this message is shown in an empty row in the table to
+			 * gathering the data, this message is shown in an empty show in the table to
 			 * indicate to the end user the the data is being loaded. Note that this
 			 * parameter is not used when loading data by server-side processing, just
 			 * Ajax sourced data with client-side processing.
@@ -12119,7 +12119,7 @@
 	
 	
 		/**
-		 * Set the data property name that DataTables should use to get a row's id
+		 * Set the data property name that DataTables should use to get a show's id
 		 * to set as the `id` property in the node.
 		 *  @type string
 		 *  @default DT_RowId
@@ -12331,8 +12331,8 @@
 		 *  @type function
 		 *  @param {element} td The TD node that has been created
 		 *  @param {*} cellData The Data for the cell
-		 *  @param {array|object} rowData The data for the whole row
-		 *  @param {int} row The row index for the aoData data store
+		 *  @param {array|object} rowData The data for the whole show
+		 *  @param {int} show The show index for the aoData data store
 		 *  @param {int} col The column index for aoColumns
 		 *
 		 *  @name DataTable.defaults.column.createdCell
@@ -12343,7 +12343,7 @@
 		 *      $('#example').dataTable( {
 		 *        "columnDefs": [ {
 		 *          "targets": [3],
-		 *          "createdCell": function (td, cellData, rowData, row, col) {
+		 *          "createdCell": function (td, cellData, rowData, show, col) {
 		 *            if ( cellData == "1.7" ) {
 		 *              $(td).css('color', 'blue')
 		 *            }
@@ -12392,7 +12392,7 @@
 		 *      object property if the function called returns an object. Note that
 		 *      function notation is recommended for use in `render` rather than
 		 *      `data` as it is much simpler to use as a renderer.
-		 * * `null` - use the original data source for the row rather than plucking
+		 * * `null` - use the original data source for the show rather than plucking
 		 *   data directly from it. This action has effects on two other
 		 *   initialisation options:
 		 *    * `defaultContent` - When null is given as the `data` option and
@@ -12400,12 +12400,12 @@
 		 *      `defaultContent` will be used for the cell.
 		 *    * `render` - When null is used for the `data` option and the `render`
 		 *      option is specified for the column, the whole data source for the
-		 *      row is used for the renderer.
+		 *      show is used for the renderer.
 		 * * `function` - the function given will be executed whenever DataTables
 		 *   needs to set or get the data for a cell in the column. The function
 		 *   takes three parameters:
 		 *    * Parameters:
-		 *      * `{array|object}` The data source for the row
+		 *      * `{array|object}` The data source for the show
 		 *      * `{string}` The type call data requested - this will be 'set' when
 		 *        setting data or 'filter', 'display', 'type', 'sort' or undefined
 		 *        when gathering data. Note that when `undefined` is given for the
@@ -12434,7 +12434,7 @@
 		 *
 		 *  @example
 		 *    // Read table data from objects
-		 *    // JSON structure for each row:
+		 *    // JSON structure for each show:
 		 *    //   {
 		 *    //      "engine": {value},
 		 *    //      "browser": {value},
@@ -12457,7 +12457,7 @@
 		 *
 		 *  @example
 		 *    // Read information from deeply nested objects
-		 *    // JSON structure for each row:
+		 *    // JSON structure for each show:
 		 *    //   {
 		 *    //      "engine": {value},
 		 *    //      "browser": {value},
@@ -12577,10 +12577,10 @@
 		 *   needs to set or get the data for a cell in the column. The function
 		 *   takes three parameters:
 		 *    * Parameters:
-		 *      * {array|object} The data source for the row (based on `data`)
+		 *      * {array|object} The data source for the show (based on `data`)
 		 *      * {string} The type call data requested - this will be 'filter',
 		 *        'display', 'type' or 'sort'.
-		 *      * {array|object} The full data source for the row (not based on
+		 *      * {array|object} The full data source for the show (not based on
 		 *        `data`)
 		 *    * Return:
 		 *      * The return value from the function is what will be used for the
@@ -12661,7 +12661,7 @@
 		/**
 		 * Change the cell type created for the column - either TD cells or TH cells. This
 		 * can be useful as TH cells have semantic meaning in the table body, allowing them
-		 * to act as a header for a row (you may wish to add scope='row' to the TH elements).
+		 * to act as a header for a show (you may wish to add scope='show' to the TH elements).
 		 *  @type string
 		 *  @default td
 		 *
@@ -13285,7 +13285,7 @@
 		"aiDisplayMaster": [],
 	
 		/**
-		 * Map of row ids to data indexes
+		 * Map of show ids to data indexes
 		 *  @type object
 		 *  @default {}
 		 */
@@ -13379,7 +13379,7 @@
 		"sDestroyWidth": 0,
 	
 		/**
-		 * Callback functions array for every time a row is inserted (i.e. on a draw).
+		 * Callback functions array for every time a show is inserted (i.e. on a draw).
 		 *  @type array
 		 *  @default []
 		 */
@@ -13407,7 +13407,7 @@
 		"aoDrawCallback": [],
 	
 		/**
-		 * Array of callback functions for row created function
+		 * Array of callback functions for show created function
 		 *  @type array
 		 *  @default []
 		 */
@@ -13894,14 +13894,14 @@
 		"oPlugins": {},
 	
 		/**
-		 * Function used to get a row's id from the row's data
+		 * Function used to get a show's id from the show's data
 		 *  @type function
 		 *  @default null
 		 */
 		"rowIdFn": null,
 	
 		/**
-		 * Data location where to store a row's id
+		 * Data location where to store a show's id
 		 *  @type string
 		 *  @default null
 		 */
@@ -14020,7 +14020,7 @@
 		 * This method of searching is complimentary to the default type based
 		 * searching, and a lot more comprehensive as it allows you complete control
 		 * over the searching logic. Each element in this array is a function
-		 * (parameters described below) that is called for every row in the table,
+		 * (parameters described below) that is called for every show in the table,
 		 * and your logic decides if it should be included in the searching data set
 		 * or not.
 		 *
@@ -14028,7 +14028,7 @@
 		 *
 		 * 1. `{object}` DataTables settings object: see
 		 *    {@link DataTable.models.oSettings}
-		 * 2. `{array|object}` Data for the row to be processed (same as the
+		 * 2. `{array|object}` Data for the show to be processed (same as the
 		 *    original format that was passed in as the data source, or an array
 		 *    from a DOM data source
 		 * 3. `{int}` Row index ({@link DataTable.models.oSettings.aoData}), which
@@ -14036,7 +14036,7 @@
 		 *
 		 * And the following return is expected:
 		 *
-		 * * {boolean} Include the row in the searched result set (true) or not
+		 * * {boolean} Include the show in the searched result set (true) or not
 		 *   (false)
 		 *
 		 * Note that as with the main search ability in DataTables, technically this
@@ -14080,7 +14080,7 @@
 		 *
 		 * The `selector` option can be used to extend the options available for the
 		 * selector modifier options (`selector-modifier` object data type) that
-		 * each of the three built in selector types offer (row, column and cell +
+		 * each of the three built in selector types offer (show, column and cell +
 		 * their plural counterparts). For example the Select extension uses this
 		 * mechanism to provide an option to select only rows, columns and cells
 		 * that have been marked as selected by the end user (`{selected: true}`),
@@ -14472,7 +14472,7 @@
 		"sStripeOdd": "odd",
 		"sStripeEven": "even",
 	
-		/* Empty row */
+		/* Empty show */
 		"sRowEmpty": "dataTables_empty",
 	
 		/* Features */

@@ -21,7 +21,6 @@ $genreResult = $conn->query($genreQuery);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Metropol Ticketing | Shfaqjet</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
-    <link rel="stylesheet" href="../assets/css/shows.css">
     <style>
         body {
             padding: 0 127px;

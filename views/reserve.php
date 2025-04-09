@@ -346,7 +346,7 @@ mysqli_close($conn);
                     $cols = range(1, 10);
 
                     foreach($rows as $row) {
-                        echo '<div class="seat-row">';
+                        echo '<div class="seat-show">';
                         foreach($cols as $col) {
                             $seatCode = $row.$col; // e.g. A1, A2 ... M10
                             $taken = in_array($seatCode, $takenSeats);
