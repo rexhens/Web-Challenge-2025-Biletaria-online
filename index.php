@@ -1,6 +1,9 @@
-<?php 
-$pageTitle = "Home";
-include('includes/header.php'); 
+<?php
+
+$pageStyles = [
+    "assets/css/style-starter.css"
+];
+require 'includes/header.php';
 ?>
 
 	<section class="w3l-main-slider position-relative" id="home">

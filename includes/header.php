@@ -1,13 +1,31 @@
 <!doctype html>
-<html lang="zxx">
+<html lang="sq">
 
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title><?php echo isset($pageTitle) ? $pageTitle : 'Home'; ?></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:description" content="Teatri Metropol - Your theater experience in Albania.">
+    <meta name="description" content="Teatri Metropol - Your theater experience in Albania.">
+    <meta property="og:title" content="Teatri Metropol">
+    <meta property="og:description" content="Your theater experience in Albania.">
+    <meta property="og:image" content="assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/metropol_icon.png">
+    <meta property="og:image" content="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+
+    <title>Tetari Metropol <?php echo isset($pageTitle) ? '| ' . $pageTitle : ''; ?></title>
 
     <!-- Main CSS (always loaded) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style-starter.css">
     <link href="//fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,600&display=swap"
         rel="stylesheet">

@@ -183,13 +183,13 @@ mysqli_close($conn);
         }
         .seat-rows {
             display: grid;
-            /* 13 rows (A - M) => we'll set them as 13 row "groups" */
+            /* 13 rows (A - M) => we'll set them as 13 show "groups" */
             grid-template-rows: repeat(13, auto);
             gap: 16px;
             justify-items: center;
         }
         .seat-row {
-            /* Each row has 10 seats => 10 columns */
+            /* Each show has 10 seats => 10 columns */
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             gap: 8px;
@@ -346,7 +346,7 @@ mysqli_close($conn);
                     $cols = range(1, 10);
 
                     foreach($rows as $row) {
-                        echo '<div class="seat-show">';
+                        echo '<div class="seat-row">';
                         foreach($cols as $col) {
                             $seatCode = $row.$col; // e.g. A1, A2 ... M10
                             $taken = in_array($seatCode, $takenSeats);

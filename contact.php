@@ -4,7 +4,7 @@ $pageStyles = [
     'assets/css/as-alert-message.min.css',
     'assets/css/contact_us.css'
 ];
-include('includes/header.php'); 
+require 'includes/header.php';
 ?>
 
 <!-- Forma e Kontaktit -->

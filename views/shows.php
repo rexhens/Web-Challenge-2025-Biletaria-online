@@ -3,7 +3,6 @@
 require "../config/db_connect.php";
 require "../auth/auth.php";
 require "../includes/functions.php";
-
 ?>
 
 <?php
@@ -23,14 +22,8 @@ $genreResult = $conn->query($genreQuery);
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
-            padding: 0 127px;
+            padding: 0 30px;
             align-items: flex-start;
-        }
-
-        @media (max-width: 1300px) {
-            body {
-                padding: 0 30px;
-            }
         }
     </style>
 </head>

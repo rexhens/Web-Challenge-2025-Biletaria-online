@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body>
 
-<form id="showForm" method="POST" enctype="multipart/form-data" class="container">
+<form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
     <h1 style="font-size: 25px; width: 100%;">Shtoni një <span>Shfaqje</span></h1>
     <div class="form-container">
         <div class="form-group">
