@@ -201,7 +201,7 @@
 										e.preventDefault();
 
 										/*
-										 * This is a recursive, immediate function which searches for the first "focusable" show.
+										 * This is a recursive, immediate function which searches for the first "focusable" row.
 										 * 
 										 * We're using immediate function because we want a convenient access to some DOM elements
 										 * We're using recursion because sometimes we may hit an empty space rather than a seat.

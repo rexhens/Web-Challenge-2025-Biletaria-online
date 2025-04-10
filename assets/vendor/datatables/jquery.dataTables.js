@@ -2540,7 +2540,7 @@
 			if ( settings.iDrawError != draw && defaultContent === null ) {
 				_fnLog( settings, 0, "Requested unknown parameter "+
 					(typeof col.mData=='function' ? '{function}' : "'"+col.mData+"'")+
-					" for show "+rowIdx+", column "+colIdx, 4 );
+					" for row "+rowIdx+", column "+colIdx, 4 );
 				settings.iDrawError = draw;
 			}
 			return defaultContent;
@@ -7977,9 +7977,9 @@
 						[];
 				}
 				else {
-					var host = $(sel).closest('*[data-dt-show]');
+					var host = $(sel).closest('*[data-dt-row]');
 					return host.length ?
-						[ host.data('dt-show') ] :
+						[ host.data('dt-row') ] :
 						[];
 				}
 			}
@@ -8059,26 +8059,26 @@
 		}, 1 );
 	} );
 	
-	_api_registerPlural( 'rows().cache()', 'show().cache()', function ( type ) {
+	_api_registerPlural( 'rows().cache()', 'row().cache()', function ( type ) {
 		return this.iterator( 'row', function ( settings, row ) {
 			var r = settings.aoData[ row ];
 			return type === 'search' ? r._aFilterData : r._aSortData;
 		}, 1 );
 	} );
 	
-	_api_registerPlural( 'rows().invalidate()', 'show().invalidate()', function ( src ) {
+	_api_registerPlural( 'rows().invalidate()', 'row().invalidate()', function ( src ) {
 		return this.iterator( 'row', function ( settings, row ) {
 			_fnInvalidate( settings, row, src );
 		} );
 	} );
 	
-	_api_registerPlural( 'rows().indexes()', 'show().index()', function () {
+	_api_registerPlural( 'rows().indexes()', 'row().index()', function () {
 		return this.iterator( 'row', function ( settings, row ) {
 			return row;
 		}, 1 );
 	} );
 	
-	_api_registerPlural( 'rows().ids()', 'show().id()', function ( hash ) {
+	_api_registerPlural( 'rows().ids()', 'row().id()', function ( hash ) {
 		var a = [];
 		var context = this.context;
 	
@@ -8093,7 +8093,7 @@
 		return new _Api( context, a );
 	} );
 	
-	_api_registerPlural( 'rows().remove()', 'show().remove()', function () {
+	_api_registerPlural( 'rows().remove()', 'row().remove()', function () {
 		var that = this;
 	
 		this.iterator( 'row', function ( settings, row, thatIdx ) {
@@ -8186,12 +8186,12 @@
 	/**
 	 *
 	 */
-	_api_register( 'show()', function ( selector, opts ) {
+	_api_register( 'row()', function ( selector, opts ) {
 		return _selector_first( this.rows( selector, opts ) );
 	} );
 	
 	
-	_api_register( 'show().data()', function ( data ) {
+	_api_register( 'row().data()', function ( data ) {
 		var ctx = this.context;
 	
 		if ( data === undefined ) {
@@ -8217,7 +8217,7 @@
 	} );
 	
 	
-	_api_register( 'show().node()', function () {
+	_api_register( 'row().node()', function () {
 		var ctx = this.context;
 	
 		return ctx.length && this.length ?
@@ -8226,7 +8226,7 @@
 	} );
 	
 	
-	_api_register( 'show.add()', function ( row ) {
+	_api_register( 'row.add()', function ( row ) {
 		// Allow a jQuery object to be passed in - only a single show is added from
 		// it though - the first element in the set
 		if ( row instanceof $ && row.length ) {
@@ -8394,7 +8394,7 @@
 	
 	// Strings for the method names to help minification
 	var _emp = '';
-	var _child_obj = _emp+'show().child';
+	var _child_obj = _emp+'row().child';
 	var _child_mth = _child_obj+'()';
 	
 	// data can be:
@@ -8832,7 +8832,7 @@
 			// Otherwise the selector is a node, and there is one last option - the
 			// element might be a child of an element which has dt-show and dt-column
 			// data attributes
-			host = $(s).closest('*[data-dt-show]');
+			host = $(s).closest('*[data-dt-row]');
 			return host.length ?
 				[ {
 					row: host.data('dt-show'),

@@ -1,5 +1,6 @@
 <?php
 
+use JetBrains\PhpStorm\NoReturn;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -41,6 +42,10 @@ function sendEmail(string $email, string $subject, string $body): bool {
 }
 
 function checkAdmin($conn): bool {
+
+    if (!isset($_SESSION['user_id'])) {
+        return false;
+    }
 
     $user_id = $_SESSION['user_id'];
 

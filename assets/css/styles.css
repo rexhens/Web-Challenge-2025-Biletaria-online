@@ -29,7 +29,7 @@ body {
     color: var(--text-color);
 }
 
-.container {
+.fcontainer {
     display: flex;
     flex-direction: row-reverse;
     flex-wrap: wrap;
@@ -276,7 +276,8 @@ header {
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 30px;
+    gap: 25px;
+    width: 100%;
 }
 
 .show-card {
@@ -284,8 +285,8 @@ header {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
-    height: 550px;
-    width: 400px;
+    height: 500px;
+    width: 345px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -306,7 +307,7 @@ header {
 }
 
 .show-card.in-view:nth-child(odd) {
-    transition-delay: 0.1s;
+    transition-delay: 0.2s;
 }
 
 .show-card:hover {
@@ -330,7 +331,7 @@ header {
 h3 {
     font-family: var(--heading-font);
     margin: 0 0 10px;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .show-dates {
@@ -732,7 +733,7 @@ button:active {
 }
 
 .black-btn:hover {
-    background-image: linear-gradient(to bottom, #363a42 , var(--heading-color));
+    background-image: linear-gradient(to bottom, #363a42 , #3c475c);
 }
 
 .menu-icon {
@@ -906,12 +907,12 @@ button:active {
         color: var(--accent-color);
     }
 
-    .show-card {
-        width: 47%;
-    }
-
     .video-container .overlay {
         max-height: 15%;
+    }
+
+    .show-card {
+        width: 47%;
     }
 }
 
@@ -922,7 +923,7 @@ button:active {
 }
 
 @media (max-width: 945px) {
-    .container {
+    .fcontainer {
         flex-direction: column;
         width: 100%;
     }
@@ -958,6 +959,10 @@ button:active {
     .show-container {
         margin: 40px 5% 40px 38%;
     }
+
+    .show-container .btn-group button {
+        width: 30%;
+    }
 }
 
 @media (max-width: 768px) {
@@ -968,7 +973,7 @@ button:active {
 
 @media (max-width: 700px) {
     .show-card {
-        width: 425px;
+        width: 352px;
     }
 
     .show-reserve button {
@@ -1000,7 +1005,6 @@ button:active {
 
     .show-card {
         width: calc(80% + 58px);
-        height: 500px;
     }
 
     .btn-group button {
