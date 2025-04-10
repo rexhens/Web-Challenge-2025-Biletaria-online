@@ -4,7 +4,7 @@ require_once '../../config/db_connect.php';
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
 
-$shows_query = 'SELECT * FROM shows ORDER BY start_date DESC';
+$shows_query = 'SELECT * FROM shows ORDER BY id DESC';
 $shows_result = $conn->query($shows_query);
 
 $actors_query = 'SELECT * FROM actors';
