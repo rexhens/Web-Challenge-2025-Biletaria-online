@@ -18,7 +18,7 @@ $genreResult = $conn->query($genreQuery);
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Metropol Ticketing | Shfaqjet</title>
+    <title>Teatri Metropol | Shfaqjet</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {

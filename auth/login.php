@@ -9,7 +9,7 @@ session_start();
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Metropol Ticketing | Identifikohu</title>
+    <title>Teatri Metropol | Identifikohu</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
@@ -33,7 +33,7 @@ session_start();
 <body>
 <form action="login.php" method="post" id="login-form" class="form-container">
     <h1>Mirë se vini në <br>
-        <span>Metropol Ticketing</span>
+        <span>Teatrin Metropol</span>
     </h1>
     <div class="form-group">
         <input type="email" name="email" id="email" placeholder=" " required>
