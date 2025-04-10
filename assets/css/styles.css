@@ -210,10 +210,11 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .search-container input[type="text"] {
     width: 100%;
-    padding: 15px 15px 10px 40px;
+    padding: 13px 15px 12px 40px;
     border: 2px solid rgb(143, 121, 63, 0.5);
     border-radius: 10px;
     background-color: var(--background-color);
+    font-family: var(--default-font);
     color: var(--text-color);
     font-size: 16px;
     transition: border-color 0.3s ease;
@@ -307,7 +308,7 @@ header {
 }
 
 .show-card.in-view:nth-child(odd) {
-    transition-delay: 0.2s;
+    transition-delay: 0.15s;
 }
 
 .show-card:hover {

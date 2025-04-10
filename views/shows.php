@@ -30,7 +30,7 @@ $genreResult = $conn->query($genreQuery);
 
 <body>
     <header>
-        <h1><span>Shfaqjet në teatër</span></h1>
+        <h1>Shfaqjet në <span>Teatrin Metropol</span></h1>
         <?php
         if (checkAdmin($conn)) { ?>
             <button onclick="redirectTo('add-show.php')">Shto një shfaqje</button>
@@ -40,7 +40,7 @@ $genreResult = $conn->query($genreQuery);
 
     <div class="search-container">
         <i class="fa fa-search"></i>
-        <input class="search-bar" type="text" id="search" placeholder="Search for shows..." onkeyup="searchShow()">
+        <input class="search-bar" type="text" id="search" placeholder="Kërko shfaqje..." onkeyup="searchShow()">
     </div>
 
 
@@ -56,7 +56,7 @@ $genreResult = $conn->query($genreQuery);
 
         <select id="dateFilter">
             <option value="available">Në vazhdim</option>
-            <option value="past">Të shkuarat</option>
+            <option value="past">Të kaluarat</option>
             <option value="all">Të gjitha</option>
         </select>
     </div>
