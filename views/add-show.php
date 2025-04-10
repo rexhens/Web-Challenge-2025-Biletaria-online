@@ -107,6 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="" disabled selected>-- Zgjidh sallën --</option>
                 <option value="Shakespare">Shakespare</option>
                 <option value="Cehov">Cehov</option>
+                <option value="Bodrum">Bodrum</option>
             </select>
         </div>
 
