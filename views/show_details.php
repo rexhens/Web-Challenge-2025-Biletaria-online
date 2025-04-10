@@ -65,7 +65,7 @@ $groupedDates = groupDates($dates);
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Metropol Ticketing | <?php echo htmlspecialchars($show['title']); ?></title>
+    <title>Teatri Metropol | <?php echo htmlspecialchars($show['title']); ?></title>
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 

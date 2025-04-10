@@ -81,7 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Metropol Ticketing | Shto Shfaqe</title>
+    <title>Teatri Metropol | Shto Shfaqe</title>
     <link rel="stylesheet" href="../assets/css/flatpickr.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>

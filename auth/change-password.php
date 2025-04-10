@@ -9,7 +9,7 @@ require "../includes/functions.php";
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Metropol Ticketing | Ndrysho Falëkalimin</title>
+    <title>Tetari Metropol | Ndrysho Falëkalimin</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {

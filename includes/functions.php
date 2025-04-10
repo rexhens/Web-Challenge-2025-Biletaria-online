@@ -127,7 +127,7 @@ function showError($error): void {
       <html lang='sq'>
       <head>";
     require '../includes/links.php';
-    echo "<title>Metropol Ticketing | Mesazh</title>
+    echo "<title>Teatri Metropol | Mesazh</title>
       <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
       <link rel='stylesheet' href='../assets/css/styles.css'>
       <style>
