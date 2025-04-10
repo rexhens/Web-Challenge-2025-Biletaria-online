@@ -4,9 +4,6 @@ require_once '../../config/db_connect.php';
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
 
-$shows_query = 'SELECT * FROM shows ORDER BY id DESC';
-$shows_result = $conn->query($shows_query);
-
 $actors_query = 'SELECT * FROM actors';
 $actors_result = $conn->query($actors_query);
 ?>
@@ -24,6 +21,7 @@ $actors_result = $conn->query($actors_query);
 
     <title>Paneli i Adminit</title>
 
+
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
 
     <link rel="icon" type="image/x-icon" href="../../assets/img/metropol_icon.png">
@@ -37,6 +35,32 @@ $actors_result = $conn->query($actors_query);
     <link href="../../assets/css/sb-admin-2.min.css" rel="stylesheet">
 
     <style>
+        .show-overlay h3 {
+            font-family: "Russo One", sans-serif !important;
+            margin: 0 0 10px !important;
+            font-size: 1.8rem !important;
+            color: white !important;
+            font-weight: 900 !important;
+        }
+
+
+        .show-overlay h3 span {
+            color: #836e4f;
+            font-family: "Russo One", sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+        }
+
+        .show-overlay .show-dates span {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: #836e4f;
+        }
+
+        #reservationBtn {
+            background-color: #836e4f;
+        }
+
         .custom-size {
             width: 183px;
             height: 75px;
@@ -61,9 +85,115 @@ $actors_result = $conn->query($actors_query);
             border: 1px solid #ccc;
             height: 50px;
         }
+
+        #wrapper {
+            margin-top: 80px;
+        }
+
+        #wrapper #content-wrapper {
+            background-color: white;
+        }
+
+        .shows-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            justify-items: center;
+        }
+
+        /* Card Style */
+        .show-card {
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 300px;
+            height: 400px;
+            position: relative;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .show-card:hover {
+            transform: translateY(-5px);
+        }
+
+
+
+
+        .show-overlay p.show-description {
+            display: none !important;
+        }
+
+        .btn-group button:nth-child(2) {
+            display: none !important;
+        }
+
+        /* Animation for overlay */
+        @keyframes slideUp {
+            from {
+                transform: translateY(50%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0%);
+                opacity: 1;
+            }
+        }
+
+        /* Overlay content */
+        .show-overlay h3,
+        .show-overlay p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .show-overlay span {
+            font-weight: bold;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-group button {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-group button:hover {
+            transform: scale(1.05);
+        }
+
+        .black-btn {
+            background-color: #111;
+            color: #fff;
+        }
+
+        .btn-group button:not(.black-btn) {
+            background-color: #f0f0f0;
+            color: #333;
+        }
     </style>
 
 </head>
+
 
 <body id="page-top">
 
@@ -78,207 +208,7 @@ $actors_result = $conn->query($actors_query);
             <div id="content">
 
                 <!-- Topbar -->
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-
-                    <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Topbar Navbar -->
-                    <ul class="navbar-nav ml-auto">
-
-                        <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-                        <li class="nav-item dropdown no-arrow d-sm-none">
-                            <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-search fa-fw"></i>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-                                aria-labelledby="searchDropdown">
-                                <form class="form-inline mr-auto w-100 navbar-search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control bg-light border-0 small"
-                                            placeholder="Search for..." aria-label="Search"
-                                            aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary" type="button">
-                                                <i class="fas fa-search fa-sm"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </li>
-
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <!-- Counter - Alerts -->
-                                <span class="badge badge-danger badge-counter">3+</span>
-                            </a>
-                            <!-- Dropdown - Alerts -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="alertsDropdown">
-                                <h6 class="dropdown-header">
-                                    Alerts Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-primary">
-                                            <i class="fas fa-file-alt text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 12, 2019</div>
-                                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-success">
-                                            <i class="fas fa-donate text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 7, 2019</div>
-                                        $290.29 has been deposited into your account!
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="mr-3">
-                                        <div class="icon-circle bg-warning">
-                                            <i class="fas fa-exclamation-triangle text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="small text-gray-500">December 2, 2019</div>
-                                        Spending Alert: We've noticed unusually high spending for your account.
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-                            </div>
-                        </li>
-
-                        <!-- Nav Item - Messages -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-envelope fa-fw"></i>
-                                <!-- Counter - Messages -->
-                                <span class="badge badge-danger badge-counter">7</span>
-                            </a>
-                            <!-- Dropdown - Messages -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="messagesDropdown">
-                                <h6 class="dropdown-header">
-                                    Message Center
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle"
-                                            src="../../assets/img/admin/undraw_profile_1.svg" alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div class="font-weight-bold">
-                                        <div class="text-truncate">Hi there! I am wondering if you can help me with a
-                                            problem I've been having.</div>
-                                        <div class="small text-gray-500">Emily Fowler · 58m</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle"
-                                            src="../../assets/img/admin//undraw_profile_2.svg" alt="...">
-                                        <div class="status-indicator"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">I have the photos that you ordered last month, how
-                                            would you like them sent to you?</div>
-                                        <div class="small text-gray-500">Jae Chun · 1d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle"
-                                            src="../../assets/img/admin/undraw_profile_3.svg" alt="...">
-                                        <div class="status-indicator bg-warning"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Last month's report looks great, I am very happy with
-                                            the progress so far, keep up the good work!</div>
-                                        <div class="small text-gray-500">Morgan Alvarez · 2d</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
-                                            alt="...">
-                                        <div class="status-indicator bg-success"></div>
-                                    </div>
-                                    <div>
-                                        <div class="text-truncate">Am I a good boy? The reason I ask is because someone
-                                            told me that people say this to all dogs, even if they aren't good...</div>
-                                        <div class="small text-gray-500">Chicken the Dog · 2w</div>
-                                    </div>
-                                </a>
-                                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
-                            </div>
-                        </li>
-
-                        <div class="topbar-divider d-none d-sm-block"></div>
-
-                        <!-- Nav Item - User Information -->
-                        <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Admin Teatri</span>
-                                <img class="img-profile rounded-circle"
-                                    src="../../assets/img/admin/undraw_profile.svg">
-                            </a>
-                            <!-- Dropdown - User Information -->
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                                aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Profile
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Settings
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Activity Log
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </li>
-
-                    </ul>
-
-                </nav>
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
@@ -503,81 +433,15 @@ $actors_result = $conn->query($actors_query);
                     </div>
 
                     <!-- Menaxhimi i Shfaqjeve -->
-                    <section class="w3l-grids">
-                        <div class="grids-main py-5">
-                            <div class="container py-lg-3">
-                                <div class="headerhny-title">
-                                    <div class="w3l-title-grids">
-                                        <div class="headerhny-left">
-                                            <h3 class="hny-title">Menaxho Shfaqjet</h3>
-                                        </div>
-                                        <div class="headerhny-right text-lg-right">
-                                            <h4><a class="show-title" href="movies.html">Te gjitha</a></h4>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="owl-three owl-carousel owl-theme owl-loaded owl-drag">
+
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 1%; margin-right: 0%;">
+                        <h1 style="margin: 0;">Menaxho Shfaqjet</h1>
+                        <button>Shiko te gjitha</button>
 
 
+                        <div class="shows-container" id="shows-container"></div>
+                    </div>
 
-
-
-
-                                    <div class="owl-stage-outer">
-                                        <div class="owl-stage"
-                                            style="transform: translate3d(-701px, 0px, 0px); transition: 1s; width: 2805px;">
-
-                                            <?php while ($row = $shows_result->fetch_assoc()) { ?>
-                                                <div class="owl-item cloned" style="width: 213.667px; margin-right: 20px;">
-                                                    <div class="item vhny-grid">
-                                                        <div class="box16 mb-0">
-                                                            <a href="movies.html">
-                                                                <figure>
-                                                                    <img src="./shows/get_image.php?id=<?php echo $row['id']; ?>"
-                                                                        alt=""
-                                                                        style="object-fit: cover; width: 183px; height: 175px;">
-
-                                                                </figure>
-                                                                <div class=" box-content">
-
-                                                                    <h4> <span class="post"><span class="fa fa-clock-o">
-                                                                            </span> 2 Hr 4min
-
-                                                                        </span>
-
-                                                                    </h4>
-                                                                </div>
-
-                                                            </a>
-                                                        </div>
-                                                        <h3> <a class="title-gd"
-                                                                href="movies.html"><?php echo $row['title']; ?></a></h3>
-                                                        <p><?php echo $row['description']; ?> ....</p>
-                                                        <div class="button-center text-center mt-4">
-                                                            <a href="movies.html" class="btn watch-button">Shiko
-                                                                rezervimet</a>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-
-                                            <?php } ?>
-                                        </div>
-                                    </div>
-                                    <div class="owl-nav"><button type="button" role="presentation"
-                                            class="owl-prev"><span aria-label="Previous"> <span
-                                                    class="fa fa-angle-left"></span>
-                                            </span></button><button type="button" role="presentation"
-                                            class="owl-next"><span aria-label="Next">
-                                                <span class="fa fa-angle-right"></span> </span></button></div>
-                                    <div class="owl-dots"><button role="button"
-                                            class="owl-dot active"><span></span></button><button role="button"
-                                            class="owl-dot"><span></span></button></div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </section>
 
                     <!-- Menaxhimi i aktoreve -->
                     <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 5%; margin-right: 5%;">
@@ -631,13 +495,7 @@ $actors_result = $conn->query($actors_query);
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Theater Website 2025</span>
-                    </div>
-                </div>
-            </footer>
+
             <!-- End of Footer -->
 
         </div>
@@ -651,6 +509,48 @@ $actors_result = $conn->query($actors_query);
         <i class="fas fa-angle-up"></i>
     </a>
 
+    <script>
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        async function fetchFilteredShows() {
+            const genre = "";
+            const dateFilterValue = "admin";
+
+            try {
+                const response = await fetch('../filter_shows.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `show_time_filter=${encodeURIComponent(dateFilterValue)}&genre_id=${encodeURIComponent(genre)}`,
+                });
+
+                const html = await response.text();
+                const showsContainer = document.getElementById("shows-container");
+                showsContainer.innerHTML = html;
+
+                document.querySelectorAll('.show-card').forEach(card => {
+                    observer.observe(card);
+                });
+
+            } catch (error) {
+                console.error('Error fetching shows:', error);
+                document.getElementById("shows-container").innerHTML = "<div class='errors show'><p>Gabim gjatë filtrimit!</p></div>";
+            }
+        }
+
+
+
+        fetchFilteredShows();
+    </script>
 
     <!-- Bootstrap core JavaScript-->
     <script src="../../assets/vendor/jquery/jquery.min.js"></script>
