@@ -38,7 +38,7 @@ if ($filter === 'available') {
     $params[] = $now;
     $types .= "s";
 } else {
-    $query = "SELECT s.* FROM shows s";
+    $query = "SELECT s.* FROM shows s LIMIT 10";
 }
 
 if (!empty($genre_id)) {
@@ -55,7 +55,7 @@ if (!empty($params)) {
 $stmt->execute();
 $result = $stmt->get_result();
 
-if($result->num_rows > 0){
+if ($result->num_rows > 0) {
     while ($show = $result->fetch_assoc()) {
         $posterUrl = "get_image.php?show_id=" . $show['id'];
 
