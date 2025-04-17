@@ -16,20 +16,18 @@ $salla = $_POST['salla'];
 $specifikime = $_POST['specifikime'];
 $regjisor = $_POST['regjisor'];
 $asregjisor = $_POST['asregjisor'];
-$aktoret = $_POST['aktoret']; // Should be an array of names (1-6)
+$aktoret = $_POST['aktoret']; 
 
-// Load the local image file and base64 encode it
 $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/doc-header.png';
 if (file_exists($imagePath)) {
   $imageData = base64_encode(file_get_contents($imagePath));
-  // Embed the image directly using base64 encoding
+
   $imageTag = '<img src="../../../assets/img/doc-header.png" alt="Header Logo" style="width:120px; margin-bottom:20px;">';
 } else {
-  // Fallback message if the local image cannot be found
+  
   $imageTag = '<p>[Image file not found]</p>';
 }
 
-// Generate actor list
 $aktorList = '';
 foreach ($aktoret as $i => $akt) {
   if (trim($akt) !== '') {
@@ -37,7 +35,7 @@ foreach ($aktoret as $i => $akt) {
   }
 }
 
-// Word document HTML content
+
 $docContent = "
 <html xmlns:o='urn:schemas-microsoft-com:office:office' 
       xmlns:w='urn:schemas-microsoft-com:office:word' 
@@ -106,7 +104,7 @@ $imageTag
 </html>
 ";
 
-// Output as Word Document
+
 header("Content-type: application/vnd.ms-word");
 header("Content-Disposition: attachment; Filename=formular.doc");
 echo $docContent;

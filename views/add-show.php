@@ -3,8 +3,7 @@
 require "../config/db_connect.php";
 require "../auth/auth.php";
 require "../includes/functions.php";
-redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+
 ?>
 
 <?php

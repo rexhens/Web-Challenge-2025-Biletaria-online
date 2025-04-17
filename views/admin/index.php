@@ -34,7 +34,42 @@ $actors_result = $conn->query($actors_query);
     <!-- Custom styles for this template-->
     <link href="../../assets/css/sb-admin-2.min.css" rel="stylesheet">
 
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Popper.js (required for Bootstrap) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <style>
+        #accordionSidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1030;
+            /* make sure it stays on top */
+            overflow-y: auto;
+            background-color: #8f793f !important;
+            background-image: none !important;
+            /* removes gradient */
+        }
+
+        #content-wrapper,
+        .main-content {
+            margin-left: 250px;
+
+            /* adjust if your sidebar is wider/narrower */
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+
         .show-overlay h3 {
             font-family: "Russo One", sans-serif !important;
             margin: 0 0 10px !important;
@@ -200,7 +235,122 @@ $actors_result = $conn->query($actors_query);
     <!-- Page Wrapper -->
     <div id="wrapper">
 
+        <!-- Sidebar -->
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
 
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+
+                <div class="sidebar-brand-text mx-3">Paneli i menaxhimit</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Dashboardi</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="charts.html">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Grafiket</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Menaxhimi
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Menaxho Userat</span>
+                </a>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Components:</h6>
+                        <a class="collapse-item" href="buttons.html">Buttons</a>
+                        <a class="collapse-item" href="cards.html">Cards</a>
+                    </div>
+                </div>
+            </li>
+
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+                    aria-expanded="true" aria-controls="collapseUtilities">
+                    <i class="fas fa-fw fa-wrench"></i>
+                    <span>Menaxho Shfaqjet</span>
+                </a>
+                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Shfaqjet</h6>
+                        <a class="collapse-item" href="utilities-color.html">Shto Shfaqje</a>
+                        <a class="collapse-item" href="utilities-border.html">Shiko Shfaqjet</a>
+
+                    </div>
+                </div>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Addons
+            </div>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+                    aria-expanded="true" aria-controls="collapsePages">
+                    <i class="fas fa-fw fa-folder"></i>
+                    <span>Pages</span>
+                </a>
+                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Login Screens:</h6>
+                        <a class="collapse-item" href="login.html">Login</a>
+                        <a class="collapse-item" href="register.html">Register</a>
+                        <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+                        <div class="collapse-divider"></div>
+                        <h6 class="collapse-header">Other Pages:</h6>
+                        <a class="collapse-item" href="404.html">404 Page</a>
+                        <a class="collapse-item" href="blank.html">Blank Page</a>
+                    </div>
+                </div>
+            </li>
+
+            <!-- Nav Item - Charts -->
+
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item active">
+                <a class="nav-link" href="tables.html">
+                    <i class="fas fa-fw fa-table"></i>
+                    <span>Tables</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -390,51 +540,53 @@ $actors_result = $conn->query($actors_query);
 
 
                     <!-- Tabela e userave -->
-                    <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
-                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
-                            <button class="btn btn-sm btn-outline-primary">Shto Përdorues</button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="userTable" class="table table-hover mb-0 w-100">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Emri</th>
-                                            <th>Email</th>
-                                            <th>Numri i cel</th>
-                                            <th>Roli</th>
-                                            <th>Statusi</th>
-                                            <th>Veprime</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php while ($row = $users_result->fetch_assoc()) { ?>
+                    <section id="users-section">
+                        <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
+                                <button class="btn btn-sm btn-outline-primary">Shto Përdorues</button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="userTable" class="table table-hover mb-0 w-100">
+                                        <thead class="thead-light">
                                             <tr>
-                                                <td><?php echo $row['id'] ?></td>
-                                                <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
-                                                <td><?php echo $row['email'] ?></td>
-                                                <td><?php echo $row['phone'] ?></td>
-                                                <td><?php echo $row['role'] ?></td>
-                                                <td><span class="badge badge-success">Aktiv</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-secondary">Edito</button>
-                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                                </td>
+                                                <th>#</th>
+                                                <th>Emri</th>
+                                                <th>Email</th>
+                                                <th>Numri i cel</th>
+                                                <th>Roli</th>
+                                                <th>Statusi</th>
+                                                <th>Veprime</th>
                                             </tr>
-                                        <?php } ?>
+                                        </thead>
+                                        <tbody>
+                                            <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                                <tr>
+                                                    <td><?php echo $row['id'] ?></td>
+                                                    <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
+                                                    <td><?php echo $row['email'] ?></td>
+                                                    <td><?php echo $row['phone'] ?></td>
+                                                    <td><?php echo $row['role'] ?></td>
+                                                    <td><span class="badge badge-success">Aktiv</span></td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-secondary">Edito</button>
+                                                        <button class="btn btn-sm btn-outline-danger">Fshij</button>
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
 
-                                        <!-- Add more rows here -->
-                                    </tbody>
-                                </table>
+                                            <!-- Add more rows here -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
+                    </section>
                     <!-- Menaxhimi i Shfaqjeve -->
 
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 1%; margin-right: 0%;">
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="shows-section"
+                        style="margin-left: 1%; margin-right: 0%;">
                         <h1 style="margin: 0;">Menaxho Shfaqjet</h1>
                         <button>Shiko te gjitha</button>
 
@@ -613,6 +765,38 @@ $actors_result = $conn->query($actors_query);
         });
 
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseTwo"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#users-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseUtilities"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#shows-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+    </script>
+
 
 
 </body>
