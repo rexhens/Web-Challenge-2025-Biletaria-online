@@ -45,7 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("ssissbsi", $title, $hall, $genre_id, $time, $description, $poster, $trailer, $price);
+            $null = NULL;
+            $stmt->bind_param("ssissbsi", $title, $hall, $genre_id, $time, $description, $null, $trailer, $price);
             $stmt->send_long_data(5, $poster);
             if ($stmt->execute()) {
                 $show_id = $conn->insert_id;

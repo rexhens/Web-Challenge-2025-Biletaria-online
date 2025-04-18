@@ -97,7 +97,7 @@ $groupedDates = groupDates($dates);
             <h3 class="hidden"><?php echo htmlspecialchars($show['title']); ?></h3>
             <p class="hidden"><span>Zhanri: </span><?php echo htmlspecialchars($show['genre_name']); ?></p>
             <p><span>Datat: </span><?php echo implode(', ', $groupedDates) ?></p>
-            <p><span>Ora: </span><?php echo htmlspecialchars($show['time']); ?></p>
+            <p><span>Ora: </span><?php echo date('H:i', strtotime($show['time'])); ?></p>
             <p><span>Salla: </span><?php echo htmlspecialchars($show['hall']); ?></p>
             <p><span>Çmimi: </span><?php echo htmlspecialchars($show['price']); ?> Lekë</p>
         </div>
