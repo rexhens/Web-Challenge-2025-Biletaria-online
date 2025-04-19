@@ -292,7 +292,7 @@ $shows_result = $conn->query($shows_query);
         <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
 
                 <div class="sidebar-brand-text mx-3">Paneli i menaxhimit</div>
             </a>
@@ -331,8 +331,8 @@ $shows_result = $conn->query($shows_query);
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="buttons.html">Shto perdorues te ri</a>
-                        <a class="collapse-item" href="cards.html">Shiko te gjithe</a>
+                        <a class="collapse-item" href="./users/add-user.php">Shto perdorues te ri</a>
+                        <a class="collapse-item" href="./users/index.php">Shiko te gjithe</a>
                     </div>
                 </div>
             </li>
