@@ -7,11 +7,11 @@ var ctx = document.getElementById("myPieChart");
 var myPieChart = new Chart(ctx, {
   type: 'doughnut',
   data: {
-    labels: ["Online", "Ne biletari", "Media Sociale"],
+    labels: ["Online", "Ne biletari"],
     datasets: [{
-      data: [50, 20, 30],
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf'],
+      data: [71, 29],
+      backgroundColor: ['#8f793f', '#716a69',],
+      hoverBackgroundColor: ['#c9bba7', '#c9bba7'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },

@@ -95,6 +95,25 @@ $shows_result = $conn->query($shows_query);
             overflow-x: hidden;
         }
 
+        a.page-link {
+            background-color: #8f793f !important;
+            /* or your theme color */
+            color: white !important;
+            box-shadow: none !important;
+        }
+
+        .page-item.active .page-link {
+            border-color: #8f793f;
+        }
+
+        .text-primary {
+            color: #8f793f !important;
+        }
+
+        .text-success {
+            color: #8f793f !important;
+        }
+
 
         .show-overlay h3 {
             font-family: "Russo One", sans-serif !important;
@@ -251,6 +270,14 @@ $shows_result = $conn->query($shows_query);
             background-color: #f0f0f0;
             color: #333;
         }
+
+        @media (max-width: 768px) {
+            #content-wrapper {
+                margin-left: auto !important;
+                margin-right: auto !important;
+                float: none !important;
+            }
+        }
     </style>
 
 </head>
@@ -277,7 +304,7 @@ $shows_result = $conn->query($shows_query);
             <li class="nav-item">
                 <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboardi</span></a>
+                    <span>Raporti Mujor</span></a>
             </li>
 
             <li class="nav-item">
@@ -543,7 +570,7 @@ $shows_result = $conn->query($shows_query);
                                             <a class="dropdown-item" href="#">Online</a>
                                             <a class="dropdown-item" href="#">Ne biletari</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Media sociale</a>
+
                                         </div>
                                     </div>
                                 </div>
@@ -574,7 +601,7 @@ $shows_result = $conn->query($shows_query);
                                             <a class="dropdown-item" href="#">Online</a>
                                             <a class="dropdown-item" href="#">ne biletari</a>
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Media sociale</a>
+
                                         </div>
                                     </div>
                                 </div>
@@ -590,9 +617,7 @@ $shows_result = $conn->query($shows_query);
                                         <span class="mr-2">
                                             <i class="fas fa-circle text-success"></i> Ne biletari
                                         </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-info"></i> Media sociale
-                                        </span>
+
                                     </div>
                                 </div>
                             </div>
@@ -605,7 +630,8 @@ $shows_result = $conn->query($shows_query);
                         <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
-                                <button class="btn btn-sm btn-outline-primary">Shto Përdorues</button>
+                                <button class="btn btn-sm btn-primary-report"
+                                    onclick="window.location.href = './users/add-user.php'">Shto Përdorues</button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -650,7 +676,7 @@ $shows_result = $conn->query($shows_query);
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
-                            <button class="btn btn-sm btn-outline-primary">+ Shto Shfaqje</button>
+                            <button class="btn btn-sm btn-primary-report">+ Shto Shfaqje</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -819,7 +845,7 @@ $shows_result = $conn->query($shows_query);
             ]
         });
         $('#showsTable').DataTable({
-            "pageLength": 10,
+            "pageLength": 5,
             "lengthChange": false,
             "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
             "language": {
