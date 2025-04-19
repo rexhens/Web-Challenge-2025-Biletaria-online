@@ -10,7 +10,7 @@
     <meta property="og:title" content="Teatri Metropol">
     <meta property="og:description" content="Your theater experience in Albania.">
     <meta property="og:image" content="assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
 
@@ -18,17 +18,11 @@
 
     <!-- Main CSS (always loaded) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style-starter.css">
-    <link href="//fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,600&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style-starter.css">
+    <link href="//fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
     
     <!-- Page-specific CSS -->
     <?php if (isset($pageStyles)): ?>
@@ -46,12 +40,12 @@
         <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
             <div class="container">
 
-                <a class="navbar-brand" href="#index.html">
-                    <img src="assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
+                <a class="navbar-brand" href="../views/index.php">
+                    <img src="../assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
                 </a>
                 
-                <a class="navbar-brand" href="index.php">
-                    <b style="color: #836e4f;">Metropol</b><i>Ticketing</i>
+                <a class="navbar-brand" href="../views/index.php">
+                    Teatri <b style="color: #836e4f;">Metropol</b>
                 </a>    
                 
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
@@ -64,10 +58,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="index.php">Home</a>
+                            <a class="nav-link" href="../views/index.php">Home</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'events.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="views/shows.php">Shfaqje</a>
+                            <a class="nav-link" href="../views/shows.php">Shfaqje</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : ''; ?>">
                             <a class="nav-link" href="about.php">Rreth Nesh</a>
@@ -116,7 +110,7 @@
                     </div>
                     <div class="Login_SignUp" id="login"
                         style="font-size: 2rem ; display: inline-block; position: relative;">
-                        <a class="nav-link" href="auth/login.php"><i class="fa fa-user-circle-o"></i></a>
+                        <a class="nav-link" href="../auth/login.php"><i class="fa fa-user-circle-o"></i></a>
                     </div>
                 </div>
                 <!-- toggle switch for light and dark theme -->

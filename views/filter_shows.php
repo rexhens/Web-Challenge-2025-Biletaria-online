@@ -70,17 +70,17 @@ if ($result->num_rows > 0) {
 
         $groupedDates = groupDates($dates);
 
-        echo "<div class='show-card' style='background-image: url($posterUrl);' data-genre='" . htmlspecialchars($show['genre_id']) . "'>
+        echo "<div class='show-card item' style='background-image: url($posterUrl);' data-genre='" . htmlspecialchars($show['genre_id']) . "'>
         <div class='overlay'>
-            <h3><span>Titulli: </span>" . htmlspecialchars($show['title']) . "</h3>
-            <p class='show-dates'><span>Datat: </span>" . implode(', ', $groupedDates) . "</p>" .
+            <h3>" . htmlspecialchars($show['title']) . "</h3>
+            <p class='show-dates'>" . implode(', ', $groupedDates) . "</p>" .
             (checkAdmin($conn) ?
                 "<div class='btn-group' style='margin-bottom: 10px;'>
                     <button onclick=\"redirectTo('edit-show.php?id=" . $show['id'] . "')\">Edito</button>
                     <button onclick=\"redirectTo('reservations?id=" . $show['id'] . "')\" class='black-btn'>Rezervime</button>
                 </div>"
                 :
-                "<p class='show-description'><span>Përshkrim: </span>" . htmlspecialchars($show['description']) . "</p>"
+                "<p class='show-description'>" . htmlspecialchars($show['description']) . "</p>"
             ) .
             "<div class='btn-group'>
                 <button onclick=\"redirectTo('show_details.php?id=" . $show['id'] . "')\">Më shumë info</button>
