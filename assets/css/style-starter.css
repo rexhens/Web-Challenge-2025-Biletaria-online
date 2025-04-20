@@ -18851,25 +18851,13 @@ screen and (max-height: 300px) {
 }
 
 /* Styles for dialog window */
-#small-dialog,
-#small-dialog1,
-#small-dialog2,
-#small-dialog3,
-#small-dialog4,
-#small-dialog5,
-#small-dialog6 {
+.small-dialog {
   max-width: 750px;
   margin: 40px auto;
   position: relative;
 }
 
-div#small-dialog iframe,
-div#small-dialog1 iframe,
-div#small-dialog2 iframe,
-div#small-dialog3 iframe,
-div#small-dialog4 iframe,
-div#small-dialog5 iframe,
-div#small-dialog6 iframe {
+div.small-dialog iframe {
   width: 100%;
   height: 400px;
   display: block;

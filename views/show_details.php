@@ -73,8 +73,15 @@ $groupedDates = groupDates($dates);
 
     <div class="video-container">
         <?php
-        parse_str(parse_url($show['trailer'], PHP_URL_QUERY), $queryParams);
-        $videoId = $queryParams['v'] ?? '';
+        $videoId = '';
+        $parsedUrl = parse_url($show['trailer']);
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $queryParams);
+            $videoId = $queryParams['v'] ?? '';
+        } elseif (isset($parsedUrl['path'])) {
+            $pathParts = explode('/', trim($parsedUrl['path'], '/'));
+            $videoId = end($pathParts);
+        }
         ?>
         <div id="player"></div>
         <div id="cover"></div>

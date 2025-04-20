@@ -1,10 +1,14 @@
 <?php
+/** @var mysqli $conn */
+require "../config/db_connect.php";
+require "../auth/auth.php";
+require "../includes/functions.php";
+?>
 
+<?php
 $pageStyles = [
     "../assets/css/style-starter.css",
-    "../assets/css/shows.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css",
-    "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"
+    "../assets/css/shows.css"
 ];
 require '../includes/header.php';
 ?>
@@ -12,90 +16,78 @@ require '../includes/header.php';
 	<section class="w3l-main-slider position-relative" id="home">
 		<div class="companies20-content">
 			<div class="owl-one owl-carousel owl-theme">
-				<div class="item">
-					<li>
-						<div class="slider-info banner-view bg bg2">
-							<div class="banner-info">
-								<h3>Dasma Shqiptare</h3>
-								<p>Ky produksion i Teatrit Metropol i titulluar “Dasmat Shqiptare” ka në qendër identifikimin dhe prezantimin e vlerave më të mira kombëtare nëpërmjet institucionit të dasmës, <span class="over-para">
-									duke kombinuar me finesë dhe një qasje totalisht moderne vizuale, ritualet e dasmave shqiptare me këngë...</span></p>
-								<a href="#small-dialog1" class="popup-with-zoom-anim play-view1">
+                <?php
+                $now = $now = date('Y-m-d');
+                $query = "
+        SELECT s.*
+        FROM shows s
+        JOIN (
+            SELECT show_id
+            FROM show_dates
+            GROUP BY show_id
+            HAVING MAX(show_date) >= ?
+        ) sd ON s.id = sd.show_id
+    ";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("s", $now);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($result->num_rows > 0){
+
+                    while ($show = $result->fetch_assoc()) {
+                        $datesQuery = $conn->prepare("SELECT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
+                        $datesQuery->bind_param("i", $show['id']);
+                        $datesQuery->execute();
+                        $datesResult = $datesQuery->get_result();
+                        $dates = [];
+                        while ($row = $datesResult->fetch_assoc()) {
+                            $dates[] = $row['show_date'];
+                        }
+
+                        $groupedDates = groupDates($dates);
+
+                        $videoId = '';
+                        $parsedUrl = parse_url($show['trailer']);
+                        if (isset($parsedUrl['query'])) {
+                            parse_str($parsedUrl['query'], $queryParams);
+                            $videoId = $queryParams['v'] ?? '';
+                        } elseif (isset($parsedUrl['path'])) {
+                            $pathParts = explode('/', trim($parsedUrl['path'], '/'));
+                            $videoId = end($pathParts);
+                        }
+
+                        $popupId = 'small-dialog' . $show['id'];
+
+                        $bg_image = "https://img.youtube.com/vi/$videoId/maxresdefault.jpg";
+
+                        ?>
+                        <div class="item">
+                            <li>
+                                <div class="slider-info banner-view bg bg2" style="background: url('<?php echo $bg_image; ?>') no-repeat center;">
+                                    <div class="banner-info">
+                                        <h3><?php echo htmlspecialchars($show['title']); ?></h3>
+                                        <p><?php echo implode(', ', $groupedDates); ?></p>
+                                        <p class='show-description'><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
+                                        <a href="#<?php echo $popupId; ?>" class="popup-with-zoom-anim play-view1">
 									<span class="video-play-icon">
 										<span class="fa fa-play"></span>
 									</span>
-									<h6>Shiko Trailerin</h6>
-								</a>
-								<div id="small-dialog1" class="zoom-anim-dialog mfp-hide">
-									<iframe src="https://www.youtube.com/embed/7ff2s7XxWkA" allow="autoplay; fullscreen"
-										allowfullscreen=""></iframe>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
-				<div class="item">
-					<li>
-						<div class="slider-info  banner-view banner-top1 bg bg2">
-							<div class="banner-info">
-								<h3>Probleme me Pijen</h3>
-								<p>Motrat e Manastirit të Qepjes së Përjetshme kanë një sekret - prodhojnë verë fshehurazi për të mbajtur manastirin hapur! <span class="over-para">
-									Por kur dy gazetarë të maskuar si prift ...</span></p>
-								<a href="#small-dialog2" class="popup-with-zoom-anim play-view1">
-									<span class="video-play-icon">
-										<span class="fa fa-play"></span>
-									</span>
-									<h6>Shiko Trailerin</h6>
-								</a>
-								<div id="small-dialog2" class="zoom-anim-dialog mfp-hide">
-									<iframe src="https://www.youtube.com/embed/BwueSCsxT6M" allow="autoplay; fullscreen"
-										allowfullscreen=""></iframe>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
-				<div class="item">
-					<li>
-						<div class="slider-info banner-view banner-top2 bg bg2">
-							<div class="banner-info">
-								<h3>Një letër për stinet</h3>
-								<p>Një letër për stinët është një shfaqje magjike për fëmijët, ku Pranvera, Vera, Vjeshta dhe Dimri nisen në një udhëtim për të kuptuar çfarë ndodh kur humbet Koha.<span class="over-para">
-									Plot muzikë, kërcim, kukulla dhe interaktivitet — kjo vepër i mëson të vegjëlve rëndësinë e çdo stine dhe fuqinë e bashkëpunimit.</span></p>
-								<a href="#small-dialog3" class="popup-with-zoom-anim play-view1">
-									<span class="video-play-icon">
-										<span class="fa fa-play"></span>
-									</span>
-									<h6>Shiko Trailerin</h6>
-								</a>
-								<div id="small-dialog3" class="zoom-anim-dialog mfp-hide">
-									<iframe src="https://www.youtube.com/embed/Bp-pEsoaIZA" allow="autoplay; fullscreen"
-										allowfullscreen=""></iframe>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
-				<div class="item">
-					<li>
-						<div class="slider-info banner-view banner-top3 bg bg2">
-							<div class="banner-info">
-								<h3>Miushet e Shkathëta</h3>
-								<p> është premiera më e re për fëmijë në Teatrin Metropol. Një vepër e autoreve Janet Stanford, Kathryn Chase Bryer, <span class="over-para">
-									e cila tregon historinë e dy miusheve aventuriere, Neli dhe Emilia të cilat jetojnë në një papafingo.</span></p>
-								<a href="#small-dialog4" class="popup-with-zoom-anim play-view1">
-									<span class="video-play-icon">
-										<span class="fa fa-play"></span>
-									</span>
-									<h6>Shiko Trailerin</h6>
-								</a>
-								<div id="small-dialog4" class="zoom-anim-dialog mfp-hide">
-									<iframe src="https://www.youtube.com/embed/8zgOVbc1Yko" allow="autoplay; fullscreen"
-										allowfullscreen=""></iframe>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
+                                            <h6>Shiko Trailerin</h6>
+                                        </a>
+                                        <div id="<?php echo $popupId; ?>" class="zoom-anim-dialog mfp-hide small-dialog">
+                                            <iframe src="https://www.youtube.com/embed/<?php echo $videoId; ?>" allow="autoplay; fullscreen" allowfullscreen=""></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    <?php }
+                } else {
+                    echo "<div class='errors show'>
+             <p>Nuk ka shfaqje!</p>
+          </div>";
+                }
+                ?>
 			</div>
 		</div>
 	</section>
@@ -103,7 +95,7 @@ require '../includes/header.php';
 	<section class="w3l-grids">
 		<div class="grids-main py-5">
 			<div class="container py-lg-3">
-				<div class="headerhny-title">
+				<div class="headerhny-title" style="margin-bottom: -20px;">
 					<div class="w3l-title-grids">
 						<div class="headerhny-left">
 							<h3 class="hny-title">Sezoni i Ri</h3>
@@ -178,6 +170,7 @@ require '../includes/header.php';
 <?php include('../includes/footer.php'); ?>
 <!-- responsive tabs -->
 <script src="../assets/js/jquery-1.9.1.min.js"></script>
+<script src="../assets/js/functions.js"></script>
 <script src="../assets/js/easyResponsiveTabs.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
@@ -273,39 +266,20 @@ require '../includes/header.php';
 <!-- script for owlcarousel -->
 <script src="../assets/js/jquery.magnific-popup.min.js"></script>
 <script>
-	$(document).ready(function () {
-		$('.popup-with-zoom-anim').magnificPopup({
-			type: 'inline',
-
-			fixedContentPos: false,
-			fixedBgPos: true,
-
-			overflowY: 'auto',
-
-			closeBtnInside: true,
-			preloader: false,
-
-			midClick: true,
-			removalDelay: 300,
-			mainClass: 'my-mfp-zoom-in'
-		});
-
-		$('.popup-with-move-anim').magnificPopup({
-			type: 'inline',
-
-			fixedContentPos: false,
-			fixedBgPos: true,
-
-			overflowY: 'auto',
-
-			closeBtnInside: true,
-			preloader: false,
-
-			midClick: true,
-			removalDelay: 300,
-			mainClass: 'my-mfp-slide-bottom'
-		});
-	});
+    $(document).ready(function () {
+        // Initialize Magnific Popup for the first time (this will initialize the first 2)
+        $('.popup-with-zoom-anim').magnificPopup({
+            type: 'inline',
+            fixedContentPos: true,
+            fixedBgPos: true,
+            overflowY: 'auto',
+            closeBtnInside: true,
+            preloader: false,
+            midClick: true,
+            removalDelay: 300,
+            mainClass: 'my-mfp-zoom-in'
+        });
+    });
 </script>
 <!-- disable body scroll which navbar is in active -->
 <script>
