@@ -1,13 +1,13 @@
 <?php 
-$pageTitle = "Home";
-include('includes/header.php'); 
+$pageTitle = "Rreth nesh";
+require '../includes/header.php';
 ?>
 
 
 <div class="w3l-breadcrumbs">
 		<nav id="breadcrumbs" class="breadcrumbs">
 			<div class="container page-wrapper">
-				<a href="index.html">Home</a> » <span class="breadcrumb_last" aria-current="page">Rreth Nesh</span>
+				<a href="index.php">Kreu</a> » <span class="breadcrumb_last" aria-current="page">Rreth Nesh</span>
 			</div>
 		</nav>
 	</div>
@@ -21,10 +21,10 @@ include('includes/header.php');
 					<h3 class="hny-title">TEATRI METROPOL</h3>
 					<p class="mt-2"><div class="column ">
             <div class="single-event-content">
-               <strong>Misioni i Teatrit të Metropolit</strong>&nbsp;është të realizojë vepra teatrore shqiptare dhe botërore me nivel të lartë artistik, të cilat promovojnë gjithëpërfshirjen, dialogun konstruktiv, dhe vlerat njerëzore universale.
-<strong>Vizioni i Teatrit të Metropolit</strong>&nbsp;është që të krijojë një standart cilësor në realizimin e shfaqjeve teatrore dhe trajnimit profesional të stafit artistik. Teatri angazhohet të krijojë për nevojat e komunitetit të të gjithë brezave; fëmijë, të rinj, të rritur. Duke ngulmuar në cilësi, teatri synon të ofrojë një atmosferë intime ku këtij publiku të larmishëm t’i jepet mundësia të reflektojë, përgjigjet dhe angazhohet me teatër që i shërben edukimit, argëtimit dhe zgjerimit të botëkuptimit.
-<strong>PLATFORMA ARTISTIKE E TEATRIT METROPOL</strong>
-<div>
+                <strong>Misioni i Teatrit të Metropolit</strong>&nbsp;është të realizojë vepra teatrore shqiptare dhe botërore me nivel të lartë artistik, të cilat promovojnë gjithëpërfshirjen, dialogun konstruktiv, dhe vlerat njerëzore universale.
+                <strong>Vizioni i Teatrit të Metropolit</strong>&nbsp;është që të krijojë një standart cilësor në realizimin e shfaqjeve teatrore dhe trajnimit profesional të stafit artistik. Teatri angazhohet të krijojë për nevojat e komunitetit të të gjithë brezave; fëmijë, të rinj, të rritur. Duke ngulmuar në cilësi, teatri synon të ofrojë një atmosferë intime ku këtij publiku të larmishëm t’i jepet mundësia të reflektojë, përgjigjet dhe angazhohet me teatër që i shërben edukimit, argëtimit dhe zgjerimit të botëkuptimit.
+                <strong>PLATFORMA ARTISTIKE E TEATRIT METROPOL</strong>
+            <div>
 <ul>
 <li><strong>Teatri i të Rriturve:</strong>&nbsp;Gjashtë premiera të reja në vit, tre produksione ekskluzive të teatrit dhe tre vepra në bashkëpunim të përzgjedhura nga propozime të artistëve të jashtëm gjatë thirrjeve të hapura. Dy nga këto gjashtë premiera janë të lëvizshme për t’u shfaqur jashtë teatrit. Çdo premierë shfaqet 13-15 herë.</li>
 <li><strong>Teatri i Fëmijëve:</strong>&nbsp;Katër premiera të reja në vit, dy produksione ekskluzive të teatrit, dy vepra në bashkëpunim të propozuara nga artistë të jashtëm. Dy nga këto katër premiera janë të lëvizshme për t’u dhënë dhe jashtë teatrit. Çdo premierë shfaqet 20&nbsp;herë.</li>
@@ -36,8 +36,8 @@ include('includes/header.php');
             </div>
         </div></p>
 					<div class="ready-more mt-4">
-						<a href="index.php" class="btn read-button">Lexo me shume <span class="fa fa-angle-double-right ml-2"
-								aria-hidden="true"></span></a>
+						<a href="../index.php" class="btn read-button">Lexo me shume <span class="fa fa-angle-double-right ml-2"
+                                                                                           aria-hidden="true"></span></a>
 					</div>
 				</div>
 			</div>
@@ -63,7 +63,7 @@ include('includes/header.php');
 										voluptate rem ullam dolore!.</q>
 								</blockquote>
 								<div class="testi-des">
-									<div class="test-img"><img src="assets/images/team1.jpg" class="img-fluid" alt="/">
+									<div class="test-img"><img src="../assets/images/team1.jpg" class="img-fluid" alt="/">
 									</div>
 									<div class="peopl align-self">
 										<h3>Johnson smith</h3>
@@ -81,7 +81,7 @@ include('includes/header.php');
 										voluptate rem ullam dolore!.</q>
 								</blockquote>
 								<div class="testi-des">
-									<div class="test-img"><img src="assets/images/team2.jpg" class="img-fluid" alt="/">
+									<div class="test-img"><img src="../assets/images/team2.jpg" class="img-fluid" alt="/">
 									</div>
 									<div class="peopl align-self">
 										<h3>Alexander leo</h3>
@@ -99,7 +99,7 @@ include('includes/header.php');
 										voluptate rem ullam dolore!.</q>
 								</blockquote>
 								<div class="testi-des">
-									<div class="test-img"><img src="assets/images/team3.jpg" class="img-fluid" alt="/">
+									<div class="test-img"><img src="../assets/images/team3.jpg" class="img-fluid" alt="/">
 									</div>
 									<div class="peopl align-self">
 										<h3>Roy Linderson</h3>
@@ -117,7 +117,7 @@ include('includes/header.php');
 										voluptate rem ullam dolore!.</q>
 								</blockquote>
 								<div class="testi-des">
-									<div class="test-img"><img src="assets/images/team4.jpg" class="img-fluid" alt="/">
+									<div class="test-img"><img src="../assets/images/team4.jpg" class="img-fluid" alt="/">
 									</div>
 									<div class="peopl align-self">
 										<h3>Mike Thyson</h3>
@@ -135,7 +135,7 @@ include('includes/header.php');
 										voluptate rem ullam dolore!.</q>
 								</blockquote>
 								<div class="testi-des">
-									<div class="test-img"><img src="assets/images/team2.jpg" class="img-fluid" alt="/">
+									<div class="test-img"><img src="../assets/images/team2.jpg" class="img-fluid" alt="/">
 									</div>
 									<div class="peopl align-self">
 										<h3>Laura gill</h3>
@@ -150,7 +150,7 @@ include('includes/header.php');
 							<div class="testimonial">
 							
 								<div class="testi-des">
-									<div class="test-img"><img src="assets/images/team3.jpg" class="img-fluid" alt="/">
+									<div class="test-img"><img src="../assets/images/team3.jpg" class="img-fluid" alt="/">
 									</div>
 									<div class="peopl align-self">
 										<h3>Smith Johnson</h3>
@@ -167,21 +167,21 @@ include('includes/header.php');
 	</section>
 
 	
-    <?php include('includes/footer.php'); ?>
+    <?php require '../includes/footer.php'; ?>
 
 
 
 
-<script src="assets/js/jquery-3.3.1.min.js"></script>
+<script src="../assets/js/jquery-3.3.1.min.js"></script>
 <!-- stats -->
-<script src="assets/js/jquery.waypoints.min.js"></script>
-<script src="assets/js/jquery.countup.js"></script>
-<script type="text/javascript" src='assets/js/swiper.min.js'></script>
+<script src="../assets/js/jquery.waypoints.min.js"></script>
+<script src="../assets/js/jquery.countup.js"></script>
+<script type="text/javascript" src='../assets/js/swiper.min.js'></script>
 <script>
 	$('.counter').countUp();
 </script>
 <!--/theme-change-->
-<script src="assets/js/theme-change.js"></script>
+<script src="../assets/js/theme-change.js"></script>
 <script>
 	const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
 	const currentTheme = localStorage.getItem('theme');
@@ -218,7 +218,7 @@ include('includes/header.php');
 	}
 	toggleSwitch.addEventListener('change', switchTheme, false);
 </script>
-<script src="assets/js/owl.carousel.js"></script>
+<script src="../assets/js/owl.carousel.js"></script>
 <!-- script for banner slider-->
 <script>
 	$(document).ready(function () {
@@ -367,4 +367,4 @@ include('includes/header.php');
 		});
 	});
 </script>
-<script src="assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
