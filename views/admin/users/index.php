@@ -261,7 +261,9 @@ $users_result = $conn->query($query);
                                                 data-surname="<?php echo $row['surname'] ?>"
                                                 data-email="<?php echo $row['email'] ?>"
                                                 data-phone="<?php echo $row['phone'] ?>"
-                                                data-role="<?php echo $row['role'] ?>">Edito</button>
+                                                data-role="<?php echo $row['role'] ?>"
+                                                data-status="<?php echo $row['status'] ?>"
+                                                >Edito</button>
                                             <button class="btn-sm btn-outline-danger deleteUserBtn"
                                                 data-id="<?php echo $row['id'] ?>"
                                                 data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
@@ -325,8 +327,8 @@ $users_result = $conn->query($query);
                          <div class="form-group">
                             <label for="editStatus">Statusi</label>
                             <select class="form-control" id="editStatus" name="statusi"> <!-- added name -->
-                                <option value="aktiv">Aktiv</option>
-                                <option value="jo aktiv">Jo Aktiv</option>
+                                <option value="active">Aktiv</option>
+                                <option value="not active">Jo Aktiv</option>
                             </select>
                         </div>
 
