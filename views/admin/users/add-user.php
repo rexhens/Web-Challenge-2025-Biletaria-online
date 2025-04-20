@@ -44,9 +44,9 @@ if (isset($_POST['submit'])) {
 
     if (empty($errors)) {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO users (name, surname, email, phone, password, role, verification_token, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO users (name, surname, email, phone, password, role, verification_token, is_verified, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)");
         $token = bin2hex(random_bytes(16));
-        $stmt->bind_param("sssssssi", $name, $surname, $email, $phone, $hashedPassword, $roles, $token, $is_verified);
+        $stmt->bind_param("sssssssis", $name, $surname, $email, $phone, $hashedPassword, $roles, $token, $is_verified, "active");
 
         if ($stmt->execute()) {
             $success = true;

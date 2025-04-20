@@ -7,19 +7,13 @@ $emri = $_POST['emri'];
 $mbiemri = $_POST['mbiemri'];
 $email = $_POST['email'];
 $roli = $_POST['roli'];
-
-echo "Fields";
-echo $emri;
-echo $mbiemri;
-echo $email;
-echo $username;
-echo $roli;
+$status = $_POST['statusi'];
 
 
 $userId = $_POST['userId'];
-$sql = "UPDATE users SET name = ?, surname = ?, email = ?, role = ? WHERE id = ?";
+$sql = "UPDATE users SET name = ?, surname = ?, email = ?, role = ?, status = ? WHERE id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssi", $emri, $mbiemri, $email, $roli, $userId);
+$stmt->bind_param("sssssi", $emri, $mbiemri, $email, $roli, $status, $userId);
 
 
 if ($stmt->execute()) {

@@ -250,7 +250,11 @@ $users_result = $conn->query($query);
                                         <td><?php echo $row['phone'] ?></td>
                                         <td><?php echo $row['role'] ?></td>
 
-                                        <td><span class="badge badge-success">Aktiv</span></td>
+                                        <?php if ($row['status'] == 'active') { ?>
+                                            <td><span class="badge badge-success">Aktiv</span></td>
+                                        <?php } else { ?>
+                                            <td><span class="badge badge-danger">Jo Aktiv</span></td>
+                                        <?php } ?>
                                         <td>
                                             <button class="btn-sm btn-outline-secondary editUserBtn"
                                                 data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
@@ -258,7 +262,10 @@ $users_result = $conn->query($query);
                                                 data-email="<?php echo $row['email'] ?>"
                                                 data-phone="<?php echo $row['phone'] ?>"
                                                 data-role="<?php echo $row['role'] ?>">Edito</button>
-                                            <button class="btn-sm btn-outline-danger">Fshij</button>
+                                            <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                                data-id="<?php echo $row['id'] ?>"
+                                                data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -271,7 +278,7 @@ $users_result = $conn->query($query);
 
 
     </div>
-    <!-- Modal -->
+    <!-- Edit Modal -->
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -315,6 +322,14 @@ $users_result = $conn->query($query);
                             </select>
                         </div>
 
+                         <div class="form-group">
+                            <label for="editStatus">Statusi</label>
+                            <select class="form-control" id="editStatus" name="statusi"> <!-- added name -->
+                                <option value="aktiv">Aktiv</option>
+                                <option value="jo aktiv">Jo Aktiv</option>
+                            </select>
+                        </div>
+
                         <input type="hidden" name="formAction" id="formAction" value="edit">
                     </form>
 
@@ -329,6 +344,34 @@ $users_result = $conn->query($query);
             </div>
         </div>
     </div>
+
+    <!-- Delete Modal -->
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST" action="delete.php">
+                <div class="modal-content">
+                    <div class="modal-header text-red">
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jeni i sigurt që doni të fshini perdoruesin <strong id="userToDeleteName"></strong>?</p>
+                        <input type="hidden" name="userId" id="deleteUserId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Fshij</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
 
 
@@ -426,4 +469,17 @@ $users_result = $conn->query($query);
         });
     });
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".deleteUserBtn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const userId = button.getAttribute("data-id");
+                const userName = button.getAttribute("data-name");
+
+                document.getElementById("deleteUserId").value = userId;
+                document.getElementById("userToDeleteName").textContent = userName;
+            });
+        });
+    });
 </script>
