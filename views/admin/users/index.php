@@ -8,6 +8,7 @@ $users_result = $conn->query($query);
 ?>
 
 
+
 <!DOCTYPE html>
 <html lang="sq">
 
@@ -16,149 +17,92 @@ $users_result = $conn->query($query);
     <meta property="og:image" content="../../../assets/img/metropol_icon.png">
     <link rel="icon" href="../../../assets/img/metropol_icon.png">
     <title>Teatri Metropol | Shto Përdorues</title>
-    <link rel="stylesheet" href="../../../assets/css/styles.css">
 
+    <!-- Styles -->
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-
-    <!-- Custom fonts for this template-->
     <link href="../../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-
-    <!-- Custom styles for this template-->
     <link href="../../../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Popper.js (required for Bootstrap) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <script src="../../../assets/vendor/jquery/jquery.min.js"></script>
-    <script src="../../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="../../../assets/js/sb-admin-2.min.js"></script>
-
-
-    <!-- Custom CSS --><!-- jQuery (duhet të vijë i pari) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-    <!-- DataTables JS -->
+    <!-- Scripts (in proper order) -->
+
+    <!-- jQuery (must come first) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 4 with Popper included -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
+    <!-- sb-admin-2 (your custom template) -->
+    <script src="../../../assets/js/sb-admin-2.min.js"></script>
+
+    <!-- jQuery Easing (if used in sb-admin-2) -->
+    <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <style>
-       /* Table Styling */
-    #userTable {
-        border-collapse: collapse;
-        width: 100%;
-        background-color: #fff;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-    }
+        .dataTables_filter {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
 
-    #userTable thead {
-        background-color: #8f793f;
-        color: white;
-    }
+        .dataTables_filter label {
+            width: 100%;
+            display: flex;
+        }
 
-    #userTable th,
-    #userTable td {
-        padding: 12px 15px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
+        .dataTables_filter input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            height: 50px;
+        }
 
-    #userTable tbody tr:hover {
-        background-color: #f5f5f5;
-    }
+        .btn-primary-report {
+            background-color: #8f793f !important;
+            background-image: none !important;
+            color: white !important;
 
-    #userTable th {
-        font-weight: bold;
-    }
+        }
 
-    /* Table Container */
-    .table-responsive {
-        margin: 20px auto;
-        max-width: 95%;
-    }
+        #users-section {
+            flex: 1;
+            /* allows it to take all the remaining width */
+            padding: 20px;
+        }
 
-    /* Adjust card styling for better alignment */
-    .card {
-        margin: 20px auto;
-        max-width: 95%;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .card-header {
-        background-color: #f8f9fc;
-        border-bottom: 1px solid #ddd;
-    }
-
-    /* Button Styling */
-    .btn-primary-report {
-        background-color: #8f793f;
-        border: none;
-        color: white;
-        padding: 8px 16px;
-        border-radius: 5px;
-        font-size: 14px;
-        transition: background-color 0.3s ease;
-    }
-
-    .btn-primary-report:hover {
-        background-color: #6e5e2f;
-    }
-
-    /* Responsive Adjustments */
-    @media (max-width: 768px) {
         .card {
-            max-width: 100%;
-            margin: 10px;
+            width: 100%;
         }
 
         .table-responsive {
-            margin: 10px;
-        }
-    }
-        /* Adjust card styling for better alignment */
-        .card {
-            margin: 20px auto;
-            max-width: 90%;
+            width: 100%;
         }
 
-        /* Button Styling */
-        .btn-primary-report {
-            background-color: #8f793f;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 14px;
+        table.dataTable {
+            width: 100% !important;
+            /* forces table full width */
         }
 
-        .btn-primary-report:hover {
-            background-color: #6e5e2f;
+        input {
+            box-shadow: none !important;
         }
     </style>
 
-    
+
+
 </head>
 
 <body id="page-top">
 
-    <div style="display: flex; justify-content: space-between; width: 100%;" id="wrapper">
+    <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
         <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar"
             style="background-color: #8f793f !important;">
 
@@ -202,8 +146,8 @@ $users_result = $conn->query($query);
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="#">Shto perdorues te ri</a>
-                        <a class="collapse-item" href="./index.php">Shiko te gjithe</a>
+                        <a class="collapse-item" href="./add-user.php">Shto perdorues te ri</a>
+                        <a class="collapse-item" href="#">Shiko te gjithe</a>
                     </div>
                 </div>
             </li>
@@ -275,51 +219,115 @@ $users_result = $conn->query($query);
 
         </ul>
 
-  
-<section id="users-section">
-    <div class="card shadow-sm border-0 rounded">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
-            <button class="btn btn-sm btn-primary-report"
-                onclick="window.location.href = './users/add-user.php'">Shto Përdorues</button>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="userTable" class="table table-hover mb-0 w-100">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>#</th>
-                            <th>Emri</th>
-                            <th>Email</th>
-                            <th>Numri i cel</th>
-                            <th>Roli</th>
-                            <th>Statusi</th>
-                            <th>Veprime</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $users_result->fetch_assoc()) { ?>
-                            <tr>
-                                <td><?php echo $row['id'] ?></td>
-                                <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
-                                <td><?php echo $row['email'] ?></td>
-                                <td><?php echo $row['phone'] ?></td>
-                                <td><?php echo $row['role'] ?></td>
-                                <td><span class="badge badge-success">Aktiv</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-secondary">Edito</button>
-                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
+
+        <section id="users-section">
+            <div class="card shadow-sm border-0 rounded">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Përdoruesve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = './add-user.php'">Shto
+                        Përdorues</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Emri</th>
+                                    <th>Email</th>
+                                    <th>Numri i cel</th>
+                                    <th>Roli</th>
+                                    <th>Statusi</th>
+                                    <th>Veprime</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                    <tr>
+                                        <td><?php echo $row['id'] ?></td>
+                                        <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
+                                        <td><?php echo $row['email'] ?></td>
+                                        <td><?php echo $row['phone'] ?></td>
+                                        <td><?php echo $row['role'] ?></td>
+
+                                        <td><span class="badge badge-success">Aktiv</span></td>
+                                        <td>
+                                            <button class="btn-sm btn-outline-secondary editUserBtn"
+                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                data-surname="<?php echo $row['surname'] ?>"
+                                                data-email="<?php echo $row['email'] ?>"
+                                                data-phone="<?php echo $row['phone'] ?>"
+                                                data-role="<?php echo $row['role'] ?>">Edito</button>
+                                            <button class="btn-sm btn-outline-danger">Fshij</button>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Edito Përdoruesin</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Mbyll">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form Fields -->
+                    <form id="editUserForm" method="POST" action="edit.php">
+                        <input type="hidden" id="editUserId" name="userId"> <!-- fixed name -->
+
+                        <div class="form-group">
+                            <label for="editName">Emri</label>
+                            <input type="text" class="form-control" id="editName" name="emri"> <!-- added name -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editSurname">Mbiemri</label>
+                            <input type="text" class="form-control" id="editSurname" name="mbiemri"> <!-- added name -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email"> <!-- added name -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editPhone">Telefoni</label>
+                            <input type="text" class="form-control" id="editPhone" name="telefoni"> <!-- optional -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editRole">Roli</label>
+                            <select class="form-control" id="editRole" name="roli"> <!-- added name -->
+                                <option value="admin">Admin</option>
+                                <option value="biletari">Biletari</option>
+                                <option value="perdorues">Përdorues</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="formAction" id="formAction" value="edit">
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                    <button type="submit" class="btn btn-primary" form="editUserForm"
+                        style="background-color: #8f793f !important; border: #8f793f;">
+                        Edito
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-
-
     </div>
 
 
@@ -338,7 +346,7 @@ $users_result = $conn->query($query);
     });
     $(document).ready(function () {
         $('#userTable').DataTable({
-            "pageLength": 5,
+            "pageLength": 10,
             "lengthChange": false,
             "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
             "language": {
@@ -354,4 +362,68 @@ $users_result = $conn->query($query);
             }
         });
     });
+
+
+    $(document).ready(function () {
+        $('.editUserBtn').on('click', function () {
+            const userId = $(this).data('id');
+            const name = $(this).data('name');
+            const surname = $(this).data('surname');
+            const email = $(this).data('email');
+            const phone = $(this).data('phone');
+            const role = $(this).data('role');
+
+            // Populate modal fields
+            $('#editUserId').val(userId);
+            $('#editName').val(name);
+            $('#editSurname').val(surname);
+            $('#editEmail').val(email);
+            $('#editPhone').val(phone);
+            $('#editRole').val(role);
+
+            // Show the modal
+            $('#editUserModal').modal('show');
+        });
+
+        // Example Save (You can handle this via AJAX)
+        $('#saveUserBtn').on('click', function () {
+            const userData = {
+                id: $('#editUserId').val(),
+                name: $('#editName').val(),
+                surname: $('#editSurname').val(),
+                email: $('#editEmail').val(),
+                phone: $('#editPhone').val(),
+                role: $('#editRole').val()
+            };
+
+            console.log("Saving user data:", userData);
+
+            // You can send this data via AJAX to a PHP file for update.
+            $('#editUserModal').modal('hide');
+        });
+    });
+
+    $(document).ready(function () {
+        $('.editBtn').on('click', function () {
+            const button = $(this);
+            $('#formAction').val('update');
+            $('#userId').val(button.data('id'));
+            $('#emri').val(button.data('emri'));
+            $('#mbiemri').val(button.data('mbiemri'));
+            $('#email').val(button.data('email'));
+            $('#username').val(button.data('username'));
+            $('#roli').val(button.data('role'));
+
+            $('#addUserModalLabel').text('Përditëso Përdoruesin');
+            $('#submitUserBtn').text('Ruaj Ndryshimet');
+        });
+
+        $('#addUserModal').on('hidden.bs.modal', function () {
+            $('#userForm')[0].reset();
+            $('#formAction').val('insert');
+            $('#addUserModalLabel').text('Shto Përdorues');
+            $('#submitUserBtn').text('Shto');
+        });
+    });
+
 </script>
