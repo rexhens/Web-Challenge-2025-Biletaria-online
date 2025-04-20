@@ -4,7 +4,7 @@ $pageStyles = [
     'assets/css/as-alert-message.min.css',
     'assets/css/contact_us.css'
 ];
-include('includes/header.php'); 
+require 'includes/header.php';
 ?>
 
 <!-- Forma e Kontaktit -->
@@ -69,8 +69,8 @@ include('includes/header.php');
 
 
 <!-- JavaScript specifik për faqen e kontaktit -->
-<script type="text/javascript" src="assets/js/contact-us.js"></script>
-<script type="text/javascript" src="assets/js/as-alert-message.min.js"></script>
+<script type="text/javascript" src="../assets/js/contact-us.js"></script>
+<script type="text/javascript" src="../assets/js/as-alert-message.min.js"></script>
 
 <script>
 // Funksioni për validimin e formës

@@ -9,7 +9,7 @@ session_start();
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Metropol Ticketing | Identifikohu</title>
+    <title>Teatri Metropol | Identifikohu</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
     <style>
         body {
@@ -84,7 +84,7 @@ session_start();
 
         if(empty($errors)){
             $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->bind_param("s", $email); // "s" means string
+            $stmt->bind_param("s", $email);
 
             $stmt->execute();
             $result = $stmt->get_result();
@@ -131,7 +131,7 @@ session_start();
                             }
 
                             $stmt->close();
-                            $_SESSION["id"] = $user["id"];
+                            $_SESSION["user_id"] = $user["id"];
                             if($rememberMe) {
                                 try {
                                     $rememberToken = bin2hex(random_bytes(32));
@@ -144,7 +144,7 @@ session_start();
                                         session_unset();
                                         session_destroy();
                                     } else {
-                                        setcookie('remember_me', $rememberToken, time() + (86400 * 30), "/");
+                                        setcookie('remember_me', $rememberToken, time() + (86400 * 90), "/");
                                     }
 
                                     $stmt->close();
@@ -152,13 +152,14 @@ session_start();
                                     $errors[] = "Një problem ndodhi! Provoni më vonë!";
                                 }
                             }
-                            if(empty($errors)){
-                                if($user["role"] == "user") {
-                                    header("Location: ../index.php");
-                                } else {
-                                    header("Location: admin-home.php"); ///////////////////
-                                }
+                            if (isset($_SESSION['redirect_after_login'])) {
+                                $redirect = $_SESSION['redirect_after_login'];
+                                unset($_SESSION['redirect_after_login']);
+                                header("Location: $redirect");
+                            } else {
+                                header("Location: ../index.php");
                             }
+                            exit();
                         }
                     }
                 }

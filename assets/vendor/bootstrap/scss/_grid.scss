@@ -50,7 +50,7 @@
     @include make-row();
   }
 
-  // Remove the negative margin from default .row, then the horizontal padding
+  // Remove the negative margin from default .show, then the horizontal padding
   // from all immediate children columns (to prevent runaway style inheritance).
   .no-gutters {
     margin-right: 0;

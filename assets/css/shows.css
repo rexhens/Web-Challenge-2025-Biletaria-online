@@ -1,0 +1,139 @@
+:root {
+    --default-font: "Quicksand", sans-serif;
+    --heading-font: "Russo One", sans-serif;
+    --nav-font: "Afacad Flux", sans-serif;
+
+    --background-color: #1B1B1B;
+    --default-color: #785E5B;
+    --heading2-color: #836e4f;
+    --accent-color: #8f793f;
+    --surface-color: #c8bbb3;
+    --text-color: #E4E4E4;
+    --error-color: #f44336;
+    --success-color: rgba(131, 173, 68);
+}
+
+body {
+    font-family: var(--default-font);
+}
+
+.owl-stage-outer {
+    padding: 40px 0;
+}
+
+.show-card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.5s ease-out;
+}
+
+.show-card:hover {
+    transform: scale(1.04);
+}
+
+.overlay {
+    background: linear-gradient(
+            to bottom,
+            transparent 0%,
+            rgba(0, 0, 0, 0.2) 10%,
+            rgba(0, 0, 0, 0.4) 20%,
+            rgba(0, 0, 0, 0.6) 40%,
+            rgba(0, 0, 0, 0.8) 60%,
+            rgba(0, 0, 0, 0.9) 80%,
+            rgba(0, 0, 0, 1) 100%
+    );
+    padding: 20px;
+    height: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: var(--text-color);
+    z-index: 5;
+}
+
+h3 {
+    font-family: var(--heading-font);
+    margin: 0 0 10px;
+    font-size: 1.5rem;
+}
+
+.show-dates {
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.show-description {
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.show-card .btn-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.show-card .btn-group button {
+    font-size: 15px;
+}
+
+.show-card button {
+    font-family: var(--default-font);
+    font-size: 18px;
+    color: var(--surface-color);
+    padding: 10px;
+    width: 160px;
+    border: none;
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 100;
+}
+
+.show-card button:hover {
+    cursor: pointer;
+    background-image: linear-gradient(to bottom, var(--heading2-color), #ad8d39);
+}
+
+.show-card button:active {
+    transform: scale(0.95);
+}
+
+.show-card .black-btn {
+    background-image: linear-gradient(to bottom, #363a42, #363a42);
+}
+
+.show-card .black-btn:hover {
+    background-image: linear-gradient(to bottom, #363a42, #3c475c);
+}
+
+@media (max-width: 1030px) {
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-right: 0;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 560px) {
+    .show-card .btn-group button {
+        width: 50%;
+    }
+}

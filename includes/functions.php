@@ -1,5 +1,6 @@
 <?php
 
+use JetBrains\PhpStorm\NoReturn;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
@@ -40,80 +41,108 @@ function sendEmail(string $email, string $subject, string $body): bool {
     }
 }
 
-function authenticateUser($connection): bool {
+function checkAdmin($conn): bool {
 
-    if(isset($_SESSION['id'])) {
-        if($_SESSION['id'] == 1) {
-            header("Location: index.php");
-            exit();
-        }
-        return true;
+    if (!isset($_SESSION['user_id'])) {
+        return false;
     }
 
-    if(isset($_COOKIE['remember_me'])) {
-        $token = $_COOKIE['remember_me'];
-        $sql = "SELECT * FROM `users` WHERE `remember_token` = '$token'";
-        $result = mysqli_query($connection, $sql);
+    $user_id = $_SESSION['user_id'];
 
-        if(mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
-            $_SESSION['id'] = $user['id'];
+    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($role);
+    $stmt->fetch();
 
-            if($user['role'] == 'admin') {
-                header("Location: index.php");
-            }
-            return true;
-        }
+    if ($role !== 'admin') {
+        return false;
     }
 
-    header("Location: login.php");
-    exit();
-
+    return true;
 }
 
-function authenticateAdmin($connection): bool {
-
-    if(isset($_SESSION['id'])) {
-        if($_SESSION['id'] != 1) {
-            header("Location: index.php");
-            exit();
-        }
-        return true;
+function redirectIfNotLoggedIn(): void {
+    if (!isset($_SESSION['user_id'])) {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+        header("Location: ../auth/login.php");
+        exit;
     }
-
-    if(isset($_COOKIE['remember_me'])) {
-        $token = $_COOKIE['remember_me'];
-        $sql = "SELECT * FROM `users` WHERE `remember_token` = '$token'";
-        $result = mysqli_query($connection, $sql);
-
-        if(mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
-            $_SESSION['id'] = $user['id'];
-
-            if($user['role'] == 'user') {
-                header("Location: index.php");
-            }
-            return true;
-        }
-    }
-
-    header("Location: login.php");
-    exit();
-
 }
 
-function checkSessionTimeout(): void {
+function redirectIfNotAdmin($conn): void {
+    if(!checkAdmin($conn)) {
+        header("Location: ../auth/no-access.php");
+        exit;
+    }
+}
 
-    $sessionTimeout = 900;
-    if (isset($_SESSION['LAST_ACTIVITY'])) {
-        $inactivityDuration = time() - $_SESSION['LAST_ACTIVITY'];
-        if ($inactivityDuration > $sessionTimeout) {
-            session_unset();
-            session_destroy();
-            header("Location: index.php");
-            exit;
+function groupDates($dates): array {
+    if (empty($dates)) return [];
+
+    $grouped = [];
+    $start = $end = new DateTime($dates[0]);
+
+    for ($i = 1; $i < count($dates); $i++) {
+        $current = new DateTime($dates[$i]);
+        $diff = (int)$end->diff($current)->format("%a");
+
+        if ($diff === 1) {
+            $end = $current;
+        } else {
+            $grouped[] = formatDateRange($start, $end);
+            $start = $end = $current;
         }
     }
 
-    $_SESSION['LAST_ACTIVITY'] = time();
+    $grouped[] = formatDateRange($start, $end);
+    return $grouped;
+}
+
+function formatDateRange($start, $end): string {
+    $muajiStart = muajiNeShqip($start->format('M'));
+    $muajiEnd = muajiNeShqip($end->format('M'));
+
+    if ($start == $end) {
+        return $start->format('j') . " " . $muajiStart;
+    } elseif ($muajiStart === $muajiEnd) {
+        return $start->format('j') . "-" . $end->format('j') . " " . $muajiStart;
+    } else {
+        return $start->format('j') . " " . $muajiStart . " - " . $end->format('j') . " " . $muajiEnd;
+    }
+}
+
+function muajiNeShqip($muajiAnglisht): string {
+    $muajt = [
+        'Jan' => 'Janar', 'Feb' => 'Shkurt', 'Mar' => 'Mars',
+        'Apr' => 'Prill', 'May' => 'Maj', 'Jun' => 'Qershor',
+        'Jul' => 'Korrik', 'Aug' => 'Gusht', 'Sep' => 'Shtator',
+        'Oct' => 'Tetor', 'Nov' => 'Nëntor', 'Dec' => 'Dhjetor'
+    ];
+    return $muajt[$muajiAnglisht] ?? $muajiAnglisht;
+}
+
+function showError($error): void {
+    echo "<!DOCTYPE html>
+      <html lang='sq'>
+      <head>";
+    require '../includes/links.php';
+    echo "<title>Teatri Metropol | Mesazh</title>
+      <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
+      <link rel='stylesheet' href='../assets/css/styles.css'>
+      <style>
+          body {
+            background: url('../assets/img/error.png') no-repeat center center fixed;
+            background-size: cover;
+            justify-content: center;
+          }
+      </style>
+      </head>
+      <body>
+      <div class='errors show'>
+            <p>$error</p>
+      </div>
+      </body>
+      </html>";
+    exit;
 }

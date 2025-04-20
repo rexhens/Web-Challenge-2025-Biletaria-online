@@ -1,5 +1,6 @@
 <?php
-require_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require_once '../config/db_connect.php';
 
 header('Content-Type: application/json');
 
@@ -15,4 +16,3 @@ if ($result->num_rows > 0) {
 
 echo json_encode($genres);
 $conn->close();
-?>

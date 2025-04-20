@@ -7,19 +7,19 @@
                         <div class="right-side">
                             <div class="row footer-about">
                                 <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="assets/images/tt1.png"
+                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt1.png"
                                             alt=""></a>
                                 </div>
                                 <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="assets/images/tt2.png"
+                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt2.png"
                                             alt=""></a>
                                 </div>
                                 <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="assets/images/tt3.png"
+                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt3.png"
                                             alt=""></a>
                                 </div>
                                 <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="assets/images/tt4.png"
+                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt4.png"
                                             alt=""></a>
                                 </div>
                             </div>
@@ -120,11 +120,9 @@
     </footer>
     
     <!-- All JS files -->
-    <script src="assets/js/jquery-1.9.1.min.js"></script>
-    <script src="assets/js/easyResponsiveTabs.js"></script>
-    <script src="assets/js/theme-change.js"></script>
-    <script src="assets/js/owl.carousel.js"></script>
-    <script src="assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-</body>
-</html>
+    <script src="../assets/js/jquery-1.9.1.min.js"></script>
+    <script src="../assets/js/easyResponsiveTabs.js"></script>
+    <script src="../assets/js/theme-change.js"></script>
+    <script src="../assets/js/owl.carousel.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/bootstrap.min.js"></script>
