@@ -38,7 +38,7 @@ if ($filter === 'available') {
     $params[] = $now;
     $types .= "s";
 } else {
-    $query = "SELECT s.* FROM shows s LIMIT 10";
+    $query = "SELECT s.* FROM shows s";
 }
 
 if (!empty($genre_id)) {
