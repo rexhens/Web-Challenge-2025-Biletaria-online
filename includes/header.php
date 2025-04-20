@@ -58,30 +58,28 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/index.php">Home</a>
+                            <a class="nav-link" href="../views/index.php">Kreu</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'events.php' ? 'active' : ''; ?>">
                             <a class="nav-link" href="../views/shows.php">Shfaqje</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="about.php">Rreth Nesh</a>
-                        </li>
-                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'metrofest.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="metrofest.php">Metrofest</a>
+                            <a class="nav-link" href="../views/about.php">Rreth Nesh</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="contact.php">Kontakt</a>
+                            <a class="nav-link" href="../views/contact.php">Kontakt</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'applications.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="applications.php">Aplikime</a>
+                            <a class="nav-link" href="../views/applications.php">Aplikime</a>
+                        </li>
+                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'logout.php' ? 'active' : ''; ?>">
+                            <a class="nav-link" href="../auth/logout.php">Shkyçu</a>
                         </li>
                     </ul>
-
-                    <!--/search-right-->
+<!--
                     <div class="search-right">
                         <a href="#search" class="btn search-hny mr-lg-3 mt-lg-0 mt-4" title="search">Search <span
                                 class="fa fa-search ml-3" aria-hidden="true"></span></a>
-                        <!-- search popup -->
                         <div id="search" class="pop-overlay">
                             <div class="popup">
                                 <form action="#" method="post" class="search-box">
@@ -106,8 +104,8 @@
                             </div>
                             <a class="close" href="#close">×</a>
                         </div>
-                        <!-- /search popup -->
                     </div>
+                    -->
                     <div class="Login_SignUp" id="login"
                         style="font-size: 2rem ; display: inline-block; position: relative;">
                         <a class="nav-link" href="../auth/login.php"><i class="fa fa-user-circle-o"></i></a>

@@ -67,7 +67,7 @@ require '../includes/header.php';
                                     <div class="banner-info">
                                         <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
-                                        <p class='show-description'><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
+                                        <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
                                         <a href="#<?php echo $popupId; ?>" class="popup-with-zoom-anim play-view1">
 									<span class="video-play-icon">
 										<span class="fa fa-play"></span>
@@ -384,29 +384,30 @@ require '../includes/header.php';
                             nav: true,
                             stagePadding: 90
                         },
-                        630: {
+                        650: {
                             items: 1,
                             nav: true,
-                            stagePadding: 120
+                            stagePadding: 140
                         },
-                        700: {
+                        750: {
                             items: 2,
                             nav: true,
-                            stagePadding: 0
+                            stagePadding: 30
                         },
                         800: {
                             items: 2,
                             nav: true,
                             stagePadding: 40
                         },
-                        900: {
+                        940: {
                             items: 2,
                             nav: true,
-                            stagePadding: 80
+                            stagePadding: 120
                         },
-                        1000: {
+                        1080: {
                             items: 3,
-                            nav: true
+                            nav: true,
+                            stagePadding: 40
                         }
                     }
                 });
@@ -420,3 +421,6 @@ require '../includes/header.php';
 </script>
 
 <script src="../assets/js/bootstrap.min.js"></script>
+
+</body>
+</html>
