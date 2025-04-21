@@ -146,3 +146,112 @@ function showError($error): void {
       </html>";
     exit;
 }
+
+function isHallAvailable($conn, $hall, $time, $dates): array {
+
+    $placeholders = implode(',', array_fill(0, count($dates), '?'));
+
+    $sql = "
+        SELECT s.time AS existing_start_time, sd.show_date
+        FROM show_dates sd
+        JOIN shows s ON sd.show_id = s.id
+        WHERE s.hall = ? AND sd.show_date IN ($placeholders)
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        showError("Një gabim ndodhi! Provoni më vonë!");
+    }
+
+    $types = str_repeat('s', 1 + count($dates));
+    $params = array_merge([$hall], $dates);
+
+    $bindParams = [];
+    $bindParams[] = &$types;
+    foreach ($params as $key => $value) {
+        $bindParams[] = &$params[$key];
+    }
+
+    call_user_func_array([$stmt, 'bind_param'], $bindParams);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $conflicts = [];
+
+    $fixedDurationSeconds = 4 * 60 * 60;
+    $newStart = strtotime($time);
+    $newEnd = $newStart + $fixedDurationSeconds;
+
+    while ($row = $result->fetch_assoc()) {
+        $existingStart = strtotime($row['existing_start_time']);
+        $existingEnd = $existingStart + $fixedDurationSeconds;
+
+        if (
+            ($newStart < $existingEnd && $newEnd > $existingStart)
+        ) {
+            $conflicts[] = $row['show_date'] . ' nga ora ' . $row['existing_start_time'];
+        }
+    }
+
+    $stmt->close();
+
+    if (!empty($conflicts)) {
+        return [
+            'available' => false,
+            'conflict_info' => $conflicts
+        ];
+    }
+
+    $sql = "
+        SELECT e.time AS existing_start_time, ed.event_date
+        FROM event_dates ed
+        JOIN events e ON ed.event_id = e.id
+        WHERE e.hall = ? AND ed.event_date IN ($placeholders)
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        showError("Një gabim ndodhi! Provoni më vonë!");
+    }
+
+    $types = str_repeat('s', 1 + count($dates));
+    $params = array_merge([$hall], $dates);
+
+    $bindParams = [];
+    $bindParams[] = &$types;
+    foreach ($params as $key => $value) {
+        $bindParams[] = &$params[$key];
+    }
+
+    call_user_func_array([$stmt, 'bind_param'], $bindParams);
+
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $conflicts = [];
+
+    $fixedDurationSeconds = 4 * 60 * 60;
+    $newStart = strtotime($time);
+    $newEnd = $newStart + $fixedDurationSeconds;
+
+    while ($row = $result->fetch_assoc()) {
+        $existingStart = strtotime($row['existing_start_time']);
+        $existingEnd = $existingStart + $fixedDurationSeconds;
+
+        if ($newStart < $existingEnd && $newEnd > $existingStart) {
+            $conflicts[] = $row['event_date'] . ' nga ora ' . $row['existing_start_time'];
+        }
+    }
+
+    $stmt->close();
+
+    if (!empty($conflicts)) {
+        return [
+            'available' => false,
+            'conflict_info' => $conflicts
+        ];
+    }
+
+    return ['available' => true];
+}

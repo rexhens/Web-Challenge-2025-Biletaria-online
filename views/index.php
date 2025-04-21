@@ -120,7 +120,7 @@ require '../includes/header.php';
 	<!--mid-slider -->
     <section class="w3l-mid-slider position-relative">
         <div class="companies20-content">
-            <div class="grids-main py-5" style="margin-bottom: -110px;">
+            <div class="grids-main py-5" style="margin-bottom: -110px; margin-top: -40px;">
                 <div class="container py-lg-3">
                     <div class="headerhny-title">
                         <div class="w3l-title-grids">
