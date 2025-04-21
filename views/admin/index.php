@@ -389,9 +389,9 @@ $shows_result = $conn->query($shows_query);
                 </div>
             </li>
 
-    
 
-          
+
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -589,10 +589,9 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </div>
 
-
                     <!-- Tabela e userave -->
                     <section id="users-section">
-                        <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
+                        <div class="card shadow-sm border-0 rounded">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
@@ -608,7 +607,7 @@ $shows_result = $conn->query($shows_query);
                                                 <th>Email</th>
                                                 <th>Numri i cel</th>
                                                 <th>Roli</th>
-                                               
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -619,7 +618,7 @@ $shows_result = $conn->query($shows_query);
                                                     <td><?php echo $row['email'] ?></td>
                                                     <td><?php echo $row['phone'] ?></td>
                                                     <td><?php echo $row['role'] ?></td>
-                                                   
+
                                                 </tr>
                                             <?php } ?>
 
@@ -631,8 +630,7 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </section>
                     <!-- Menaxhimi i Shfaqjeve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 5%; margin-right: 5%;"
-                        id="shows-section">
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="shows-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
@@ -678,8 +676,7 @@ $shows_result = $conn->query($shows_query);
 
 
                     <!-- Menaxhimi i aktoreve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 5%; margin-right: 5%;"
-                        id="actors-section">
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="actors-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>
