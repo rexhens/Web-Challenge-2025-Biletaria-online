@@ -64,41 +64,6 @@ $genreResult = $conn->query($genreQuery);
     <div class="shows-container" id="shows-container"></div>
 
     <script>
-        function searchShow() {
-            let input = document.getElementById('search').value.toLowerCase();
-            let shows = document.querySelectorAll('.show-card');
-
-            shows.forEach(function (show) {
-                let h3 = show.querySelector('h3');
-                if (h3) {
-                    let title = Array.from(h3.childNodes)
-                        .filter(node => node.nodeType === Node.TEXT_NODE)
-                        .map(node => node.textContent.trim())
-                        .join('')
-                        .toLowerCase();
-
-                    if (title.includes(input)) {
-                        show.style.display = "";
-                    } else {
-                        show.style.display = "none";
-                    }
-                }
-            });
-        }
-    </script>
-    <script>
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('in-view');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
-    </script>
-    <script>
         const genreFilter = document.getElementById("genreFilter");
         const dateFilter = document.getElementById("dateFilter");
 

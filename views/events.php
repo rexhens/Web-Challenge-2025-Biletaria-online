@@ -1,0 +1,87 @@
+<?php
+/** @var mysqli $conn */
+require "../config/db_connect.php";
+require "../auth/auth.php";
+require "../includes/functions.php";
+?>
+
+<!DOCTYPE html>
+<html lang="sq">
+
+<head>
+    <?php require '../includes/links.php'; ?>
+    <meta property="og:image" content="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Teatri Metropol | Evente</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <style>
+        body {
+            padding: 0 30px;
+            align-items: flex-start;
+        }
+    </style>
+</head>
+
+<body>
+<header>
+    <h1>Eventet në <span>Teatrin Metropol</span></h1>
+    <?php
+    if (checkAdmin($conn)) { ?>
+        <button onclick="redirectTo('add-event.php')">Shto një event</button>
+    <?php }
+    ?>
+</header>
+
+<div class="search-container">
+    <i class="fa fa-search"></i>
+    <input class="search-bar" type="text" id="search" placeholder="Kërko event..." onkeyup="searchShow()">
+</div>
+
+
+<div class="filter-container">
+    <select id="dateFilter" style="width: 100%;">
+        <option value="available">Në vazhdim</option>
+        <option value="past">Të kaluarat</option>
+        <option value="all">Të gjitha</option>
+    </select>
+</div>
+
+<div class="shows-container" id="shows-container"></div>
+
+<script>
+    const dateFilter = document.getElementById("dateFilter");
+
+    async function fetchFilteredShows() {
+        const dateFilterValue = dateFilter.value;
+
+        try {
+            const response = await fetch('filter_events.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `event_time_filter=${encodeURIComponent(dateFilterValue)}}`,
+            });
+
+            const html = await response.text();
+            const showsContainer = document.getElementById("shows-container");
+            showsContainer.innerHTML = html;
+
+            document.querySelectorAll('.show-card').forEach(card => {
+                observer.observe(card);
+            });
+
+        } catch (error) {
+            document.getElementById("shows-container").innerHTML = "<div class='errors show'><p>Gabim gjatë filtrimit!</p></div>";
+        }
+    }
+
+    dateFilter.addEventListener('change', fetchFilteredShows);
+
+    fetchFilteredShows();
+</script>
+<script src="../assets/js/functions.js"></script>
+</body>
+
+</html>
