@@ -643,28 +643,21 @@ $shows_result = $conn->query($shows_query);
                                         <tr>
                                             <th>ID</th>
                                             <th>Titulli</th>
-                                            <th>Përshkrimi</th>
                                             <th>Salla</th>
                                             <th>Zhanri</th>
                                             <th>Çmimi</th>
-                                            <th class="text-end">Veprime</th>
+                                         
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
                                         <?php while ($row = $shows_result->fetch_assoc()) { ?>
                                             <tr>
                                                 <td class="text-muted"><?php echo $row['id']; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
-                                                <td class="text-truncate" style="max-width: 250px;">
-                                                    <?php echo mb_strimwidth(strip_tags($row['description']), 0, 100, "..."); ?>
-                                                </td>
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>                                         
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
                                                 <td><?php echo number_format($row['price'], 2); ?> €</td>
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-outline-secondary">Shiko</button>
-                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                                </td>
+                                               
                                             </tr>
                                         <?php } ?>
                                     </tbody>
