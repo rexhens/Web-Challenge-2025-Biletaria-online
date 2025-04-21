@@ -22,32 +22,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
-    if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
-        if (!empty($_FILES['file-input']['name'])) {
-            $check = getimagesize($_FILES['file-input']['tmp_name']);
-            if ($check !== false) {
-                $targetDir = '../assets/img/events/';
-                $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
-                $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
-                $targetPath = $targetDir . $uniqueName;
+    $result = isHallAvailable($conn, $hall, $time, $dates);
 
-                if (!is_dir($targetDir)) {
-                    mkdir($targetDir, 0755, true);
-                }
+    if(!$result['available']) {
+        $errors[] = "Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']);
+    }
 
-                if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
-                    $posterPath = $targetPath;
+    if(empty($errors)) {
+        if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
+            if (!empty($_FILES['file-input']['name'])) {
+                $check = getimagesize($_FILES['file-input']['tmp_name']);
+                if ($check !== false) {
+                    $targetDir = '../assets/img/events/';
+                    $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
+                    $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
+                    $targetPath = $targetDir . $uniqueName;
+
+                    if (!is_dir($targetDir)) {
+                        mkdir($targetDir, 0755, true);
+                    }
+
+                    if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
+                        $posterPath = $targetPath;
+                    } else {
+                        $errors[] = "Nuk mund të ngarkohej imazhi.";
+                    }
                 } else {
-                    $errors[] = "Nuk mund të ngarkohej imazhi.";
+                    $errors[] = "Skedari nuk është një imazh i vlefshëm.";
                 }
             } else {
-                $errors[] = "Skedari nuk është një imazh i vlefshëm.";
+                $errors[] = "Ju duhet të zgjidhni një imazh për të ngarkuar.";
             }
         } else {
-            $errors[] = "Ju duhet të zgjidhni një imazh për të ngarkuar.";
+            $errors[] = "Nuk u ngarkua asnjë skedar.";
         }
-    } else {
-        $errors[] = "Nuk u ngarkua asnjë skedar.";
     }
 
     if(empty($errors)){
