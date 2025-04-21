@@ -30,3 +30,28 @@ function redirectTo(page) {
 function toggleMenu() {
     document.querySelector(".menu-bar").classList.toggle("open");
 }
+
+function searchShow() {
+    let input = document.getElementById('search').value.toLowerCase();
+    let shows = document.querySelectorAll('.show-card');
+
+    shows.forEach(function (show) {
+        let title = show.querySelector('h3').textContent.toLowerCase();
+        if (title.includes(input)) {
+            show.style.display = "";
+        } else {
+            show.style.display = "none";
+        }
+    });
+}
+
+const observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.1
+});
