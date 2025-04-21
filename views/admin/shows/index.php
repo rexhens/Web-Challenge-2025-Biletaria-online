@@ -47,6 +47,12 @@ $users_result = $conn->query($query);
     <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <style>
+        table.dataTable td,
+        table.dataTable th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
         td.desc-col {
             max-width: 200px;
             max-height: 6em;
@@ -406,21 +412,23 @@ $users_result = $conn->query($query);
     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" action="delete.php">
+            <form method="POST" action="remove_priority.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Caktivizimin</h5>
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Heqjen e Prioritetit</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të caktivizoni perdoruesin <strong id="userToDeleteName"></strong>?</p>
+                        <p>Jeni i sigurt që doni të hiqni prioritetin e shfaqjes <strong id="userToDeleteName"></strong>
+                            duke e bere ate te mos jete me e dukshme ne faqen kryesore te teatrit?
+                        </p>
                         <input type="hidden" name="userId" id="deleteUserId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Caktivizo</button>
+                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Hiq prioritet</button>
                     </div>
                 </div>
             </form>
@@ -440,8 +448,9 @@ $users_result = $conn->query($query);
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të shtoni prioritetin e shfaqjes <strong id="userToActivateName"></strong>
-                         duke e bere ate te jete e dukshme ne faqen kryesore te teatrit?
+                        <p>Jeni i sigurt që doni të shtoni prioritetin e shfaqjes <strong
+                                id="userToActivateName"></strong>
+                            duke e bere ate te jete e dukshme ne faqen kryesore te teatrit?
                         </p>
                         <input type="hidden" name="userId" id="activateUserId">
                     </div>
@@ -476,7 +485,7 @@ $users_result = $conn->query($query);
             "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
             "language": {
                 "search": "",
-                "searchPlaceholder": "Kërko perdorues...",
+                "searchPlaceholder": "Kërko shfaqje...",
                 "paginate": {
                     "previous": "‹",
                     "next": "›"
@@ -539,14 +548,14 @@ $users_result = $conn->query($query);
             $('#username').val(button.data('username'));
             $('#roli').val(button.data('role'));
 
-            $('#addUserModalLabel').text('Përditëso Përdoruesin');
+            $('#addUserModalLabel').text('Përditëso Shfaqjen');
             $('#submitUserBtn').text('Ruaj Ndryshimet');
         });
 
         $('#addUserModal').on('hidden.bs.modal', function () {
             $('#userForm')[0].reset();
             $('#formAction').val('insert');
-            $('#addUserModalLabel').text('Shto Përdorues');
+            $('#addUserModalLabel').text('Shto Shfaqje');
             $('#submitUserBtn').text('Shto');
         });
     });
