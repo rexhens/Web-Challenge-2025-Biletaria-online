@@ -120,6 +120,61 @@ h3 {
     background-image: linear-gradient(to bottom, #363a42, #3c475c);
 }
 
+.errors {
+    background-color: var(--error-color);
+    color: var(--text-color);
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    display: none;
+}
+
+.errors.show {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.movie-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-direction: row;
+}
+
+.movie-poster {
+    width: 250px;
+    height: auto;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.mid-info {
+    flex: 1;
+    color: #fff;
+}
+
+/* Responsive design */
+@media (max-width: 576px) {
+    .movie-card {
+        flex-direction: column; /* Stack vertically on very small screens */
+        align-items: flex-start;
+    }
+
+    .movie-poster {
+        display: none; /* Hide poster entirely */
+    }
+
+    .mid-info h3 {
+        font-size: 1.5rem;
+    }
+
+    .mid-info p {
+        font-size: 0.95rem;
+    }
+}
+
 @media (max-width: 1030px) {
     .buttons {
         display: flex;

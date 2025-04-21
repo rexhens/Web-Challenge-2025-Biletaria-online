@@ -10,8 +10,7 @@ require "../includes/functions.php";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $hall = $_POST["hall"];
-    $genre_id = $_POST["select-genre"];
-    $dates = explode(",", $_POST['show_dates']);
+    $dates = explode(",", $_POST['event_dates']);
     $time = $_POST["time"];
     $description = $_POST["description"];
     $trailer = $_POST["trailer"];
@@ -19,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $errors = [];
 
-    if(empty($title) || empty($hall) || empty($genre_id) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price)) {
+    if(empty($title) || empty($hall) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price)) {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
@@ -27,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!empty($_FILES['file-input']['name'])) {
             $check = getimagesize($_FILES['file-input']['tmp_name']);
             if ($check !== false) {
-                $targetDir = '../assets/img/shows/';
+                $targetDir = '../assets/img/events/';
                 $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
                 $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
                 $targetPath = $targetDir . $uniqueName;
@@ -52,24 +51,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if(empty($errors)){
-        $sql = "INSERT INTO shows (title, hall, genre_id, time, description, poster, trailer, price) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO events (title, hall, time, description, poster, trailer, price) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         if ($stmt = $conn->prepare($sql)) {
             $null = NULL;
-            $stmt->bind_param("ssissssi", $title, $hall, $genre_id, $time, $description, $posterPath, $trailer, $price);
+            $stmt->bind_param("ssssssi", $title, $hall, $time, $description, $posterPath, $trailer, $price);
             if ($stmt->execute()) {
-                $show_id = $conn->insert_id;
+                $event_id = $conn->insert_id;
+                $stmt->close();
                 foreach ($dates as $date) {
-                    $stmt = $conn->prepare("INSERT INTO show_dates (show_id, show_date) VALUES (?, ?)");
-                    $stmt->bind_param("is", $show_id, $date);
+                    $stmt = $conn->prepare("INSERT INTO event_dates (event_id, event_date) VALUES (?, ?)");
+                    $stmt->bind_param("is", $event_id, $date);
                     if(!$stmt->execute()) {
                         $errors[] = "Një problem ndodhi! Provoni më vonë!";
                     }
                 }
-                if(empty($errors)) {
-                    header("Location: assign_actors.php?show_id=" . $show_id);
-                    exit();
+                if(empty($errors)){
+                    echo "<div class='info-container'>
+                               <div class='errors show' style='background-color: rgba(131, 173, 68)'>
+                                   <p style='color: #E4E4E4;'>Eventi u shtua me sukses!</p>
+                               </div>
+                          </div>";
                 }
             } else {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
@@ -91,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Shto Shfaqe</title>
+    <title>Teatri Metropol | Shto Event</title>
     <link rel="stylesheet" href="../assets/css/flatpickr.min.css">
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
@@ -99,8 +102,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
-    <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Shfaqje</span></h1>
-    <div class="form-container">
+    <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Event</span></h1>
+    <div class="form-container" style="padding-top: 47px; padding-bottom: 60px;">
         <div class="form-group">
             <input type="text" name="title" id="title" placeholder=" " required>
             <label for="title">Titulli</label>
@@ -116,14 +119,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="form-group">
-            <select name="select-genre" id="select-genre" required>
-                <option value="" disabled selected>-- Zgjidh zhanrin --</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <input type="text" id="show_dates" name="show_dates" placeholder=" " readonly required>
-            <label for="show_dates">Datat</label>
+            <input type="text" id="event_dates" name="event_dates" placeholder=" " readonly required>
+            <label for="event_dates">Datat</label>
         </div>
 
         <div class="form-group">
@@ -132,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="form-group">
-            <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
+            <textarea name="description" id="description" placeholder="Përshkrimi i eventit..." required></textarea>
         </div>
 
         <div class="form-group">
@@ -158,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <button type="submit" name="submit">Shto Shfaqje</button>
+    <button type="submit" name="submit">Shto Event</button>
 </form>
 
 <div class="info-container">
@@ -170,6 +167,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     ?>
 </div>
+<script src="../assets/js/flatpickr.min.js"></script>
+<script src="../assets/js/functions.js"></script>
+<script src="../assets/js/uploadPicture.js"></script>
 <script>
     const elementsToHide = document.getElementsByClassName("show");
     setTimeout(() => {
@@ -178,31 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const genreSelect = document.getElementById("select-genre");
-
-        fetch(`get_genres.php`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((genres) => {
-                genres.forEach((genre) => {
-                    const option = document.createElement("option");
-                    option.value = genre.id;
-                    option.textContent = genre.genre_name;
-                    genreSelect.appendChild(option);
-                });
-            })
-            .catch((error) => {
-                alert("Dështoi marrja e zhanreve! Provoni përsëri!");
-            });
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        flatpickr("#show_dates", {
+        flatpickr("#event_dates", {
             mode: "multiple",
             dateFormat: "Y-m-d",
             minDate: "today",
@@ -218,8 +194,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
     });
 </script>
-<script src="../assets/js/flatpickr.min.js"></script>
-<script src="../assets/js/functions.js"></script>
-<script src="../assets/js/uploadPicture.js"></script>
 </body>
 </html>
