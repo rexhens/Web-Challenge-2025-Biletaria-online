@@ -262,12 +262,18 @@ $users_result = $conn->query($query);
                                                 data-email="<?php echo $row['email'] ?>"
                                                 data-phone="<?php echo $row['phone'] ?>"
                                                 data-role="<?php echo $row['role'] ?>"
-                                                data-status="<?php echo $row['status'] ?>"
-                                                >Edito</button>
-                                            <button class="btn-sm btn-outline-danger deleteUserBtn"
-                                                data-id="<?php echo $row['id'] ?>"
-                                                data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
-                                                data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
+                                                data-status="<?php echo $row['status'] ?>">Edito</button>
+                                            <?php if ($row['status'] == 'active') { ?>
+                                                <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                    data-toggle="modal" data-target="#deleteUserModal">Caktivizo</button>
+                                            <?php } else { ?>
+                                                <button class="btn-sm btn-outline-success activateUserBtn"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                    data-toggle="modal" data-target="#activateUserModal">Aktivizo</button>
+                                            <?php } ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -323,15 +329,6 @@ $users_result = $conn->query($query);
                                 <option value="perdorues">Përdorues</option>
                             </select>
                         </div>
-
-                         <div class="form-group">
-                            <label for="editStatus">Statusi</label>
-                            <select class="form-control" id="editStatus" name="statusi"> <!-- added name -->
-                                <option value="active">Aktiv</option>
-                                <option value="not active">Jo Aktiv</option>
-                            </select>
-                        </div>
-
                         <input type="hidden" name="formAction" id="formAction" value="edit">
                     </form>
 
@@ -356,18 +353,44 @@ $users_result = $conn->query($query);
             <form method="POST" action="delete.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen</h5>
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Caktivizimin</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të fshini perdoruesin <strong id="userToDeleteName"></strong>?</p>
+                        <p>Jeni i sigurt që doni të caktivizoni perdoruesin <strong id="userToDeleteName"></strong>?</p>
                         <input type="hidden" name="userId" id="deleteUserId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Fshij</button>
+                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Caktivizo</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Activate Confirmation Modal -->
+    <div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="activateUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST" action="activate.php">
+                <div class="modal-content">
+                    <div class="modal-header text-red">
+                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Aktivizimin</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jeni i sigurt që doni të aktivizoni perdoruesin <strong id="userToActivateName"></strong>?
+                        </p>
+                        <input type="hidden" name="userId" id="activateUserId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                        <button type="submit" name="activateUserSubmit" class="btn btn-success">Aktivizo</button>
                     </div>
                 </div>
             </form>
@@ -481,6 +504,20 @@ $users_result = $conn->query($query);
 
                 document.getElementById("deleteUserId").value = userId;
                 document.getElementById("userToDeleteName").textContent = userName;
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".activateUserBtn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const userId = button.getAttribute("data-id");
+                const userName = button.getAttribute("data-name");
+
+                document.getElementById("activateUserId").value = userId;
+                document.getElementById("userToActivateName").textContent = userName;
             });
         });
     });
