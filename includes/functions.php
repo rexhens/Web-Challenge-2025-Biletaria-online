@@ -147,17 +147,3 @@ function showError($error): void {
     exit;
 }
 
-
-function getShowDetails($conn, $show_id) {
-    $stmt = $conn->prepare("
-        SELECT s.*, sd.show_date 
-        FROM shows s
-        JOIN show_dates sd ON sd.show_id = s.id
-        WHERE s.id = ?
-        LIMIT 1
-    ");
-    $stmt->bind_param("i", $show_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    return $result->fetch_assoc();
-}
