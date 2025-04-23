@@ -13,31 +13,73 @@ if (isset($_GET['show_id'])) {
     $stmt->fetch();
     $stmt->close();
 
-    if ($poster) {
-        header("Content-Type: image/jpeg");
-        echo $poster;
+    if (!empty($poster)) {
+        $imagePath = "../assets/img/shows/" . basename($poster); // secure the path
+        if (file_exists($imagePath)) {
+            $mimeType = mime_content_type($imagePath);
+            header("Content-Type: $mimeType");
+            readfile($imagePath);
+        } else {
+            header("Content-Type: image/png");
+            readfile("../assets/img/show-icon.png");
+        }
     } else {
         header("Content-Type: image/png");
         readfile("../assets/img/show-icon.png");
     }
+
     $conn->close();
 } else if (isset($_GET['actor_id'])) {
-    $id = intval($_GET['actor_id']); // korrigjuar nga 'id'
-    $sql = "SELECT photo FROM actors WHERE id=?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $id);
+    $id = intval($_GET['actor_id']);
+    $query = "SELECT photo FROM actors WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $id);
     $stmt->execute();
     $stmt->bind_result($photo);
     $stmt->fetch();
     $stmt->close();
 
-    if ($photo) {
-        header("Content-Type: image/jpeg");
-        echo $photo;
+    if (!empty($poster)) {
+        $imagePath = "../assets/img/actors/" . basename($photo); // secure the path
+        if (file_exists($imagePath)) {
+            $mimeType = mime_content_type($imagePath);
+            header("Content-Type: $mimeType");
+            readfile($imagePath);
+        } else {
+            header("Content-Type: image/png");
+            readfile("../assets/img/actor-icon.png");
+        }
     } else {
         header("Content-Type: image/png");
         readfile("../assets/img/actor-icon.png");
     }
+
+    $conn->close();
+} else if(isset($_GET['event_id'])) {
+    $id = intval($_GET['event_id']);
+    $query = "SELECT poster FROM events WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->bind_result($poster);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!empty($poster)) {
+        $imagePath = "../assets/img/events/" . basename($poster); // secure the path
+        if (file_exists($imagePath)) {
+            $mimeType = mime_content_type($imagePath);
+            header("Content-Type: $mimeType");
+            readfile($imagePath);
+        } else {
+            header("Content-Type: image/png");
+            readfile("../assets/img/show-icon.png");
+        }
+    } else {
+        header("Content-Type: image/png");
+        readfile("../assets/img/show-icon.png");
+    }
+
     $conn->close();
 } else {
     showError("Nuk ka një foto të vlefshme!");

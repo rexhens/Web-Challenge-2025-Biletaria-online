@@ -285,7 +285,7 @@ if (isset($_POST['submit'])) {
                 <div id="collapseShows" class="collapse" aria-labelledby="headingShows" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="../  ../add-show.php">Shto Shfaqje</a>
+                        <a class="collapse-item" href="../../add-show.php">Shto Shfaqje</a>
                         <a class="collapse-item" href="../../shows.php">Te gjitha Shfaqjet</a>
                     </div>
                 </div>

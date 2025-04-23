@@ -389,9 +389,9 @@ $shows_result = $conn->query($shows_query);
                 </div>
             </li>
 
-    
 
-          
+
+
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -589,10 +589,9 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </div>
 
-
                     <!-- Tabela e userave -->
                     <section id="users-section">
-                        <div class="card shadow-sm border-0 rounded" style="margin-left: 5%; margin-right: 5%;">
+                        <div class="card shadow-sm border-0 rounded">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
@@ -608,7 +607,7 @@ $shows_result = $conn->query($shows_query);
                                                 <th>Email</th>
                                                 <th>Numri i cel</th>
                                                 <th>Roli</th>
-                                               
+
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -619,7 +618,7 @@ $shows_result = $conn->query($shows_query);
                                                     <td><?php echo $row['email'] ?></td>
                                                     <td><?php echo $row['phone'] ?></td>
                                                     <td><?php echo $row['role'] ?></td>
-                                                   
+
                                                 </tr>
                                             <?php } ?>
 
@@ -631,8 +630,7 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </section>
                     <!-- Menaxhimi i Shfaqjeve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 5%; margin-right: 5%;"
-                        id="shows-section">
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="shows-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
@@ -645,28 +643,21 @@ $shows_result = $conn->query($shows_query);
                                         <tr>
                                             <th>ID</th>
                                             <th>Titulli</th>
-                                            <th>Përshkrimi</th>
                                             <th>Salla</th>
                                             <th>Zhanri</th>
                                             <th>Çmimi</th>
-                                            <th class="text-end">Veprime</th>
+                                         
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
                                         <?php while ($row = $shows_result->fetch_assoc()) { ?>
                                             <tr>
                                                 <td class="text-muted"><?php echo $row['id']; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
-                                                <td class="text-truncate" style="max-width: 250px;">
-                                                    <?php echo mb_strimwidth(strip_tags($row['description']), 0, 100, "..."); ?>
-                                                </td>
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>                                         
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
                                                 <td><?php echo number_format($row['price'], 2); ?> €</td>
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-outline-secondary">Shiko</button>
-                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                                </td>
+                                               
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -678,8 +669,7 @@ $shows_result = $conn->query($shows_query);
 
 
                     <!-- Menaxhimi i aktoreve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" style="margin-left: 5%; margin-right: 5%;"
-                        id="actors-section">
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="actors-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>

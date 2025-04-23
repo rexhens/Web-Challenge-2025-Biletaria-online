@@ -90,7 +90,11 @@ if ($result->num_rows > 0) {
     </div>";
     }
 } else {
-    echo "<div class='errors show'>
-             <p>Nuk ka shfaqje!</p>
-          </div>";
+    $posterUrl = "../assets/img/background-image.png";
+    echo "<div class='show-card item' style='background-image: url($posterUrl);'>
+        <div class='overlay'>
+            <h3>Teatri Metropol</h3>
+            <p>Nuk ka shfaqje për momentin! Ju ftojmë të na ndiqni në vazhdim! Faleminderit!</p>
+        </div>
+    </div>";
 }

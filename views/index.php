@@ -56,22 +56,22 @@ require '../includes/header.php';
                             $videoId = end($pathParts);
                         }
 
-                        $popupId = 'small-dialog' . $show['id'];
+                        $popupId = 'small-show-dialog' . $show['id'];
 
                         $bg_image = "https://img.youtube.com/vi/$videoId/maxresdefault.jpg";
 
                         ?>
                         <div class="item">
                             <li>
-                                <div class="slider-info banner-view bg bg2" style="background: url('<?php echo $bg_image; ?>') no-repeat center;">
+                                <div class="slider-info banner-view bg bg2" style="background: url('<?php echo $bg_image; ?>') no-repeat center; background-size: cover;">
                                     <div class="banner-info">
                                         <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
                                         <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
                                         <a href="#<?php echo $popupId; ?>" class="popup-with-zoom-anim play-view1">
-									<span class="video-play-icon">
-										<span class="fa fa-play"></span>
-									</span>
+                                            <span class="video-play-icon">
+                                                <span class="fa fa-play"></span>
+                                            </span>
                                             <h6>Shiko Trailerin</h6>
                                         </a>
                                         <div id="<?php echo $popupId; ?>" class="zoom-anim-dialog mfp-hide small-dialog">
@@ -82,11 +82,18 @@ require '../includes/header.php';
                             </li>
                         </div>
                     <?php }
-                } else {
-                    echo "<div class='errors show'>
-             <p>Nuk ka shfaqje!</p>
-          </div>";
-                }
+                } else { ?>
+                    <div class="item">
+                        <li>
+                            <div class="slider-info banner-view bg bg2" style="background: url('../assets/img/background-image.png') no-repeat center; background-size: cover;">
+                                <div class="banner-info">
+                                    <h3>Teatri Metropol</h3>
+                                    <p>Nuk ka shfaqje për momentin! Ju ftojmë të na ndiqni në vazhdim! Faleminderit!</p>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                <?php }
                 ?>
 			</div>
 		</div>
@@ -107,65 +114,117 @@ require '../includes/header.php';
 				</div>
 				<div class="owl-three owl-carousel owl-theme shows-container" id="shows-container"></div>
 			</div>
-
 		</div>
 	</section>
 	<!--grids-sec2-->
 	<!--mid-slider -->
-	<section class="w3l-mid-slider position-relative">
-		<div class="companies20-content">
-			<div class="owl-mid owl-carousel owl-theme">
-				<div class="item">
-					<li>
-						<div class="slider-info mid-view bg bg2">
-							<div class="container">
-								<div class="mid-info">
-									<span class="sub-text">Comedy</span>
-									<h3>Jumanji: The Next Level</h3>
-									<p>2019 ‧ Comedy/Action ‧ 2h 3m</p>
-									<a class="watch" href="movies.html"><span class="fa fa-play"
-											aria-hidden="true"></span>
-										Watch Trailer</a>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
-				<div class="item">
-					<li>
-						<div class="slider-info mid-view mid-top1 bg bg2">
-							<div class="container">
-								<div class="mid-info">
-									<span class="sub-text">Adventure</span>
-									<h3>Dolittle</h3>
-									<p>2020 ‧ Family/Adventure ‧ 1h 41m</p>
-									<a class="watch" href="movies.html"><span class="fa fa-play"
-											aria-hidden="true"></span>
-										Watch Trailer</a>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
-				<div class="item">
-					<li>
-						<div class="slider-info mid-view mid-top2 bg bg2">
-							<div class="container">
-								<div class="mid-info">
-									<span class="sub-text">Action</span>
-									<h3>Bad Boys for Life</h3>
-									<p>2020 ‧ Comedy/Action ‧ 2h 4m</p>
-									<a class="watch" href="movies.html"><span class="fa fa-play"
-											aria-hidden="true"></span>
-										Watch Trailer</a>
-								</div>
-							</div>
-						</div>
-					</li>
-				</div>
-			</div>
-		</div>
-	</section>
+    <section class="w3l-mid-slider position-relative">
+        <div class="companies20-content">
+            <div class="grids-main py-5" style="margin-bottom: -110px; margin-top: -40px;">
+                <div class="container py-lg-3">
+                    <div class="headerhny-title">
+                        <div class="w3l-title-grids">
+                            <div class="headerhny-left">
+                                <h3 class="hny-title">Evente të tjera</h3>
+                            </div>
+                            <div class="headerhny-right text-lg-right">
+                                <h4><a class="show-title" href="events.php">Më shumë</a></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="owl-mid owl-carousel owl-theme">
+                <?php
+                $now = date('Y-m-d');
+                $query = "
+        SELECT e.*
+        FROM events e
+        JOIN (
+            SELECT event_id
+            FROM event_dates
+            GROUP BY event_id
+            HAVING MAX(event_date) >= ?
+        ) ed ON e.id = ed.event_id
+    ";
+                $stmt = $conn->prepare($query);
+                $stmt->bind_param("s", $now);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($result->num_rows > 0){
+
+                    while ($event = $result->fetch_assoc()) {
+                        $posterUrl = "get_image.php?event_id=" . $event['id'];
+
+                        $datesQuery = $conn->prepare("SELECT event_date FROM event_dates WHERE event_id = ? ORDER BY event_date ASC");
+                        $datesQuery->bind_param("i", $event['id']);
+                        $datesQuery->execute();
+                        $datesResult = $datesQuery->get_result();
+                        $dates = [];
+                        while ($row = $datesResult->fetch_assoc()) {
+                            $dates[] = $row['event_date'];
+                        }
+
+                        $groupedDates = groupDates($dates);
+
+                        $videoId = '';
+                        $parsedUrl = parse_url($event['trailer']);
+                        if (isset($parsedUrl['query'])) {
+                            parse_str($parsedUrl['query'], $queryParams);
+                            $videoId = $queryParams['v'] ?? '';
+                        } elseif (isset($parsedUrl['path'])) {
+                            $pathParts = explode('/', trim($parsedUrl['path'], '/'));
+                            $videoId = end($pathParts);
+                        }
+
+                        $popupId = 'small-event-dialog' . $event['id'];
+
+                        $bg_image = "https://img.youtube.com/vi/$videoId/maxresdefault.jpg";
+
+                ?>
+                <div class="item">
+                    <li>
+                        <div class="slider-info mid-view bg bg2" style="background: url('<?php echo $bg_image; ?>') no-repeat center; background-size: cover; height: 480px;">
+                            <div class="container">
+                                <div class="movie-card">
+                                    <img src="<?php echo htmlspecialchars($posterUrl) ?>" alt="Poster" class="movie-poster">
+                                    <div class="mid-info">
+                                        <h3><?php echo htmlspecialchars($event['title']); ?></h3>
+                                        <p><?php echo implode(', ', $groupedDates); ?></p>
+                                        <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
+                                        <p><a href="event_details.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Më shumë info</a></p>
+                                        <a class="watch popup-with-zoom-anim play-view1" href="#<?php echo $popupId; ?>"><span class="fa fa-play" aria-hidden="true"></span> Shiko Trailerin</a>
+                                        <div id="<?php echo $popupId; ?>" class="zoom-anim-dialog mfp-hide small-dialog">
+                                            <iframe src="https://www.youtube.com/embed/<?php echo $videoId; ?>" allow="autoplay; fullscreen" allowfullscreen=""></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+                <?php }
+                } else { ?>
+                    <div class="item">
+                        <li>
+                            <div class="slider-info mid-view mid-top2 bg bg2" style="background: url('../assets/img/background-image.png') no-repeat center; background-size: cover; height: 480px;">
+                                <div class="container">
+                                    <div class="movie-card">
+                                        <img src="../assets/img/metropol_icon.png" alt="Poster" class="movie-poster">
+                                        <div class="mid-info">
+                                            <h3>Teatri Metropol</h3>
+                                            <p>Nuk ka evente të tjera për momentin! Ju ftojmë të na ndiqni në vazhdim! Faleminderit!</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </div>
+                <?php }
+                ?>
+            </div>
+        </div>
+    </section>
 
 <?php include('../includes/footer.php'); ?>
 <!-- responsive tabs -->
