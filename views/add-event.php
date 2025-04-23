@@ -189,7 +189,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         flatpickr("#event_dates", {
             mode: "multiple",
             dateFormat: "Y-m-d",
-            minDate: "today",
             locale: "sq"
         });
 
@@ -197,8 +196,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i",
-            time_24hr: true,
-            theme: "dark"
+            time_24hr: true
         });
     });
 </script>

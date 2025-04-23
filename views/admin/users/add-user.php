@@ -69,8 +69,6 @@ if (isset($_POST['submit'])) {
     <title>Teatri Metropol | Shto Përdorues</title>
     <link rel="stylesheet" href="../../../assets/css/styles.css">
 
-    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-
     <!-- Custom fonts for this template-->
     <link href="../../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link

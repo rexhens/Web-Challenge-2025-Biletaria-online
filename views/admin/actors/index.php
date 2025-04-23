@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="assets/img/favicon.png" rel="icon">
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="../../../assets/img/favicon.png" rel="icon">
+    <link href="../../../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect">
@@ -26,7 +26,6 @@
     <title>Actors Page</title>
     <style>
         body {
-            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
             background-color: var(--background-color);
             color: var(--text-color);
             font-family: var(--default-font);
@@ -217,7 +216,7 @@
                         ?>
                         <div class="col-lg-4 col-md-6 d-flex card-container" data-aos="fade-up" data-aos-delay="100">
                             <div class="member">
-                                <img src="get_image.php?id=<?php echo $row['id']; ?>" class="img-fluid" alt="">
+                                <img src="../../get_image.php?actor_id=<?php echo $row['id']; ?>" class="img-fluid" alt="">
                                 <div class="member-content">
                                     <h4><?php echo htmlspecialchars($row['name']); ?></h4>
                                     <span><?php echo "I lindur me: " . htmlspecialchars($row['birthdate']); ?></span>

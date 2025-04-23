@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sq">
 
 <head>
@@ -43,11 +43,11 @@
                 <a class="navbar-brand" href="../views/index.php">
                     <img src="../assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
                 </a>
-                
+
                 <a class="navbar-brand" href="../views/index.php">
                     Teatri <b style="color: #836e4f;">Metropol</b>
-                </a>    
-                
+                </a>
+
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
