@@ -95,7 +95,7 @@ session_start();
                 if($user["is_verified"] == 0) {
                     $errors[] = "Duhet të verifikoni email-in si fillim! Kontrolloni email-in tuaj!";
                 } else {
-                    if($user["failed_attempts"] >= 7 && strtotime($user["lock_time"]) > time()) {
+                    if ($user["failed_attempts"] >= 7 && $user["lock_time"] && strtotime($user["lock_time"]) > time()) {
                         $errors[] = "Llogaria juaj është bllokuar! Provoni më vonë";
                     } else {
                         if(!password_verify($password, $user["password"])) {
