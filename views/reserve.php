@@ -1,396 +1,518 @@
 <?php
-session_start();
-
-require_once '../config/db_connect.php';  // Adjust the path as needed
-
-// 1. Check if user is logged in
-/*
-if(!isset($_SESSION['id'])) {
-    header("Location: ../../../auth/login.php");
-    exit();
+// reserve.php
+// --------------------------------------------------
+// 1) grab show id from URL
+$show_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if (!$show_id) {
+    die("Invalid show ID.");
 }
-*/
-
-// 2. Get show ID
-$showId = isset($_GET['show_id']) ? intval($_GET['show_id']) : 0;
-if($showId <= 0) {
-    die("Shfaqje e pavlefshme!");
-}
-
-// 3. Fetch show details
-$stmt = $conn->prepare("SELECT * FROM shows WHERE id = ?");
-$stmt->bind_param("i", $showId);
-$stmt->execute();
-$showResult = $stmt->get_result();
-if(!$showResult->num_rows) {
-    die("Shfaqja nuk u gjet!");
-}
-$show = $showResult->fetch_assoc();
-$stmt->close();
-
-$errors = [];
-$success = "";
-
-// 4. Handle reservation submission
-if(isset($_POST['reserve'])) {
-    $userId    = $_SESSION['id'];
-    $dateTime  = $_POST['datetime'] ?? '';
-    $seat      = $_POST['seatSelected'] ?? '';
-    $hall      = $show['hall'];
-
-    if(empty($dateTime)) {
-        $errors[] = "Ju lutemi zgjidhni datën/orën!";
-    }
-    if(empty($seat)) {
-        $errors[] = "Ju lutemi zgjidhni një vend!";
-    }
-
-    // Check seat availability
-    if(empty($errors)) {
-        $checkSql = "SELECT * FROM reservations WHERE show_id = ? AND date = ? AND seat = ?";
-        $checkStmt = $conn->prepare($checkSql);
-        $checkStmt->bind_param("iss", $showId, $dateTime, $seat);
-        $checkStmt->execute();
-        $checkResult = $checkStmt->get_result();
-        if($checkResult->num_rows > 0) {
-            $errors[] = "Vendi $seat është i zënë për këtë orar!";
-        }
-        $checkStmt->close();
-
-        // Insert reservation
-        if(empty($errors)) {
-            $insertSql = "INSERT INTO reservations (user_id, show_id, date, hall, seat)
-                          VALUES (?, ?, ?, ?, ?)";
-            $insertStmt = $conn->prepare($insertSql);
-            $insertStmt->bind_param("issis", $userId, $showId, $dateTime, $hall, $seat);
-
-            if($insertStmt->execute()) {
-                $success = "Rezervimi juaj për vendin $seat u ruajt me sukses!";
-            } else {
-                $errors[] = "Ndodhi një gabim gjatë rezervimit. Ju lutemi provoni përsëri.";
-            }
-            $insertStmt->close();
-        }
-    }
-}
-
-// 5. Determine taken seats if datetime is chosen
-$takenSeats = [];
-$chosenDatetime = "";
-if(isset($_POST['datetime']) || isset($_POST['reserve'])) {
-    $chosenDatetime = $_POST['datetime'] ?? '';
-    if($chosenDatetime) {
-        $stmt = $conn->prepare("SELECT seat FROM reservations WHERE show_id = ? AND date = ?");
-        $stmt->bind_param("is", $showId, $chosenDatetime);
-        $stmt->execute();
-        $res = $stmt->get_result();
-        while($row = $res->fetch_assoc()) {
-            $takenSeats[] = $row['seat'];
-        }
-        $stmt->close();
-    }
-}
-
-mysqli_close($conn);
 ?>
+
 <!DOCTYPE html>
-<html lang="sq">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teatri Metropol - Rezervo</title>
-    <meta name="description" content="Teatri Metropol - Your theater experience in Albania.">
-    <meta property="og:title" content="Teatri Metropol">
-    <meta property="og:description" content="Your theater experience in Albania.">
-    <meta property="og:image" content="=../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticket Booking</title>
+  <link rel="stylesheet" type="text/css" href="../assets/css/style-starter.css">
+  <link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/progress.css">
 
-    <!-- Your main homepage CSS -->
-    <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" type="text/css" href="../assets/css/ticket-booking.css">
 
-    <!-- Additional styling for the reservation section -->
-    <style>
-        /* BODY / PAGE LAYOUT */
-        body {
-            margin: 0;
-            padding: 0;
-            /* If you want a custom background: 
-            background: url('../../../assets/img/background-image.jpg') no-repeat center center fixed;
-            background-size: cover;
-            */
-        }
+  <!-- ..............For progress-bar............... -->
+  <link rel="stylesheet" type="text/css" href="../assets/css/e-ticket.css">
 
-        /* Dark / Transparent Reservation Container */
-        .reservation-section {
-            max-width: 800px;
-            margin: 40px auto;
-            background-color: rgba(0, 0, 0, 0.75);
-            padding: 20px;
-            border-radius: 10px;
-            color: #fff; /* Light text */
-        }
-
-        .reservation-section h2 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #ffcc00; /* A pop of color (yellowish) */
-        }
-
-        .reservation-section p.show-description {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        /* FLASH MESSAGES */
-        .flash-message {
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-        .flash-error {
-            background-color: #ff6666;
-            color: #fff;
-        }
-        .flash-success {
-            background-color: #66cc66;
-            color: #fff;
-        }
-
-        /* FORM ELEMENTS */
-        .form-group {
-            margin: 15px 0;
-        }
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-        }
-        .form-group input[type="datetime-local"] {
-            padding: 8px;
-            width: 100%;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-        }
-
-        /* SEAT LAYOUT (130 seats) */
-        .seat-container {
-            margin-top: 20px;
-        }
-        .seat-container p {
-            font-style: italic;
-            margin-bottom: 12px;
-        }
-        .seat-rows {
-            display: grid;
-            /* 13 rows (A - M) => we'll set them as 13 show "groups" */
-            grid-template-rows: repeat(13, auto);
-            gap: 16px;
-            justify-items: center;
-        }
-        .seat-row {
-            /* Each show has 10 seats => 10 columns */
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 8px;
-        }
-
-        /* SMALLER SEAT BUTTONS */
-        .seat-btn {
-            width: 36px;
-            height: 36px;
-            line-height: 36px;
-            background: #222;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 6px;
-            cursor: pointer;
-            text-align: center;
-            transition: background 0.2s;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        .seat-btn:hover {
-            background: #333;
-        }
-        .seat-taken {
-            background: #b30000 !important;
-            color: #fff;
-            cursor: not-allowed;
-        }
-        .seat-selected {
-            background: #00a300 !important;
-            color: #fff;
-        }
-
-        /* RESERVE BUTTON */
-        .reserve-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 24px;
-            cursor: pointer;
-            background: #ff9900;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            transition: background 0.3s;
-        }
-        .reserve-button:hover {
-            background: #e68a00;
-        }
-
-        /* BACK LINK */
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 25px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-        }
-
-        /* RESPONSIVE MEDIA QUERIES */
-        @media (max-width: 600px) {
-            .seat-btn {
-                width: 30px;
-                height: 30px;
-                line-height: 30px;
-                font-size: 11px;
-            }
-        }
-        @media (max-width: 400px) {
-            .seat-btn {
-                width: 26px;
-                height: 26px;
-                line-height: 26px;
-                font-size: 10px;
-            }
-        }
-    </style>
+  <link rel="stylesheet" type="text/css" href="../assets/css/payment.css" />
+  <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
 </head>
+
 <body>
+  <header id="site-header" class="w3l-header fixed-top">
 
-    <!-- HEADER (from your main design) -->
-    <header>
-        <h1 class="logo">METROPOL</h1>
-        <nav aria-label="Main navigation">
-            <ul>
-                <li><a href="#">SHFAQJET</a></li>
-                <li><a href="#">AKTORET</a></li>
-                <li><a href="#">EVENTET</a></li>
-                <li><a href="#">KONTAKTI</a></li>
-            </ul>
-        </nav>
-        <div class="buttons">
-            <!-- Adjust these if you have different paths -->
-            <button class="reserve" aria-label="Reserve tickets"
-                onclick="window.location.href='../index.php'">
-                REZERVO
-            </button>
-            <button class="login" aria-label="Log in to your account"
-                onclick="window.location.href='../../../login.php'">
-                LOG IN
-            </button>
+    <!--/nav-->
+    <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
+      <div class="container">
+       
+				
+					<a class="navbar-brand" href="index.html"  >
+					 <b style="color: #836e4f;">Metropol</b><i sty>Ticketing</i>
+					</a>	
+        
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
         </div>
-    </header>
 
-    <!-- MAIN Reservation Section -->
-    <section class="reservation-section">
-        <h2>Rezervo Biletën</h2>
-        <p class="show-description">
-            <strong><?php echo htmlspecialchars($show['title']); ?></strong><br>
-            <?php echo nl2br(htmlspecialchars($show['description'])); ?>
-        </p>
-
-        <!-- Flash messages -->
-        <?php if(!empty($errors)): ?>
-            <div class="flash-message flash-error">
-                <?php foreach($errors as $error) {
-                    echo "<p>$error</p>";
-                } ?>
-            </div>
-        <?php endif; ?>
-
-        <?php if(!empty($success)): ?>
-            <div class="flash-message flash-success">
-                <p><?php echo $success; ?></p>
-            </div>
-        <?php endif; ?>
-
-        <form method="post" action="">
-            <div class="form-group">
-                <label for="datetime">Zgjidh datën/orën e shfaqjes:</label>
-                <input
-                    type="datetime-local"
-                    id="datetime"
-                    name="datetime"
-                    value="<?php echo htmlspecialchars($chosenDatetime); ?>"
-                    required
-                    onchange="document.getElementById('refreshForm').click();"
-                />
-                <!-- Hidden button to refresh seats upon date/time change -->
-                <button type="submit" id="refreshForm" style="display:none;">Rifresko</button>
-            </div>
-
-            <div class="seat-container">
-                <p>(Klikoni një vend të lirë për ta zgjedhur)</p>
-                <div class="seat-rows">
-                    <?php
-                    // 13 rows: A through M
-                    $rows = range('A', 'M');  // A, B, C, ..., M
-                    // 10 columns/seats: 1..10
-                    $cols = range(1, 10);
-
-                    foreach($rows as $row) {
-                        echo '<div class="seat-row">';
-                        foreach($cols as $col) {
-                            $seatCode = $row.$col; // e.g. A1, A2 ... M10
-                            $taken = in_array($seatCode, $takenSeats);
-                            echo '<div 
-                                    class="seat-btn '.($taken ? 'seat-taken' : '').'" 
-                                    data-seat="'.$seatCode.'" 
-                                    onclick="selectSeat(this)"
-                                    '.($taken ? 'disabled' : '').'
-                                  >'
-                                  .$seatCode.
-                                  '</div>';
-                        }
-                        echo '</div>';
-                    }
-                    ?>
+        <div class="Login_SignUp" id="login_s">
+          <!-- style="font-size: 2rem ; display: inline-block; position: relative;" -->
+          <!-- <li class="nav-item"> -->
+          <a class="nav-link" href="sign_in.html"><i class="fa fa-user-circle-o"></i></a>
+          <!-- </li> -->
+        </div>
+        <!-- toggle switch for light and dark theme -->
+        <div class="mobile-position">
+          <nav class="navigation">
+            <div class="theme-switch-wrapper">
+              <label class="theme-switch" for="checkbox">
+                <input type="checkbox" id="checkbox">
+                <div class="mode-container">
+                  <i class="gg-sun"></i>
+                  <i class="gg-moon"></i>
                 </div>
+              </label>
             </div>
+          </nav>
+        </div>
+      </div>
+    </nav>
+  </header>
 
-            <!-- Hidden field to store selected seat -->
-            <input type="hidden" name="seatSelected" id="seatSelected" value="">
+  <div class="container" id="progress-container-id">
+    <div class="row">
+      <div class="col">
+        <div class="px-0 pt-4 pb-0 mt-3 mb-3">
+          <form id="form">
+            <ul id="progressbar" class="progressbar-class">
+              <li class="active" id="step1">Show timing selection</li>
+              <li id="step2" class="not_active">Seat Selection</li>
+              <li id="step3" class="not_active">Payment</li>
+              <li id="step4" class="not_active">E-Ticket</li>
+            </ul>
+            <br>
+            <fieldset>
+              <div id="screen-select-div">
+                <h2>Show time Selection</h2>
+                <div class="carousel carousel-nav" data-flickity='{"contain": true, "pageDots": false }'>
+                  <div class="carousel-cell" id="1" onclick="myFunction(1)">
+                    <div class="date-numeric">13</div>
+                    <div class="date-day">Today</div>
+                  </div>
 
-            <div style="text-align:center;">
-                <button type="submit" name="reserve" class="reserve-button">REZERVO</button>
-            </div>
-        </form>
+                  <div class="carousel-cell" id="2" onclick="myFunction(2)">
+                    <div class="date-numeric">14</div>
+                    <div class="date-day">Tomorrow</div>
+                  </div>
+                  <div class="carousel-cell" id="3" onclick="myFunction(3)">
+                    <div class="date-numeric">15</div>
+                    <div class="date-day">Monday</div>
+                  </div>
+                  <div class="carousel-cell" id="4" onclick="myFunction(4)">
+                    <div class="date-numeric">16</div>
+                    <div class="date-day">Tuesday</div>
+                  </div>
+                  <div class="carousel-cell" id="5" onclick="myFunction(5)">
+                    <div class="date-numeric">17</div>
+                    <div class="date-day">Wednesday</div>
+                  </div>
+                  <div class="carousel-cell" id="6" onclick="myFunction(6)">
+                    <div class="date-numeric">18</div>
+                    <div class="date-day">Thursday</div>
+                  </div>
+                  <div class="carousel-cell" id="7" onclick="myFunction(7)">
+                    <div class="date-numeric">19</div>
+                    <div class="date-day">Friday</div>
+                  </div>
+                </div>
+                <ul class="time-ul">
+                  <li class="time-li">
+                    <div class="screens">
+                      Screen 1
+                    </div>
+                    <div class="time-btn">
+                      <button class="screen-time" onclick="timeFunction()">
+                        1:05 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        4:00 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        9:00 PM
+                      </button>
+                    </div>
+                  </li>
+                  <li class="time-li">
+                    <div class="screens">
+                      Screen 2
+                    </div>
+                    <div class="time-btn">
+                      <button class="screen-time" onclick="timeFunction()">
+                        3:00 PM
+                      </button>
+                    </div>
+                  </li>
+                  <li class="time-li">
+                    <div class="screens">
+                      Screen 3
+                    </div>
+                    <div class="time-btn">
+                      <button class="screen-time" onclick="timeFunction()">
+                        9:05 AM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        10:00 PM
+                      </button>
+                    </div>
+                  </li>
+                  <li class="time-li">
+                    <div class="screens">
+                      Screen 4
+                    </div>
+                    <div class="time-btn">
+                      <button class="screen-time" onclick="timeFunction()">
+                        9:05 AM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        11:00 AM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        3:00 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        7:00 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        10:00 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        11:00 PM
+                      </button>
+                    </div>
+                  </li>
+                  <li class="time-li">
+                    <div class="screens">
+                      Screen 5
+                    </div>
+                    <div class="time-btn">
+                      <button class="screen-time" onclick="timeFunction()">
+                        9:05 AM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        12:00 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        1:00 PM
+                      </button>
+                      <button class="screen-time" onclick="timeFunction()">
+                        3:00 PM
+                      </button>
+                    </div>
+                  </li>
 
-        <a href="../index.php" class="back-link">Kthehu në faqen kryesore</a>
-    </section>
+                </ul>
+              </div>
+              <input id="screen-next-btn" type="button" name="next-step" class="next-step" value="Continue Booking"
+                disabled />
+            </fieldset>
+            <fieldset>
 
-    <script>
-    function selectSeat(element) {
-        if (element.classList.contains('seat-taken')) {
-            return;
-        }
-        // Remove previous selection
-        const allSeats = document.querySelectorAll('.seat-btn');
-        allSeats.forEach(seat => seat.classList.remove('seat-selected'));
+              <div>
+                <iframe id="seat-sel-iframe"
+                  style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 770px; height: 670px; display: block; margin-left: auto; margin-right: auto;"
+                  src="../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
+              </div>
+              <br>
+              <input type="button" name="next-step" class="next-step" value="Proceed to Payment" />
+              <input type="button" name="previous-step" class="previous-step" value="Back" />
+            </fieldset>
+            <fieldset>
+              <!-- Payment Page -->
+              <div id="payment_div">
+                <div class="payment-row">
+                  <div class="col-75">
+                    <div class="payment-container">
+                      <div class="payment-row">
+                        <div class="col-50">
+                          <h3 id="payment-h3">Payment</h3>
+                          <div class="payment-row payment">
+                            <div class="col-50 payment">
+                              <label for="card" class="method card">
+                                <div class="icon-container">
+                                  <i class="fa fa-cc-visa" style="color: navy"></i>
+                                  <i class="fa fa-cc-amex" style="color: blue"></i>
+                                  <i class="fa fa-cc-mastercard" style="color: red"></i>
+                                  <i class="fa fa-cc-discover" style="color: orange"></i>
+                                </div>
+                                <div class="radio-input">
+                                  <input type="radio" id="card" />
+                                  Pay RS.200.00 with credit card
+                                </div>
+                              </label>
+                            </div>
+                            <div class="col-50 payment">
+                              <label for="paypal" class="method paypal">
+                                <div class="icon-container">
+                                  <i class="fa fa-paypal" style="color: navy"></i>
+                                </div>
+                                <div class="radio-input">
+                                  <input id="paypal" type="radio" checked>
+                                  Pay $30.00 with PayPal
+                                </div>
+                              </label>
+                            </div>
+                          </div>
 
-        // Mark current seat as selected
-        element.classList.add('seat-selected');
-
-        // Store seat code in hidden input
-        document.getElementById('seatSelected').value = element.getAttribute('data-seat');
-    }
-    </script>
+                          <div class="payment-row">
+                            <div class="col-50">
+                              <label for="cname">Cardholder's Name</label>
+                              <input type="text" id="cname" name="cardname" placeholder="Firstname Lastname" required />
+                            </div>
+                            <div class="col-50">
+                              <label for="ccnum">Credit card number</label>
+                              <input type="text" id="ccnum" name="cardnumber" placeholder="xxxx-xxxx-xxxx-xxxx"
+                                required />
+                            </div>
+                          </div>
+                          <div class="payment-row">
+                            <div class="col-50">
+                              <label for="expmonth">Exp Month</label>
+                              <input type="text" id="expmonth" name="expmonth" placeholder="September" required />
+                            </div>
+                            <div class="col-50">
+                              <div class="payment-row">
+                                <div class="col-50">
+                                  <label for="expyear">Exp Year</label>
+                                  <input type="text" id="expyear" name="expyear" placeholder="yyyy" required />
+                                </div>
+                                <div class="col-50">
+                                  <label for="cvv">CVV</label>
+                                  <input type="text" id="cvv" name="cvv" placeholder="xxx" required />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <input type="button" name="next-step" class="next-step pay-btn" value="Confirm Payment" />
+              <input type="button" name="previous-step" class="cancel-pay-btn" value="Cancel Payment"
+                onclick="location.href='index.html';" />
+            </fieldset>
+            <fieldset>
+              <h2>E-Ticket</h2>
+              <div class="ticket-body">
+                <div class="ticket">
+                  <div class="holes-top"></div>
+                  <div class="title">
+                    <p class="cinema">MyShowz Entertainment</p>
+                    <p class="movie-title">Movie Name</p>
+                  </div>
+                  <div class="poster">
+                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/only-god-forgives.jpg"
+                      alt="Movie: Only God Forgives" />
+                  </div>
+                  <div class="info">
+                    <table class="info-table ticket-table">
+                      <tr>
+                        <th>SCREEN</th>
+                        <th>ROW</th>
+                        <th>SEAT</th>
+                      </tr>
+                      <tr>
+                        <td class="bigger">18</td>
+                        <td class="bigger">H</td>
+                        <td class="bigger">24</td>
+                      </tr>
+                    </table>
+                    <table class="info-table ticket-table">
+                      <tr>
+                        <th>PRICE</th>
+                        <th>DATE</th>
+                        <th>TIME</th>
+                      </tr>
+                      <tr>
+                        <td>RS.12.00</td>
+                        <td>4/13/21</td>
+                        <td>19:30</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div class="holes-lower"></div>
+                  <div class="serial">
+                    <table class="barcode ticket-table">
+                      <tr>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                        <td style="background-color:black;"></td>
+                        <td style="background-color:white;"></td>
+                      </tr>
+                    </table>
+                    <table class="numbers ticket-table">
+                      <tr>
+                        <td>9</td>
+                        <td>1</td>
+                        <td>7</td>
+                        <td>3</td>
+                        <td>7</td>
+                        <td>5</td>
+                        <td>4</td>
+                        <td>4</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>4</td>
+                        <td>7</td>
+                        <td>8</td>
+                        <td>7</td>
+                        <td>3</td>
+                        <td>4</td>
+                        <td>1</td>
+                        <td>4</td>
+                        <td>5</td>
+                        <td>2</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <input type="button" name="previous-step" class="home-page-btn" value="Browse to Home Page"
+                onclick="location.href='index.html';" />
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
+<script>
+  let prevId = "1";
+
+  window.onload = function () {
+    document.getElementById("screen-next-btn").disabled = true;
+  }
+
+  function timeFunction() {
+    document.getElementById("screen-next-btn").disabled = false;
+  }
+
+  function myFunction(id) {
+    document.getElementById(prevId).style.background = "rgb(243, 235, 235)";
+    document.getElementById(id).style.background = "#836e4f";
+    prevId = id;
+  }
+</script>
+
+<script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
+<script type="text/javascript" src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'>
+</script>
+<script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="../assets/js/theme-change.js"></script>
+
+<script type="text/javascript" src="../assets/js/ticket-booking.js"></script>
+
 </html>

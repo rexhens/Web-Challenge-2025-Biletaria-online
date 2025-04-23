@@ -1,7 +1,7 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
+$servername = "metropolticketing.marketingelite.eu";
+$username = "marketingelite";
+$password = "ndgcFAGTtnqW3Uz";
 $database = "theater_db";
 
 // Create connection
