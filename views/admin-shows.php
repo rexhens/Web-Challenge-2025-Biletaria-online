@@ -4,7 +4,7 @@ require "../config/db_connect.php";
 require "../auth/auth.php";
 require "../includes/functions.php";
 
-// Fetch users from the database
+
 $query = "SELECT * FROM shows";
 $users_result = $conn->query($query);
 ?>
@@ -124,6 +124,15 @@ $users_result = $conn->query($query);
 </head>
 
 <body id="page-top">
+
+<?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+    <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert" style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
+        Ndryshimet u kryen me sukses!
+        <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close" style="top: 50%; transform: translateY(-50%);">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+<?php endif; ?>
 
     <div style="display: flex; justify-content: flex-start; width: 100%;" id="wrapper">
         <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar"
@@ -260,14 +269,17 @@ $users_result = $conn->query($query);
                                     <th>Zhaneri</th>
                                     <th>Datat</th>
                                     <th>Ora</th>
-                                    <th>Cmimi i biletes</th>
-                                    <th>Prioriteti</th>
-                                    <th>Pershkrimi</th>
+                                    <th>Çmimi i biletës</th>
+                                    <th>Përshkrimi</th>
+                                    <th>Poster</th>
                                     <th>Veprime</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $users_result->fetch_assoc()) {
+                                <?php
+                                $i = 1;
+
+                                while ($row = $users_result->fetch_assoc()) {
 
                                     $genre_id = $row['genre_id'];
                                     $genre = $conn->prepare("SELECT * FROM genres WHERE id = ?");
@@ -292,23 +304,19 @@ $users_result = $conn->query($query);
                                 ?>
 
                                     <tr>
-                                        <td><?php echo $row['id'] ?></td>
+                                        <td><?php echo $i ?></td>
                                         <td><?php echo $row['title'] ?></td>
                                         <td><?php echo $row['hall'] ?></td>
                                         <td><?php echo $genreData['genre_name'] ?></td>
                                         <td><?php echo implode(', ', $groupedDates) ?></td>
                                         <td><?php echo $row['time'] ?></td>
-                                        <td><?php echo $row['price'] ?></td>
-                                        <?php if ($row['priority'] == 1) { ?>
-                                            <td><span class="badge badge-success">Aktiv</span></td>
-                                        <?php } else { ?>
-                                            <td><span class="badge badge-danger">Jo Aktiv</span></td>
-                                        <?php } ?>
+                                        <td><?php echo $row['price'] ?> Lekë</td>
                                         <td>
                                             <div class="desc-col">
                                                 <?php echo $row['description'] ?>
                                             </div>
                                         </td>
+                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster" style="width: 100%; height: auto; border-radius: 5px;"></td>
                                         <td style="text-align: center; vertical-align: middle;">
                                             <div
                                                 style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -325,25 +333,20 @@ $users_result = $conn->query($query);
                                                     data-poster="<?php echo $posterUrl ?>">
                                                     Edito
                                                 </button>
-
-                                                <?php if ($row['priority'] == 1) { ?>
-                                                    <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                                <button class="btn btn-sm btn-outline-danger delete-btn"
                                                         data-id="<?php echo $row['id'] ?>"
                                                         data-name="<?php echo $row['title'] ?>" data-toggle="modal"
-                                                        data-target="#deleteUserModal">Hiq
-                                                        Prioritet</button>
-                                                <?php } else { ?>
-                                                    <button class="btn-sm btn-outline-success activateUserBtn"
-                                                        data-id="<?php echo $row['id'] ?>"
-                                                        data-name="<?php echo $row['title'] ?>" data-toggle="modal"
-                                                        data-target="#activateUserModal">Shto
-                                                        Prioritet</button>
-                                                <?php } ?>
+                                                        data-target="#deleteUserModal">Fshi</button>
+                                                <button class="btn btn-sm btn-outline-success" onclick="window.location.href = 'show_details.php?id=<?php echo $row['id'] ?>'">Më shumë info</button>
+                                                <button class="btn btn-sm btn-outline-warning">Rezervo</button>
+                                                <button class="btn btn-sm btn-outline-secondary">Rezervimet</button>
                                             </div>
                                         </td>
 
                                     </tr>
-                                <?php } ?>
+                                <?php
+                                    $i++;
+                                } ?>
                             </tbody>
                         </table>
                     </div>
@@ -438,7 +441,7 @@ $users_result = $conn->query($query);
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                    <button type="submit" class="btn btn-primary" style="background-color: #8f793f; border: none;">
+                    <button type="submit" class="btn btn-primary" name="edit-show" style="background-color: #8f793f; border: none;">
                         Ruaj Ndryshimet
                     </button>
                 </div>
@@ -446,66 +449,30 @@ $users_result = $conn->query($query);
         </div>
     </div>
 
-
-    <!-- Delete Modal -->
-
-    <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
-        aria-hidden="true">
+         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" action="remove_priority.php">
+            <form method="POST" action="delete_show.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Heqjen e Prioritetit</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen e Shfaqjes</h5>
+                        <button type="button" class="close text-gray-700" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të hiqni prioritetin e shfaqjes <strong id="userToDeleteName"></strong>
-                            duke e bere ate te mos jete me e dukshme ne faqen kryesore te teatrit?
+                        <p>Jeni i sigurt që doni të fshini shfaqjen <strong id="showToDeleteTitle"></strong>?
                         </p>
-                        <input type="hidden" name="userId" id="deleteUserId">
+                        <input type="hidden" name="showId" id="deleteShowId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Hiq prioritet</button>
+                        <button type="submit" name="delete-show" class="btn btn-danger">Fshi</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-
-    <!-- Activate Confirmation Modal -->
-    <div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="activateUserModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form method="POST" action="prioritaze.php">
-                <div class="modal-content">
-                    <div class="modal-header text-red">
-                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Shtimin e Prioritetit</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Jeni i sigurt që doni të shtoni prioritetin e shfaqjes <strong
-                                id="userToActivateName"></strong>
-                            duke e bere ate te jete e dukshme ne faqen kryesore te teatrit?
-                        </p>
-                        <input type="hidden" name="userId" id="activateUserId">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="activateUserSubmit" class="btn btn-success">Shto Prioritet</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-
 
 </body>
 
@@ -539,33 +506,7 @@ $users_result = $conn->query($query);
         });
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".deleteUserBtn");
-
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const userId = button.getAttribute("data-id");
-                const userName = button.getAttribute("data-name");
-
-                document.getElementById("deleteUserId").value = userId;
-                document.getElementById("userToDeleteName").textContent = userName;
-            });
-        });
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".activateUserBtn");
-
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const userId = button.getAttribute("data-id");
-                const userName = button.getAttribute("data-name");
-
-                document.getElementById("activateUserId").value = userId;
-                document.getElementById("userToActivateName").textContent = userName;
-            });
-        });
-    });
+    let initialFormData;
 
     $('.editShowBtn').on('click', function () {
         let editDatesPicker;
@@ -580,7 +521,7 @@ $users_result = $conn->query($query);
         $('#editPrice').val($(this).data('price'));
         $('#currentPoster').attr('src', $(this).data('poster'));
 
-        const dateString = $(this).data('dates'); // e.g. "2025-04-25,2025-04-26"
+        const dateString = $(this).data('dates');
         const dateArray = dateString ? dateString.split(',') : [];
 
         if (editDatesPicker) {
@@ -592,6 +533,8 @@ $users_result = $conn->query($query);
                 defaultDate: dateArray
             });
         }
+
+        initialFormData = $('#editShowForm').serializeArray();
 
         $('#editShowModal').modal('show');
     });
@@ -613,4 +556,50 @@ $users_result = $conn->query($query);
         $(this).next('.custom-file-label').html(fileName);
     });
 
+    function isFormChanged() {
+        let currentFormData = $('#editShowForm').serializeArray();
+
+        for (let i = 0; i < initialFormData.length; i++) {
+            if (initialFormData[i].value !== currentFormData[i].value) {
+                return true;
+            }
+        }
+
+        let currentFile = $('input[name="file-input"]')[0].files[0];
+        if (currentFile) {
+            return true;
+        }
+
+        return false;
+    }
+
+    $('#editShowForm').submit(function(e) {
+        if (!isFormChanged()) {
+            e.preventDefault();
+            alert('Nuk ka asnjë ndryshim për të ruajtur.');
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const showId = button.getAttribute("data-id");
+                const showTitle = button.getAttribute("data-name");
+
+                document.getElementById("deleteShowId").value = showId;
+                document.getElementById("showToDeleteTitle").textContent = showTitle;
+            });
+        });
+    });
+
+</script>
+
+<script>
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('update');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
 </script>

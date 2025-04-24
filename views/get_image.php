@@ -66,7 +66,7 @@ if (isset($_GET['show_id'])) {
     $stmt->close();
 
     if (!empty($poster)) {
-        $imagePath = "../assets/img/events/" . basename($poster); // secure the path
+        $imagePath = "../assets/img/events/" . basename($poster);
         if (file_exists($imagePath)) {
             $mimeType = mime_content_type($imagePath);
             header("Content-Type: $mimeType");

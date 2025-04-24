@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
-    $result = isHallAvailable($conn, $hall, $time, $dates);
+    $result = isHallAvailable($conn, $hall, $time, $dates, null);
 
     if(!$result['available']) {
         $errors[] = "Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']);
