@@ -31,15 +31,15 @@ $shows_result = $conn->query($shows_query);
 
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
 
-    <link rel="icon" type="image/x-icon" href="../../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
     <!-- Custom fonts for this template-->
-    <link href="../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="../../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -331,8 +331,8 @@ $shows_result = $conn->query($shows_query);
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="./users/add-user.php">Shto perdorues te ri</a>
-                        <a class="collapse-item" href="./users/index.php">Shiko te gjithe</a>
+                        <a class="collapse-item" href="admin/users/add-user.php">Shto perdorues te ri</a>
+                        <a class="collapse-item" href="admin/users/index.php">Shiko te gjithe</a>
                     </div>
                 </div>
             </li>
@@ -349,8 +349,8 @@ $shows_result = $conn->query($shows_query);
                 <div id="collapseShows" class="collapse" aria-labelledby="headingShows" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="../add-show.php">Shto Shfaqje</a>
-                        <a class="collapse-item" href="../shows.php">Te gjitha Shfaqjet</a>
+                        <a class="collapse-item" href="add-show.php">Shto Shfaqje</a>
+                        <a class="collapse-item" href="shows.php">Te gjitha Shfaqjet</a>
                     </div>
                 </div>
             </li>
@@ -366,8 +366,8 @@ $shows_result = $conn->query($shows_query);
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="./actors/index.php">Te gjithe Aktoret</a>
-                        <a class="collapse-item" href="./actors/add.php">Shto nje Aktor te ri</a>
+                        <a class="collapse-item" href="admin/actors/index.php">Te gjithe Aktoret</a>
+                        <a class="collapse-item" href="admin/actors/add.php">Shto nje Aktor te ri</a>
                     </div>
                 </div>
             </li>
@@ -418,7 +418,7 @@ $shows_result = $conn->query($shows_query);
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
-                        <a href="generate_report.php"
+                        <a href="admin/generate_report.php"
                             class="d-none d-sm-inline-block btn btn-sm btn-primary-report shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
                     </div>
@@ -595,7 +595,7 @@ $shows_result = $conn->query($shows_query);
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
-                                    onclick="window.location.href = './users/add-user.php'">Shto Përdorues</button>
+                                    onclick="window.location.href = 'admin/users/add-user.php'">Shto Përdorues</button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -736,21 +736,21 @@ $shows_result = $conn->query($shows_query);
 
 
     <!-- Bootstrap core JavaScript-->
-    <script src="../../assets/vendor/jquery/jquery.min.js"></script>
-    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/vendor/jquery/jquery.min.js"></script>
+    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="../../assets/js/sb-admin-2.min.js"></script>
+    <script src="../assets/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
+    <script src="../assets/vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="../../assets/js/demo/chart-area-demo.js"></script>
-    <script src="../../assets/js/demo/chart-pie-demo.js?v=2"></script>
+    <script src="../assets/js/demo/chart-area-demo.js"></script>
+    <script src="../assets/js/demo/chart-pie-demo.js?v=2"></script>
     <!-- DataTables CSS and JS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
