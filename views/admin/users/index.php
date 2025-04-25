@@ -29,14 +29,9 @@ $users_result = $conn->query($query);
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-    <!-- Scripts (in proper order) -->
 
-    <!-- jQuery (must come first) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Bootstrap 4 with Popper included -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
+   
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
@@ -103,7 +98,7 @@ $users_result = $conn->query($query);
 <body id="page-top">
 
     <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
-      <?php include_once './sidebar.php'; ?>
+      <?php include_once '../../sidebar.php'; ?>
 
 
         <section id="users-section">

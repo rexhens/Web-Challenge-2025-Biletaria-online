@@ -38,17 +38,6 @@ $shows_result = $conn->query($shows_query);
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Popper.js (required for Bootstrap) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
         .bg-gold {
@@ -318,7 +307,7 @@ $shows_result = $conn->query($shows_query);
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?php include './admin/users/sidebar.php'; ?>
+        <?php include './sidebar.php'; ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -435,7 +424,7 @@ $shows_result = $conn->query($shows_query);
                     <div class="row">
 
                         <!-- Graphs -->
-                        <div class="col-xl-8 col-lg-7">
+                        <div class="col-xl-8 col-lg-7" id="graphs-section">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
@@ -574,7 +563,7 @@ $shows_result = $conn->query($shows_query);
                                                 <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
-                                                <td><?php echo number_format($row['price'], 2); ?> €</td>
+                                                <td><?php echo number_format($row['price'], 2); ?> Leke</td>
 
                                             </tr>
                                         <?php } ?>
@@ -612,9 +601,9 @@ $shows_result = $conn->query($shows_query);
                                                 <td class="text-muted"><?php echo $row['id']; ?></td>
                                                 <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                                <td><?php echo date("d M Y", strtotime($row['birthdate'])); ?></td>
+                                                <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
                                                 <td class="text-truncate" style="max-width: 200px;">
-                                                    <?php echo mb_strimwidth(strip_tags($row['biography']), 0, 80, "..."); ?>
+                                                    <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
                                                 </td>
                                                 <td class="text-end">
                                                     <button class="btn btn-sm btn-outline-secondary">Shiko</button>

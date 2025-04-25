@@ -3,8 +3,8 @@
 include_once '../../../config/db_connect.php';
 
 // Fetch users from the database
-$query = "SELECT * FROM users";
-$users_result = $conn->query($query);
+$query = "SELECT * FROM actors";
+$actors_result = $conn->query($query);
 ?>
 
 
@@ -29,24 +29,16 @@ $users_result = $conn->query($query);
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-    <!-- Scripts (in proper order) -->
-
-    <!-- jQuery (must come first) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Bootstrap 4 with Popper included -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
-    <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <!-- sb-admin-2 (your custom template) -->
-    <script src="../../../assets/js/sb-admin-2.min.js"></script>
-
-    <!-- jQuery Easing (if used in sb-admin-2) -->
-    <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <style>
+        button:focus {
+            outline: none;
+            box-shadow: #8f793f !important;
+            border-color: transparent;
+            /* optional */
+        }
+
+
         .dataTables_filter {
             width: 100%;
             margin-bottom: 1rem;
@@ -103,63 +95,49 @@ $users_result = $conn->query($query);
 <body id="page-top">
 
     <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
-        <?php include_once '../users/sidebar.php'; ?>
+        <?php include_once '../../sidebar.php'; ?>
 
 
-        <section id="users-section">
+        <section id="users-section" style="margin-top: 1%;">
             <div class="card shadow-sm border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Përdoruesve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = './add-user.php'">Shto
-                        Përdorues</button>
+                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Aktoreve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = './add.php'">Shto
+                        Aktor</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
-                            <thead class="thead-light">
+                            <thead class="table-light text-secondary small text-uppercase">
                                 <tr>
-                                    <th>#</th>
+                                    <th>ID</th>
                                     <th>Emri</th>
                                     <th>Email</th>
-                                    <th>Numri i cel</th>
-                                    <th>Roli</th>
-                                    <th>Statusi</th>
-                                    <th>Veprime</th>
+                                    <th>Datëlindja</th>
+                                    <th>Biografia</th>
+                                    <th class="text-end">Veprime</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <?php while ($row = $users_result->fetch_assoc()) { ?>
+                            <tbody class="text-dark">
+                                <?php while ($row = $actors_result->fetch_assoc()) { ?>
                                     <tr>
-                                        <td><?php echo $row['id'] ?></td>
-                                        <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
-                                        <td><?php echo $row['email'] ?></td>
-                                        <td><?php echo $row['phone'] ?></td>
-                                        <td><?php echo $row['role'] ?></td>
-
-                                        <?php if ($row['status'] == 'active') { ?>
-                                            <td><span class="badge badge-success">Aktiv</span></td>
-                                        <?php } else { ?>
-                                            <td><span class="badge badge-danger">Jo Aktiv</span></td>
-                                        <?php } ?>
-                                        <td>
+                                        <td class="text-muted"><?php echo $row['id']; ?></td>
+                                        <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                        <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
+                                        <td class="text-truncate" style="max-width: 200px;">
+                                            <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
+                                        </td>
+                                        <td class="text-end">
                                             <button class="btn-sm btn-outline-secondary editUserBtn"
                                                 data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
-                                                data-surname="<?php echo $row['surname'] ?>"
                                                 data-email="<?php echo $row['email'] ?>"
-                                                data-phone="<?php echo $row['phone'] ?>"
-                                                data-role="<?php echo $row['role'] ?>"
-                                                data-status="<?php echo $row['status'] ?>">Edito</button>
-                                            <?php if ($row['status'] == 'active') { ?>
-                                                <button class="btn-sm btn-outline-danger deleteUserBtn"
-                                                    data-id="<?php echo $row['id'] ?>"
-                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
-                                                    data-toggle="modal" data-target="#deleteUserModal">Caktivizo</button>
-                                            <?php } else { ?>
-                                                <button class="btn-sm btn-outline-success activateUserBtn"
-                                                    data-id="<?php echo $row['id'] ?>"
-                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
-                                                    data-toggle="modal" data-target="#activateUserModal">Aktivizo</button>
-                                            <?php } ?>
+                                                data-birthday="<?php echo $row['birthday'] ?>"
+                                                data-biography="<?php echo $row['description'] ?>">
+                                                Edito</button>
+                                            <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -177,7 +155,7 @@ $users_result = $conn->query($query);
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editUserModalLabel">Edito Përdoruesin</h5>
+                    <h5 class="modal-title" id="editUserModalLabel">Edito Aktorin</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Mbyll">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -185,45 +163,35 @@ $users_result = $conn->query($query);
                 <div class="modal-body">
                     <!-- Form Fields -->
                     <form id="editUserForm" method="POST" action="edit.php">
-                        <input type="hidden" id="editUserId" name="userId"> <!-- fixed name -->
+                        <input type="hidden" id="editUserId" name="id"> <!-- Hidden field for actor ID -->
 
                         <div class="form-group">
                             <label for="editName">Emri</label>
-                            <input type="text" class="form-control" id="editName" name="emri"> <!-- added name -->
-                        </div>
-
-                        <div class="form-group">
-                            <label for="editSurname">Mbiemri</label>
-                            <input type="text" class="form-control" id="editSurname" name="mbiemri"> <!-- added name -->
+                            <input type="text" class="form-control" id="editName" name="name" required>
                         </div>
 
                         <div class="form-group">
                             <label for="editEmail">Email</label>
-                            <input type="email" class="form-control" id="editEmail" name="email"> <!-- added name -->
+                            <input type="email" class="form-control" id="editEmail" name="email" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="editPhone">Telefoni</label>
-                            <input type="text" class="form-control" id="editPhone" name="telefoni"> <!-- optional -->
+                            <label for="editBirthday">Datëlindja</label>
+                            <input type="date" class="form-control" id="editBirthday" name="birthday" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="editRole">Roli</label>
-                            <select class="form-control" id="editRole" name="roli"> <!-- added name -->
-                                <option value="admin">Admin</option>
-                                <option value="biletari">Biletari</option>
-                                <option value="perdorues">Përdorues</option>
-                            </select>
+                            <label for="editDescription">Biografia</label>
+                            <textarea class="form-control" id="editDescription" name="description" rows="4"
+                                required></textarea>
                         </div>
-                        <input type="hidden" name="formAction" id="formAction" value="edit">
                     </form>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
                     <button type="submit" class="btn btn-primary" form="editUserForm"
                         style="background-color: #8f793f !important; border: #8f793f;">
-                        Edito
+                        Ruaj Ndryshimet
                     </button>
                 </div>
             </div>
@@ -239,49 +207,25 @@ $users_result = $conn->query($query);
             <form method="POST" action="delete.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Caktivizimin</h5>
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të caktivizoni perdoruesin <strong id="userToDeleteName"></strong>?</p>
-                        <input type="hidden" name="userId" id="deleteUserId">
+                        <p>Jeni i sigurt që doni të fshini nga lista aktorin <strong id="userToDeleteName"></strong>?
+                        </p>
+                        <input type="hidden" name="id" id="deleteUserId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Caktivizo</button>
+                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Fshij</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Activate Confirmation Modal -->
-    <div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="activateUserModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form method="POST" action="activate.php">
-                <div class="modal-content">
-                    <div class="modal-header text-red">
-                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Aktivizimin</h5>
-                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Jeni i sigurt që doni të aktivizoni perdoruesin <strong id="userToActivateName"></strong>?
-                        </p>
-                        <input type="hidden" name="userId" id="activateUserId">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="activateUserSubmit" class="btn btn-success">Aktivizo</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 
 
 
@@ -305,7 +249,7 @@ $users_result = $conn->query($query);
             "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
             "language": {
                 "search": "",
-                "searchPlaceholder": "Kërko perdorues...",
+                "searchPlaceholder": "Kërko aktor...",
                 "paginate": {
                     "previous": "‹",
                     "next": "›"
@@ -324,16 +268,17 @@ $users_result = $conn->query($query);
             const name = $(this).data('name');
             const surname = $(this).data('surname');
             const email = $(this).data('email');
-            const phone = $(this).data('phone');
-            const role = $(this).data('role');
+            const biography = $(this).data('biography');
+            const birthday = $(this).data('birthday');
 
             // Populate modal fields
             $('#editUserId').val(userId);
             $('#editName').val(name);
             $('#editSurname').val(surname);
             $('#editEmail').val(email);
-            $('#editPhone').val(phone);
-            $('#editRole').val(role);
+            $('#editBirthday').val(birthday);
+
+            $('#editDescription').val(biography);
 
             // Show the modal
             $('#editUserModal').modal('show');
@@ -344,10 +289,9 @@ $users_result = $conn->query($query);
             const userData = {
                 id: $('#editUserId').val(),
                 name: $('#editName').val(),
-                surname: $('#editSurname').val(),
                 email: $('#editEmail').val(),
-                phone: $('#editPhone').val(),
-                role: $('#editRole').val()
+                birthdate: $('#editBirthday').val(),
+                description: $('#editDescription').val(),
             };
 
             console.log("Saving user data:", userData);
@@ -365,8 +309,6 @@ $users_result = $conn->query($query);
             $('#emri').val(button.data('emri'));
             $('#mbiemri').val(button.data('mbiemri'));
             $('#email').val(button.data('email'));
-            $('#username').val(button.data('username'));
-            $('#roli').val(button.data('role'));
 
             $('#addUserModalLabel').text('Përditëso Përdoruesin');
             $('#submitUserBtn').text('Ruaj Ndryshimet');

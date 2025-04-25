@@ -2,9 +2,9 @@
 require_once '../../../config/db_connect.php';
 
 // Check if the 'id' parameter is set in the URL
-if (isset($_GET['id'])) {
+if (isset($_POST['id'])) {
     // Get the actor ID from the URL
-    $actor_id = $_GET['id'];
+    $actor_id = $_POST['id'];
 
     // Prepare the DELETE SQL query
     $sql = "DELETE FROM actors WHERE id = ?";
