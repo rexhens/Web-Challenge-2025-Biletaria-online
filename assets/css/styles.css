@@ -29,6 +29,11 @@ body {
     color: var(--text-color);
 }
 
+.light {
+    background-color: white;
+    color: var(--background-color);
+}
+
 .fcontainer {
     display: flex;
     flex-direction: row-reverse;
@@ -59,6 +64,20 @@ body {
     margin: auto 0;
     animation: fadeIn 0.5s ease-in-out;
     transition: width 0.3s ease;
+}
+
+.form-container.light {
+    box-shadow: 2px 2px 5px gray;
+    background: rgba(200, 187, 179, 0.05);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
+}
+
+.side-container.light {
+    box-shadow: 2px 2px 5px gray;
+    background: rgba(200, 187, 179, 0.04);
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px);
 }
 
 .side-container {
@@ -98,6 +117,10 @@ h1 {
     font-weight: lighter;
 }
 
+.light h1 {
+    font-weight: 400;
+}
+
 p {
     padding: 0;
     margin: 0;
@@ -123,6 +146,10 @@ p {
     z-index: 1;
 }
 
+.light .form-group input {
+    color: var(--background-color);
+}
+
 .form-group input:focus {
     border-color: var(--accent-color);
 }
@@ -138,6 +165,13 @@ input:-webkit-autofill:active {
     transition: background-color 9999s ease-in-out 0s !important;
 }
 
+.light input:-webkit-autofill,
+.light input:-webkit-autofill:focus,
+.light input:-webkit-autofill:hover,
+.light input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--background-color) !important;
+}
+
 .form-group label {
     position: absolute;
     top: 10px;
@@ -149,6 +183,11 @@ input:-webkit-autofill:active {
     color: var(--surface-color);
 }
 
+.light .form-group label {
+    color: #826008;
+    font-weight: 500;
+}
+
 .form-group input:focus + label,
 .form-group input:not(:placeholder-shown) + label {
     top: -17px;
@@ -156,6 +195,11 @@ input:-webkit-autofill:active {
     font-size: 14px;
     color: var(--surface-color);
     font-weight: bold;
+}
+
+.light .form-group input:focus + label,
+.light .form-group input:not(:placeholder-shown) + label {
+    color: #826008;
 }
 
 textarea {
@@ -170,6 +214,10 @@ textarea {
     font-family: var(--default-font);
     font-size: 15px;
     color: var(--text-color);
+}
+
+.light textarea {
+    color: var(--background-color);
 }
 
 textarea::placeholder {
@@ -391,11 +439,21 @@ h3 {
     margin: auto auto 5px;
     background: none;
     color: var(--heading2-color);
+    transition: font-weight 0.3s ease;
+}
+
+.light .photo-container button {
+    color: #826008;
+    font-weight: 500;
 }
 
 .photo-container button:hover {
     background: none;
     color: var(--accent-color);
+}
+
+.light .photo-container button:hover {
+    font-weight: bolder;
 }
 
 .form-footer {
@@ -506,10 +564,21 @@ input[type="number"] {
     text-align: center;
 }
 
+.light .custom-spinner .plus,
+.light .custom-spinner .minus {
+    color: var(--background-color);
+}
+
 .custom-spinner .plus:hover,
 .custom-spinner .minus:hover {
     cursor: pointer;
     color: var(--accent-color);
+}
+
+.light .custom-spinner .plus:hover,
+.light .custom-spinner .minus:hover {
+    color: #826008;
+    font-weight: 500;
 }
 
 .custom-spinner .plus::selection,
@@ -530,6 +599,11 @@ select {
     color: var(--surface-color);
 }
 
+.light select {
+    color: #826008;
+    font-weight: 500;
+}
+
 select:hover {
     cursor: pointer;
 }
@@ -542,11 +616,20 @@ option {
     background-color: var(--background-color);
 }
 
+.light option {
+    background-color: white;
+}
+
 .flatpickr-calendar {
     background-color: var(--background-color);
     color: var(--text-color);
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.light .flatpickr-calendar {
+    background-color: white;
+    color: var(--background-color);
 }
 
 .flatpickr-day {
@@ -555,6 +638,10 @@ option {
     border-radius: 6px;
     padding: 8px;
     transition: background-color 0.3s ease;
+}
+
+.light .flatpickr-day {
+    color: var(--background-color);
 }
 
 .flatpickr-day:hover {
@@ -577,17 +664,33 @@ option {
     background-color: var(--background-color) !important;
     border: none !important;
 }
+
+.light .flatpickr-monthDropdown-months,
+.light .flatpickr-current-month input.cur-year {
+    color: var(--background-color) !important;
+    background-color: white !important;
+}
+
 .flatpickr-prev-month svg,
 .flatpickr-next-month svg {
     stroke: var(--accent-color) !important;
 }
 
 .flatpickr-weekday {
-    color: var(--surface-color) !important;
+    color: var(--default-color) !important;
+}
+
+.light .flatpickr-weekday {
+    color: #826008 !important;
 }
 
 .flatpickr-prev-month, .flatpickr-next-month {
     color: var(--accent-color);
+}
+
+.flatpickr-day.prevMonthDay,
+.flatpickr-day.nextMonthDay {
+    color: #999;
 }
 
 .flatpickr-time {
@@ -598,6 +701,11 @@ option {
     justify-content: center;
     align-items: center;
     padding: 8px;
+}
+
+.light .flatpickr-time {
+    background-color: white;
+    color: var(--background-color);
 }
 
 .flatpickr-time input.flatpickr-hour,
@@ -612,14 +720,28 @@ option {
     transition: background-color 0.3s ease;
 }
 
+.light .flatpickr-time input.flatpickr-hour,
+.light .flatpickr-time input.flatpickr-minute {
+    background-color: white;
+    color: var(--background-color);
+}
+
 .flatpickr-time input.flatpickr-hour:focus,
 .flatpickr-time input.flatpickr-minute:focus,
 .flatpickr-time input.flatpickr-hour::selection,
-.flatpickr-time input.flatpickr-minute::selection{
+.flatpickr-time input.flatpickr-minute::selection {
     background-color: var(--background-color) !important;
     color: var(--surface-color) !important;
     outline: none;
     box-shadow: none;
+}
+
+.light .flatpickr-time input.flatpickr-hour:focus,
+.light .flatpickr-time input.flatpickr-minute:focus,
+.light .flatpickr-time input.flatpickr-hour::selection,
+.light .flatpickr-time input.flatpickr-minute::selection {
+    background-color: white !important;
+    color: var(--background-color) !important;
 }
 
 .flatpickr-time .flatpickr-time-separator {
@@ -635,6 +757,11 @@ option {
 .flatpickr-time .arrowUp,
 .flatpickr-time .arrowDown {
     background-color: var(--accent-color);
+}
+
+.light .flatpickr-time .arrowUp,
+.light .flatpickr-time .arrowDown {
+    background-color: var(--surface-color);
 }
 
 .flatpickr-time .arrowUp:hover,
@@ -653,6 +780,10 @@ button {
     background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
     transition: transform 0.2s ease, background-color 0.2s ease;
     z-index: 100;
+}
+
+.light button {
+    color: antiquewhite;
 }
 
 button:hover {
