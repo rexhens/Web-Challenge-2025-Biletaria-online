@@ -1,313 +1,410 @@
+<?php
+// Include database connection
+include_once '../../../config/db_connect.php';
+
+// Fetch users from the database
+$query = "SELECT * FROM users";
+$users_result = $conn->query($query);
+?>
+
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="../../../assets/img/favicon.png" rel="icon">
-    <link href="../../../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <?php require '../../../includes/links.php'; ?>
+    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
+    <link rel="icon" href="../../../assets/img/metropol_icon.png">
+    <title>Teatri Metropol | Shto Përdorues</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
+    <link href="../../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link href="../../../assets/css/sb-admin-2.min.css" rel="stylesheet">
 
-    <!-- Vendor CSS Files -->
-    <link href="../../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="../../../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-    <link href="../../../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
+    <!-- Scripts (in proper order) -->
 
-    <link rel="stylesheet" href='../../../assets/css/actors.css'>
-    <title>Actors Page</title>
+    <!-- jQuery (must come first) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 4 with Popper included -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!-- sb-admin-2 (your custom template) -->
+    <script src="../../../assets/js/sb-admin-2.min.js"></script>
+
+    <!-- jQuery Easing (if used in sb-admin-2) -->
+    <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
     <style>
-        body {
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: var(--default-font);
-            margin: 0;
+        .dataTables_filter {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_filter label {
+            width: 100%;
+            display: flex;
+        }
+
+        .dataTables_filter input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            height: 50px;
+        }
+
+        .btn-primary-report {
+            background-color: #8f793f !important;
+            background-image: none !important;
+            color: white !important;
+
+        }
+
+        #users-section {
+            flex: 1;
+            /* allows it to take all the remaining width */
             padding: 20px;
         }
 
-        .team .member {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100%;
-            background: rgba(228, 228, 228, 0.04);
-            -webkit-backdrop-filter: blur(5px);
-            /* Dark background similar to the form */
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-
-        .container a {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #fbbf24;
-            /* Gold background similar to the form button */
-            color: #2d3748;
-            /* Dark text */
-            font-weight: 600;
-            font-size: 16px;
-            text-transform: uppercase;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease-in-out;
-            margin-top: 20px;
-        }
-
-        /* Add button hover effect */
-        .container a:hover {
-            background-color: #f59e0b;
-            /* Darker shade of gold */
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Matching card text color */
-        .team .member h4,
-        .team .member span,
-        .team .member p {
-            color: #fff;
-            /* White text for better contrast */
-        }
-
-        .team .member img {
+        .card {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 8px;
         }
 
-        .team .member-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            margin-top: 16px;
+        .table-responsive {
+            width: 100%;
         }
 
-        .team .member h4,
-        .team .member span,
-        .team .member p {
-            margin: 0 0 8px;
+        table.dataTable {
+            width: 100% !important;
+            /* forces table full width */
         }
 
-        .team .member .social {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .team .member .social a {
-            text-decoration: none;
-            padding: 8px 15px;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .team .member .social .edit-btn {
-            background: #75612b;
-            color: white;
-            border: 2px solid rgba(14, 21, 16, 0.4);
-        }
-
-        .team .member .social .edit-btn:hover {
-            background-color: white;
-            color: #000;
-            box-shadow: 0 4px 10px rgba(238, 162, 162, 0.4);
-            transform: scale(1.1);
-        }
-
-        .team .member .social .delete-btn {
-            background: black;
-            border: 1px solid #8f793f;
-            color: #8f793f;
-
-        }
-
-        .team .member .social .delete-btn:hover {
-            background-color: rgba(29, 26, 26, 0.3);
-            color: #444;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-        }
-
-        /* Ensures consistent height for the cards */
-        .card-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .team .member .social a.edit-btn,
-        .team .member .social a.delete-btn {
-            display: inline-block !important;
-            width: 48%;
-        }
-
-
-        /* Responsive Button Layout */
-        @media (max-width: 768px) {
-            .team .member .social {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-            }
-
-            .team .member .social .edit-btn,
-            .team .member .social .delete-btn {
-                width: 100%;
-                max-width: 120px;
-            }
-        }
-
-        .hidden {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
+        input {
+            box-shadow: none !important;
         }
     </style>
+
+
+
 </head>
 
-<body>
+<body id="page-top">
 
-    <section id="team" class="team section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Actors Page</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-        </div><!-- End Section Title -->
+    <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
+        <?php include_once '../users/sidebar.php'; ?>
 
-        <!-- Search Bar -->
-        <div class="container">
-            <input type="text" id="search" class="form-control" placeholder="Search actors..."
-                onkeyup="searchActors()" />
-            <a href="add.php">Add</a>
-        </div>
 
-        <div class="container">
-            <div class="big-container">
-                <?php
-                require_once '../../../config/db_connect.php';
-                $result = $conn->query('SELECT * FROM actors');
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        ?>
-                        <div class="col-lg-4 col-md-6 d-flex card-container" data-aos="fade-up" data-aos-delay="100">
-                            <div class="member">
-                                <img src="../../get_image.php?actor_id=<?php echo $row['id']; ?>" class="img-fluid" alt="">
-                                <div class="member-content">
-                                    <h4><?php echo htmlspecialchars($row['name']); ?></h4>
-                                    <span><?php echo "I lindur me: " . htmlspecialchars($row['birthdate']); ?></span>
-                                    <p><?php echo htmlspecialchars($row['biography']); ?></p>
-                                    <div class="social">
+        <section id="users-section">
+            <div class="card shadow-sm border-0 rounded">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Përdoruesve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = './add-user.php'">Shto
+                        Përdorues</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Emri</th>
+                                    <th>Email</th>
+                                    <th>Numri i cel</th>
+                                    <th>Roli</th>
+                                    <th>Statusi</th>
+                                    <th>Veprime</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                    <tr>
+                                        <td><?php echo $row['id'] ?></td>
+                                        <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
+                                        <td><?php echo $row['email'] ?></td>
+                                        <td><?php echo $row['phone'] ?></td>
+                                        <td><?php echo $row['role'] ?></td>
 
-                                        <a class="edit-btn" href="edit.php?id=<?php echo $row['id']; ?>">Edit</a>
-
-                                        <a class="delete-btn" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                            data-id="<?php echo $row['id']; ?>">
-                                            Fshij
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- End Team Member -->
-                        <?php
-                    }
-                } else {
-                    echo "No actors found.";
-                }
-                ?>
+                                        <?php if ($row['status'] == 'active') { ?>
+                                            <td><span class="badge badge-success">Aktiv</span></td>
+                                        <?php } else { ?>
+                                            <td><span class="badge badge-danger">Jo Aktiv</span></td>
+                                        <?php } ?>
+                                        <td>
+                                            <button class="btn-sm btn-outline-secondary editUserBtn"
+                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                data-surname="<?php echo $row['surname'] ?>"
+                                                data-email="<?php echo $row['email'] ?>"
+                                                data-phone="<?php echo $row['phone'] ?>"
+                                                data-role="<?php echo $row['role'] ?>"
+                                                data-status="<?php echo $row['status'] ?>">Edito</button>
+                                            <?php if ($row['status'] == 'active') { ?>
+                                                <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                    data-toggle="modal" data-target="#deleteUserModal">Caktivizo</button>
+                                            <?php } else { ?>
+                                                <button class="btn-sm btn-outline-success activateUserBtn"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                    data-toggle="modal" data-target="#activateUserModal">Aktivizo</button>
+                                            <?php } ?>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-        </div><!-- End container -->
-    </section><!-- /Team Section -->
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        </section>
+
+
+    </div>
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Jepni konfirmimin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editUserModalLabel">Edito Përdoruesin</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Mbyll">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    Jeni i sigurt qe doni ta hiqni nga faqja e teatrit kete aktor?
+                    <!-- Form Fields -->
+                    <form id="editUserForm" method="POST" action="edit.php">
+                        <input type="hidden" id="editUserId" name="userId"> <!-- fixed name -->
+
+                        <div class="form-group">
+                            <label for="editName">Emri</label>
+                            <input type="text" class="form-control" id="editName" name="emri"> <!-- added name -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editSurname">Mbiemri</label>
+                            <input type="text" class="form-control" id="editSurname" name="mbiemri"> <!-- added name -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email"> <!-- added name -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editPhone">Telefoni</label>
+                            <input type="text" class="form-control" id="editPhone" name="telefoni"> <!-- optional -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editRole">Roli</label>
+                            <select class="form-control" id="editRole" name="roli"> <!-- added name -->
+                                <option value="admin">Admin</option>
+                                <option value="biletari">Biletari</option>
+                                <option value="perdorues">Përdorues</option>
+                            </select>
+                        </div>
+                        <input type="hidden" name="formAction" id="formAction" value="edit">
+                    </form>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mbrapa</button>
-                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger ">Fshij</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                    <button type="submit" class="btn btn-primary" form="editUserForm"
+                        style="background-color: #8f793f !important; border: #8f793f;">
+                        Edito
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function searchActors() {
-            let input = document.getElementById('search').value.toLowerCase();
-            let actors = document.querySelectorAll('.card-container');
+    <!-- Delete Modal -->
 
-            actors.forEach(function (actor) {
-                let name = actor.querySelector('h4').textContent.toLowerCase();
-                if (name.indexOf(input) > -1) {
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST" action="delete.php">
+                <div class="modal-content">
+                    <div class="modal-header text-red">
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Caktivizimin</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jeni i sigurt që doni të caktivizoni perdoruesin <strong id="userToDeleteName"></strong>?</p>
+                        <input type="hidden" name="userId" id="deleteUserId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Caktivizo</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                    actor.classList.remove("hidden");
-                } else {
-
-                    actor.classList.add("hidden");
-                }
-            });
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-            let deleteButtons = document.querySelectorAll(".delete-btn");
-            let confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
-            let deleteModalElement = document.getElementById("deleteModal");
-            let deleteModal = new bootstrap.Modal(deleteModalElement, { keyboard: false });
-
-            deleteButtons.forEach(button => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault(); // Prevent default link behavior
-                    let actorId = this.getAttribute("data-id");
-                    confirmDeleteBtn.href = `delete.php?id=` + actorId;
-
-                    // Ensure the modal is fully initialized before showing
-                    deleteModalElement.removeAttribute("aria-hidden");
-                    deleteModalElement.style.display = "block";
-                    deleteModal.show();
-                });
-            });
-
-            // Ensure modal is properly hidden when closed
-            deleteModalElement.addEventListener("hidden.bs.modal", function () {
-                deleteModalElement.setAttribute("aria-hidden", "true");
-                deleteModalElement.style.display = "none";
-            });
-        });
+    <!-- Activate Confirmation Modal -->
+    <div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="activateUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST" action="activate.php">
+                <div class="modal-content">
+                    <div class="modal-header text-red">
+                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Aktivizimin</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jeni i sigurt që doni të aktivizoni perdoruesin <strong id="userToActivateName"></strong>?
+                        </p>
+                        <input type="hidden" name="userId" id="activateUserId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                        <button type="submit" name="activateUserSubmit" class="btn btn-success">Aktivizo</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
 
 
-    </script>
 
 </body>
 
 </html>
+
+<script>
+    $(document).ready(function () {
+        $("#sidebarToggle").on('click', function (e) {
+            e.preventDefault();
+            $("body").toggleClass("sidebar-toggled");
+            $(".sidebar").toggleClass("toggled");
+        });
+    });
+    $(document).ready(function () {
+        $('#userTable').DataTable({
+            "pageLength": 10,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko perdorues...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            }
+        });
+    });
+
+
+    $(document).ready(function () {
+        $('.editUserBtn').on('click', function () {
+            const userId = $(this).data('id');
+            const name = $(this).data('name');
+            const surname = $(this).data('surname');
+            const email = $(this).data('email');
+            const phone = $(this).data('phone');
+            const role = $(this).data('role');
+
+            // Populate modal fields
+            $('#editUserId').val(userId);
+            $('#editName').val(name);
+            $('#editSurname').val(surname);
+            $('#editEmail').val(email);
+            $('#editPhone').val(phone);
+            $('#editRole').val(role);
+
+            // Show the modal
+            $('#editUserModal').modal('show');
+        });
+
+        // Example Save (You can handle this via AJAX)
+        $('#saveUserBtn').on('click', function () {
+            const userData = {
+                id: $('#editUserId').val(),
+                name: $('#editName').val(),
+                surname: $('#editSurname').val(),
+                email: $('#editEmail').val(),
+                phone: $('#editPhone').val(),
+                role: $('#editRole').val()
+            };
+
+            console.log("Saving user data:", userData);
+
+            // You can send this data via AJAX to a PHP file for update.
+            $('#editUserModal').modal('hide');
+        });
+    });
+
+    $(document).ready(function () {
+        $('.editBtn').on('click', function () {
+            const button = $(this);
+            $('#formAction').val('update');
+            $('#userId').val(button.data('id'));
+            $('#emri').val(button.data('emri'));
+            $('#mbiemri').val(button.data('mbiemri'));
+            $('#email').val(button.data('email'));
+            $('#username').val(button.data('username'));
+            $('#roli').val(button.data('role'));
+
+            $('#addUserModalLabel').text('Përditëso Përdoruesin');
+            $('#submitUserBtn').text('Ruaj Ndryshimet');
+        });
+
+        $('#addUserModal').on('hidden.bs.modal', function () {
+            $('#userForm')[0].reset();
+            $('#formAction').val('insert');
+            $('#addUserModalLabel').text('Shto Përdorues');
+            $('#submitUserBtn').text('Shto');
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".deleteUserBtn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const userId = button.getAttribute("data-id");
+                const userName = button.getAttribute("data-name");
+
+                document.getElementById("deleteUserId").value = userId;
+                document.getElementById("userToDeleteName").textContent = userName;
+            });
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".activateUserBtn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const userId = button.getAttribute("data-id");
+                const userName = button.getAttribute("data-name");
+
+                document.getElementById("activateUserId").value = userId;
+                document.getElementById("userToActivateName").textContent = userName;
+            });
+        });
+    });
+</script>

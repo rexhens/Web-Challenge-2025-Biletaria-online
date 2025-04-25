@@ -1,5 +1,5 @@
 <?php
-require_once '../../config/db_connect.php';
+require_once '../config/db_connect.php';
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -106,7 +106,7 @@ $shows_result = $conn->query($shows_query);
             border-color: #8f793f;
         }
 
-        .text-primary {
+        .text-primary-1 {
             color: #8f793f !important;
         }
 
@@ -278,6 +278,35 @@ $shows_result = $conn->query($shows_query);
                 float: none !important;
             }
         }
+
+        #content-wrapper {
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Kur sidebar është i toggled = i vogël */
+        body.sidebar-toggled #content-wrapper {
+            margin-left: 100px;
+            /* ose 0px nëse sidebar fshihet totalisht */
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0% !important;
+            margin: 0% !important;
+            border: 0.3px solid transparent !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            border: none !important;
+        }
+
+        .paginate_button page-item active {
+            border-color: none !important;
+        }
+
+        .page-item.active .page-link {
+            border-color: #8f793f !important;
+        }
     </style>
 
 </head>
@@ -289,119 +318,7 @@ $shows_result = $conn->query($shows_query);
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-
-                <div class="sidebar-brand-text mx-3">Paneli i menaxhimit</div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Raporti Mujor</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Grafiket</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Menaxhimi
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Menaxho Perdoruesit</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="admin/users/add-user.php">Shto perdorues te ri</a>
-                        <a class="collapse-item" href="admin/users/index.php">Shiko te gjithe</a>
-                    </div>
-                </div>
-            </li>
-
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <!-- Menaxho Shfaqjet -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseShows"
-                    aria-expanded="true" aria-controls="collapseShows">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Menaxho Shfaqjet</span>
-                </a>
-                <div id="collapseShows" class="collapse" aria-labelledby="headingShows" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="add-show.php">Shto Shfaqje</a>
-                        <a class="collapse-item" href="shows.php">Te gjitha Shfaqjet</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Menaxho Aktoret -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseActors"
-                    aria-expanded="true" aria-controls="collapseActors">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Menaxho Aktoret</span>
-                </a>
-                <div id="collapseActors" class="collapse" aria-labelledby="headingActors"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="admin/actors/index.php">Te gjithe Aktoret</a>
-                        <a class="collapse-item" href="admin/actors/add.php">Shto nje Aktor te ri</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Menaxho Eventet -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEvents"
-                    aria-expanded="true" aria-controls="collapseEvents">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Menaxho Eventet</span>
-                </a>
-                <div id="collapseEvents" class="collapse" aria-labelledby="headingEvents"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="./events/add.php">Shto Event te ri</a>
-                        <a class="collapse-item" href="./events/index.php">Te gjitha Eventet</a>
-                    </div>
-                </div>
-            </li>
-
-
-
-
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
-        </ul>
+        <?php include './admin/users/sidebar.php'; ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -523,7 +440,8 @@ $shows_result = $conn->query($shows_query);
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Te ardhurat e gjeneruara kete vit</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary-1">Te ardhurat e gjeneruara kete vit
+                                    </h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -554,7 +472,7 @@ $shows_result = $conn->query($shows_query);
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Prenotimi i biletave </h6>
+                                    <h6 class="m-0 font-weight-bold text-primary-1">Prenotimi i biletave </h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -577,7 +495,7 @@ $shows_result = $conn->query($shows_query);
                                     </div>
                                     <div class="mt-4 text-center small">
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Online
+                                            <i class="fas fa-circle text-primary-1"></i> Online
                                         </span>
                                         <span class="mr-2">
                                             <i class="fas fa-circle text-success"></i> Ne biletari
@@ -593,7 +511,7 @@ $shows_result = $conn->query($shows_query);
                     <section id="users-section">
                         <div class="card shadow-sm border-0 rounded">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
+                                <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
                                     onclick="window.location.href = 'admin/users/add-user.php'">Shto Përdorues</button>
                             </div>
@@ -646,18 +564,18 @@ $shows_result = $conn->query($shows_query);
                                             <th>Salla</th>
                                             <th>Zhanri</th>
                                             <th>Çmimi</th>
-                                         
+
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
                                         <?php while ($row = $shows_result->fetch_assoc()) { ?>
                                             <tr>
                                                 <td class="text-muted"><?php echo $row['id']; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>                                         
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
                                                 <td><?php echo number_format($row['price'], 2); ?> €</td>
-                                               
+
                                             </tr>
                                         <?php } ?>
                                     </tbody>
