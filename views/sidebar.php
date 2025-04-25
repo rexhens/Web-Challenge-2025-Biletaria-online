@@ -120,8 +120,8 @@
         <div id="collapseEvents" class="collapse" aria-labelledby="headingEvents" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
-                <a class="collapse-item" href="/biletaria_online/views/admin/events/add.php">Shto Event te ri</a>
-                <a class="collapse-item" href="/biletaria_online/views/admin/events/index.php">Te gjitha Eventet</a>
+                <a class="collapse-item" href="/biletaria_online/views/add-event.php">Shto Event te ri</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin-events.php">Te gjitha Eventet</a>
             </div>
         </div>
     </li>

@@ -13,6 +13,11 @@ $shows_query = "
     JOIN genres ON shows.genre_id = genres.id
 ";
 $shows_result = $conn->query($shows_query);
+
+$events_query = "
+    SELECT events.id, events.title, events.description, events.hall, events.time, events.price
+    FROM events";
+$events_result = $conn->query($events_query);
 ?>
 
 <!DOCTYPE html>
@@ -319,7 +324,7 @@ $shows_result = $conn->query($shows_query);
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid" style="background-color: white;">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -487,7 +492,8 @@ $shows_result = $conn->query($shows_query);
                                             <i class="fas fa-circle text-primary-1"></i> Online
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Ne biletari
+                                            <i class="fas fa-circle text-success"
+                                                style="    color: #716a69 !important"></i> Ne biletari
                                         </span>
 
                                     </div>
@@ -541,7 +547,8 @@ $shows_result = $conn->query($shows_query);
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
-                            <button class="btn btn-sm btn-primary-report">+ Shto Shfaqje</button>
+                            <button class="btn btn-sm btn-primary-report"
+                                onclick="window.location.href = './add-show.php'">+ Shto Shfaqje</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -580,7 +587,10 @@ $shows_result = $conn->query($shows_query);
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>
-                            <button class="btn btn-sm btn-outline-primary">+ Shto Aktor</button>
+                            <button class="btn btn-sm btn-outline-primary"
+                                style="background-color: #8f793f!important; color: white; border: #8f793f;"
+                                onclick="window.location.href = './admin/actors/add.php'">+ Shto
+                                Aktor</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -592,7 +602,6 @@ $shows_result = $conn->query($shows_query);
                                             <th>Email</th>
                                             <th>Datëlindja</th>
                                             <th>Biografia</th>
-                                            <th class="text-end">Veprime</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
@@ -605,10 +614,7 @@ $shows_result = $conn->query($shows_query);
                                                 <td class="text-truncate" style="max-width: 200px;">
                                                     <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
                                                 </td>
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-outline-secondary">Shiko</button>
-                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                                </td>
+
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -616,6 +622,47 @@ $shows_result = $conn->query($shows_query);
                             </div>
                         </div>
                     </div>
+
+
+                    <!-- Menaxhimi i Eventeve -->
+                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="events-section"
+                        style="margin-bottom: 100px;">
+                        <div
+                            class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                            <h5 class="mb-0 fw-semibold text-dark">Eventet</h5>
+                            <button class="btn btn-sm btn-primary-report"
+                                onclick="window.location.href = './add-event.php'">+ Shto Event </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
+                                    <thead class="table-light text-secondary small text-uppercase">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Titulli</th>
+                                            <th>Salla</th>
+                                            <th>Orari</th>
+                                            <th>Çmimi</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-dark">
+                                        <?php while ($row = $events_result->fetch_assoc()) { ?>
+                                            <tr>
+                                                <td class="text-muted"><?php echo $row['id']; ?></td>
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['hall']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['time']); ?></td>
+                                                <td><?php echo number_format($row['price'], 2); ?> Leke</td>
+
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
 
 
 
@@ -698,7 +745,7 @@ $shows_result = $conn->query($shows_query);
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "columnDefs": [
-                { "orderable": false, "targets": 5 }
+                { "orderable": false, "targets": 4 }
             ]
         });
         $('#showsTable').DataTable({
