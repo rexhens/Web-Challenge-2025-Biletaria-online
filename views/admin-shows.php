@@ -59,10 +59,10 @@ $users_result = $conn->query($query);
         .desc-col {
             display: -webkit-box;
             -webkit-box-orient: vertical;
-            -webkit-line-clamp: 7;
+            -webkit-line-clamp: 8;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-height: calc(1.4em * 7); /* 7 lines with 1.4em line height */
+            max-height: calc(1.4em * 8); /* 7 lines with 1.4em line height */
             line-height: 1.4em;
             max-width: 350px;       /* required for text-overflow to work */
             white-space: normal; /* important: avoid nowrap */
@@ -256,7 +256,9 @@ $users_result = $conn->query($query);
             <div class="card shadow-sm border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Shfaqjeve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-show.php'">Shto Shaqje</button>
+                    <button class="btn btn-sm btn-primary-report"
+                            onclick="window.location.href = 'add-show.php'"
+                            style="padding: 7px 20px;">Shto Shaqje</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -316,11 +318,12 @@ $users_result = $conn->query($query);
                                                 <?php echo $row['description'] ?>
                                             </div>
                                         </td>
-                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster" style="width: 100%; height: auto; border-radius: 5px;"></td>
+                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster" style="width: 150px; height: auto; border-radius: 5px;"></td>
                                         <td style="text-align: center; vertical-align: middle;">
                                             <div
-                                                style="display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
                                                 <button class="btn btn-sm btn-outline-secondary editShowBtn"
+                                                        style="width: 100%;"
                                                     data-id="<?php echo $row['id'] ?>"
                                                     data-title="<?php echo $row['title'] ?>"
                                                     data-hall="<?php echo $row['hall'] ?>"
@@ -334,12 +337,17 @@ $users_result = $conn->query($query);
                                                     Edito
                                                 </button>
                                                 <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                        style="width: 100%;"
                                                         data-id="<?php echo $row['id'] ?>"
                                                         data-name="<?php echo $row['title'] ?>" data-toggle="modal"
                                                         data-target="#deleteUserModal">Fshi</button>
-                                                <button class="btn btn-sm btn-outline-success" onclick="window.location.href = 'show_details.php?id=<?php echo $row['id'] ?>'">Më shumë info</button>
-                                                <button class="btn btn-sm btn-outline-warning">Rezervo</button>
-                                                <button class="btn btn-sm btn-outline-secondary">Rezervimet</button>
+                                                <button class="btn btn-sm btn-outline-success"
+                                                        onclick="window.location.href = 'show_details.php?id=<?php echo $row['id'] ?>'"
+                                                        style="width: 100%;">Më shumë info</button>
+                                                <button class="btn btn-sm btn-outline-warning"
+                                                        style="width: 100%;">Rezervo</button>
+                                                <button class="btn btn-sm btn-outline-secondary"
+                                                        style="width: 100%;">Rezervimet</button>
                                             </div>
                                         </td>
 

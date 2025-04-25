@@ -107,11 +107,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 
-<body>
+<body class="light">
 
 <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
     <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Event</span></h1>
-    <div class="form-container" style="padding-top: 47px; padding-bottom: 60px;">
+    <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px;">
         <div class="form-group">
             <input type="text" name="title" id="title" placeholder=" " required>
             <label for="title">Titulli</label>
@@ -155,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <div class="side-container">
+    <div class="side-container light">
         <div class="photo-container">
             <img src="../assets/img/show-icon.png" alt="poster" id="picture"></img>
             <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
