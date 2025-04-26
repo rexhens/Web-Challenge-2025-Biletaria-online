@@ -1,7 +1,7 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 if(isset($_GET["token"])) {
     $token = $_GET["token"];
@@ -25,7 +25,7 @@ if(isset($_GET["token"])) {
                 header("location: login.php");
             }
         } else {
-            header("location: index.php");
+            header("location: ../index.php");
         }
     }
 } else {

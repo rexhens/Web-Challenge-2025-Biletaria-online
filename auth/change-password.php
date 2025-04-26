@@ -1,19 +1,19 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="sq">
 <head>
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Tetari Metropol | Ndrysho Falëkalimin</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
     <style>
         body {
-            background: url('../assets/img/background-image.png') no-repeat center center fixed;
+            background: url('/biletaria_online/assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -138,7 +138,7 @@ require "../includes/functions.php";
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="../assets/js/functions.js"></script>
-<script src="../assets/js/changePasswordValidations.js"></script>
+<script src="/biletaria_online/assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/changePasswordValidations.js"></script>
 </body>
 </html>

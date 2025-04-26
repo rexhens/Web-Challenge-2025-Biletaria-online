@@ -1,7 +1,6 @@
 <?php
-
 /** @var mysqli $conn */
-require "../config/db_connect.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 session_start();
 
 if (!isset($_SESSION['user_id']) && isset($_COOKIE['remember_me'])) {

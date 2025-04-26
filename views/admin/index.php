@@ -1,5 +1,5 @@
 <?php
-require_once '../config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -36,9 +36,9 @@ $events_result = $conn->query($events_query);
 
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
 
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <!-- Custom fonts for this template-->
-    <link href="../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
@@ -312,7 +312,7 @@ $events_result = $conn->query($events_query);
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <?php include './sidebar.php'; ?>
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -329,7 +329,7 @@ $events_result = $conn->query($events_query);
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
-                        <a href="admin/generate_report.php"
+                        <a href="generate_report.php"
                             class="d-none d-sm-inline-block btn btn-sm btn-primary-report shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
                     </div>
@@ -508,7 +508,7 @@ $events_result = $conn->query($events_query);
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
-                                    onclick="window.location.href = 'admin/users/add-user.php'">Shto Përdorues</button>
+                                    onclick="window.location.href = 'users/add-user.php'">Shto Përdorues</button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -548,7 +548,7 @@ $events_result = $conn->query($events_query);
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
                             <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = './add-show.php'">+ Shto Shfaqje</button>
+                                onclick="window.location.href = 'shows/add-show.php'">+ Shto Shfaqje</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -589,7 +589,7 @@ $events_result = $conn->query($events_query);
                             <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>
                             <button class="btn btn-sm btn-outline-primary"
                                 style="background-color: #8f793f!important; color: white; border: #8f793f;"
-                                onclick="window.location.href = './admin/actors/add.php'">+ Shto
+                                onclick="window.location.href = 'actors/add.php'">+ Shto
                                 Aktor</button>
                         </div>
                         <div class="card-body">
@@ -631,7 +631,7 @@ $events_result = $conn->query($events_query);
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                             <h5 class="mb-0 fw-semibold text-dark">Eventet</h5>
                             <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = './add-event.php'">+ Shto Event </button>
+                                onclick="window.location.href = 'events/add-event.php'">+ Shto Event </button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -690,21 +690,21 @@ $events_result = $conn->query($events_query);
 
 
     <!-- Bootstrap core JavaScript-->
-    <script src="../assets/vendor/jquery/jquery.min.js"></script>
-    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../assets/vendor/jquery/jquery.min.js"></script>
+    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="../assets/js/sb-admin-2.min.js"></script>
+    <script src="../../assets/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
-    <script src="../assets/vendor/chart.js/Chart.min.js"></script>
+    <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
 
     <!-- Page level custom scripts -->
-    <script src="../assets/js/demo/chart-area-demo.js"></script>
-    <script src="../assets/js/demo/chart-pie-demo.js?v=2"></script>
+    <script src="../../assets/js/demo/chart-area-demo.js"></script>
+    <script src="../../assets/js/demo/chart-pie-demo.js?v=2"></script>
     <!-- DataTables CSS and JS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>

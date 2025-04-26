@@ -1,8 +1,8 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 
 <?php
@@ -14,12 +14,12 @@ $genreResult = $conn->query($genreQuery);
 <html lang="sq">
 
 <head>
-    <?php require '../includes/links.php'; ?>
-    <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Teatri Metropol | Shfaqjet</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
     <style>
         body {
             padding: 0 30px;
@@ -31,11 +31,6 @@ $genreResult = $conn->query($genreQuery);
 <body>
     <header>
         <h1>Shfaqjet në <span>Teatrin Metropol</span></h1>
-        <?php
-        if (checkAdmin($conn)) { ?>
-            <button onclick="redirectTo('add-show.php')">Shto një shfaqje</button>
-        <?php }
-        ?>
     </header>
 
     <div class="search-container">
@@ -98,7 +93,7 @@ $genreResult = $conn->query($genreQuery);
 
         fetchFilteredShows();
     </script>
-    <script src="../assets/js/functions.js"></script>
+    <script src="/biletaria_online/assets/js/functions.js"></script>
 </body>
 
 </html>

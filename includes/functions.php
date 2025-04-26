@@ -6,11 +6,10 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require '../assets/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
-// Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 function sendEmail(string $email, string $subject, string $body): bool {
@@ -65,14 +64,14 @@ function checkAdmin($conn): bool {
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        header("Location: ../auth/login.php");
+        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/login.php');
         exit;
     }
 }
 
 function redirectIfNotAdmin($conn): void {
     if(!checkAdmin($conn)) {
-        header("Location: ../auth/no-access.php");
+        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/no-access.php');
         exit;
     }
 }
@@ -126,13 +125,13 @@ function showError($error): void {
     echo "<!DOCTYPE html>
       <html lang='sq'>
       <head>";
-    require '../includes/links.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
     echo "<title>Teatri Metropol | Mesazh</title>
-      <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
-      <link rel='stylesheet' href='../assets/css/styles.css'>
+      <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
+      <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
       <style>
           body {
-            background: url('../assets/img/error.png') no-repeat center center fixed;
+            background: url('/biletaria_online/assets/img/error.png') no-repeat center center fixed;
             background-size: cover;
             justify-content: center;
           }
@@ -278,7 +277,7 @@ function deletePoster($conn, $table, $id): bool {
     $stmt->close();
 
     if (!empty($poster)) {
-        $imagePath = "../assets/img/$table/" . basename($poster);
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/biletaria_online/assets/img/$table/" . basename($poster);
         if (file_exists($imagePath)) {
             return unlink($imagePath);
         }
@@ -297,7 +296,7 @@ function getPosterPath($conn, $table, $id): string {
     $stmt->close();
 
     if (!empty($poster)) {
-        $imagePath = "../assets/img/$table/" . basename($poster);
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/biletaria_online/assets/img/$table/" . basename($poster);
         if (file_exists($imagePath)) {
             return $imagePath;
         }

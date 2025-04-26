@@ -1,32 +1,32 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 
-$query = "SELECT * FROM events";
-$events_result = $conn->query($query);
+$query = "SELECT * FROM shows";
+$users_result = $conn->query($query);
 ?>
 
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require '../includes/links.php'; ?>
-    <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" href="../assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Menaxho Eventet</title>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png">
+    <title>Teatri Metropol | Menaxho Shfaqje</title>
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
-    <link rel="stylesheet" href="../assets/css/flatpickr.min.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
 
     <!-- jQuery Easing (if used in sb-admin-2) -->
-    <script src="../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <script src="../assets/js/flatpickr.min.js"></script>
+    <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 
     <style>
         table.dataTable td,
@@ -119,15 +119,15 @@ $events_result = $conn->query($query);
     <?php endif; ?>
 
     <div style="display: flex; justify-content: flex-start; width: 100%;" id="wrapper">
-        <?php require './sidebar.php'; ?>
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
 
         <section id="users-section">
             <div class="card shadow-sm border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Eventeve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-event.php'"
-                        style="padding: 7px 20px;">Shto Event</button>
+                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Shfaqjeve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-show.php'"
+                        style="padding: 7px 20px;">Shto Shaqje</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -137,6 +137,7 @@ $events_result = $conn->query($query);
                                     <th>#</th>
                                     <th>Titulli</th>
                                     <th>Salla</th>
+                                    <th>Zhaneri</th>
                                     <th>Datat</th>
                                     <th>Ora</th>
                                     <th>Çmimi i biletës</th>
@@ -149,27 +150,35 @@ $events_result = $conn->query($query);
                                 <?php
                                 $i = 1;
 
-                                while ($row = $events_result->fetch_assoc()) {
+                                while ($row = $users_result->fetch_assoc()) {
 
-                                    $datesQuery = $conn->prepare("SELECT * FROM event_dates WHERE event_id = ? ORDER BY event_date ASC");
+                                    $genre_id = $row['genre_id'];
+                                    $genre = $conn->prepare("SELECT * FROM genres WHERE id = ?");
+                                    $genre->bind_param("i", $genre_id);
+                                    $genre->execute();
+                                    $result = $genre->get_result();
+                                    $genreData = $result->fetch_assoc();
+
+                                    $datesQuery = $conn->prepare("SELECT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
                                     $datesQuery->bind_param("i", $row['id']);
                                     $datesQuery->execute();
                                     $datesResult = $datesQuery->get_result();
                                     $dates = [];
                                     while ($date = $datesResult->fetch_assoc()) {
-                                        $dates[] = $date['event_date'];
+                                        $dates[] = $date['show_date'];
                                     }
 
                                     $groupedDates = groupDates($dates);
                                     $dataDates = implode(',', $dates);
 
-                                    $posterUrl = "get_image.php?event_id=" . $row['id'];
+                                    $posterUrl = "../../../includes/get_image.php?show_id=" . $row['id'];
                                     ?>
 
                                     <tr>
                                         <td><?php echo $i ?></td>
                                         <td><?php echo $row['title'] ?></td>
                                         <td><?php echo $row['hall'] ?></td>
+                                        <td><?php echo $genreData['genre_name'] ?></td>
                                         <td><?php echo implode(', ', $groupedDates) ?></td>
                                         <td><?php echo $row['time'] ?></td>
                                         <td><?php echo $row['price'] ?> Lekë</td>
@@ -187,6 +196,7 @@ $events_result = $conn->query($query);
                                                     style="width: 100%;" data-id="<?php echo $row['id'] ?>"
                                                     data-title="<?php echo $row['title'] ?>"
                                                     data-hall="<?php echo $row['hall'] ?>"
+                                                    data-genre="<?php echo $row['genre_id'] ?>"
                                                     data-dates="<?php echo $dataDates ?>"
                                                     data-time="<?php echo $row['time'] ?>"
                                                     data-description="<?php echo $row['description'] ?>"
@@ -200,7 +210,7 @@ $events_result = $conn->query($query);
                                                     data-name="<?php echo $row['title'] ?>" data-toggle="modal"
                                                     data-target="#deleteUserModal">Fshi</button>
                                                 <button class="btn btn-sm btn-outline-success"
-                                                    onclick="window.location.href = 'event_details.php?id=<?php echo $row['id'] ?>'"
+                                                    onclick="window.location.href = '/biletaria_online/views/client/shows/show_details.php?id=<?php echo $row['id'] ?>'"
                                                     style="width: 100%;">Më shumë info</button>
                                                 <button class="btn btn-sm btn-outline-warning"
                                                     style="width: 100%;">Rezervo</button>
@@ -221,12 +231,21 @@ $events_result = $conn->query($query);
         </section>
 
 
+        <?php
+        $genresQuery = "SELECT * FROM genres";
+        $genresResult = mysqli_query($conn, $genresQuery);
+        $genres = [];
+        while ($row = mysqli_fetch_assoc($genresResult)) {
+            $genres[] = $row;
+        }
+        ?>
+
     </div>
 
     <!-- Edit Show Modal -->
     <div class="modal fade" id="editShowModal" tabindex="-1" aria-labelledby="editShowModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form id="editShowForm" method="POST" action="admin-edit-event.php" enctype="multipart/form-data""
+            <form id="editShowForm" method="POST" action="edit_show.php" enctype="multipart/form-data""
                   class=" modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editShowModalLabel">Edito Shfaqjen</h5>
@@ -235,7 +254,7 @@ $events_result = $conn->query($query);
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="event_id" id="editShowId">
+                    <input type="hidden" name="show_id" id="editShowId">
 
                     <div class="form-group">
                         <label for="editTitle">Titulli</label>
@@ -248,6 +267,15 @@ $events_result = $conn->query($query);
                             <option value="Shakespare">Shakespare</option>
                             <option value="Çehov">Çehov</option>
                             <option value="Bodrum">Bodrum</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editGenre">Zhanri</label>
+                        <select name="genre_id" id="editGenre" class="form-control" required>
+                            <?php foreach ($genres as $genre): ?>
+                                <option value="<?= $genre['id'] ?>"><?= $genre['genre_name'] ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -291,7 +319,7 @@ $events_result = $conn->query($query);
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                    <button type="submit" class="btn btn-primary" name="edit-event"
+                    <button type="submit" class="btn btn-primary" name="edit-show"
                         style="background-color: #8f793f; border: none;">
                         Ruaj Ndryshimet
                     </button>
@@ -303,22 +331,22 @@ $events_result = $conn->query($query);
     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" action="delete_event.php">
+            <form method="POST" action="delete_show.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen e Eventit</h5>
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen e Shfaqjes</h5>
                         <button type="button" class="close text-gray-700" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të fshini eventin <strong id="showToDeleteTitle"></strong>?
+                        <p>Jeni i sigurt që doni të fshini shfaqjen <strong id="showToDeleteTitle"></strong>?
                         </p>
-                        <input type="hidden" name="eventId" id="deleteShowId">
+                        <input type="hidden" name="showId" id="deleteShowId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="delete-event" class="btn btn-danger">Fshi</button>
+                        <button type="submit" name="delete-show" class="btn btn-danger">Fshi</button>
                     </div>
                 </div>
             </form>
@@ -345,7 +373,7 @@ $events_result = $conn->query($query);
             "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
             "language": {
                 "search": "",
-                "searchPlaceholder": "Kërko event...",
+                "searchPlaceholder": "Kërko shfaqje...",
                 "paginate": {
                     "previous": "‹",
                     "next": "›"
@@ -365,6 +393,7 @@ $events_result = $conn->query($query);
         $('#editShowId').val($(this).data('id'));
         $('#editTitle').val($(this).data('title'));
         $('#editHall').val($(this).data('hall'));
+        $('#editGenre').val($(this).data('genre'));
         $('#editTime').val($(this).data('time'));
         $('#editDescription').val($(this).data('description'));
         $('#editTrailer').val($(this).data('trailer'));

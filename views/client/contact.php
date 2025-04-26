@@ -69,8 +69,8 @@ require 'includes/header.php';
 
 
 <!-- JavaScript specifik për faqen e kontaktit -->
-<script type="text/javascript" src="../assets/js/contact-us.js"></script>
-<script type="text/javascript" src="../assets/js/as-alert-message.min.js"></script>
+<script type="text/javascript" src="../../assets/js/contact-us.js"></script>
+<script type="text/javascript" src="../../assets/js/as-alert-message.min.js"></script>
 
 <script>
 // Funksioni për validimin e formës

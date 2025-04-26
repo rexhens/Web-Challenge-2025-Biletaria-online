@@ -98,7 +98,7 @@ $users_result = $conn->query($query);
 <body id="page-top">
 
     <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
-      <?php include_once '../../sidebar.php'; ?>
+      <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
 
         <section id="users-section">
