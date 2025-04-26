@@ -8,6 +8,7 @@ require "../includes/functions.php";
 
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
     $title = $_POST["title"];
     $hall = $_POST["hall"];
     $dates = explode(",", $_POST['event_dates']);
@@ -18,17 +19,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $errors = [];
 
-    if(empty($title) || empty($hall) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price)) {
+    if (empty($title) || empty($hall) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price)) {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
     $result = isHallAvailable($conn, $hall, $time, $dates, null);
 
-    if(!$result['available']) {
+    if (!$result['available']) {
         $errors[] = "Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']);
     }
 
-    if(empty($errors)) {
+    if (empty($errors)) {
         if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
             if (!empty($_FILES['file-input']['name'])) {
                 $check = getimagesize($_FILES['file-input']['tmp_name']);
@@ -58,36 +59,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if(empty($errors)){
-        $sql = "INSERT INTO events (title, hall, time, description, poster, trailer, price) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    if (empty($errors)) {
+        $conn->begin_transaction();
 
-        if ($stmt = $conn->prepare($sql)) {
-            $null = NULL;
-            $stmt->bind_param("ssssssi", $title, $hall, $time, $description, $posterPath, $trailer, $price);
-            if ($stmt->execute()) {
-                $event_id = $conn->insert_id;
-                $stmt->close();
-                foreach ($dates as $date) {
-                    $stmt = $conn->prepare("INSERT INTO event_dates (event_id, event_date) VALUES (?, ?)");
-                    $stmt->bind_param("is", $event_id, $date);
-                    if(!$stmt->execute()) {
-                        $errors[] = "Një problem ndodhi! Provoni më vonë!";
-                    }
-                }
-                if(empty($errors)){
-                    echo "<div class='info-container'>
-                               <div class='errors show' style='background-color: rgba(131, 173, 68)'>
-                                   <p style='color: #E4E4E4;'>Eventi u shtua me sukses!</p>
-                               </div>
-                          </div>";
-                }
-            } else {
-                $errors[] = "Një problem ndodhi! Provoni më vonë!";
+        try {
+            $sql = "INSERT INTO events (title, hall, time, description, poster, trailer, price) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $conn->prepare($sql);
+            if (!$stmt) {
+                throw new Exception("Gabim në përgatitjen e query-t.");
             }
+            $stmt->bind_param("ssssssi", $title, $hall, $time, $description, $posterPath, $trailer, $price);
+
+            if (!$stmt->execute()) {
+                throw new Exception("Gabim në krijimin e eventit.");
+            }
+
+            $event_id = $conn->insert_id;
             $stmt->close();
-        } else {
-            $errors[] = "Një problem ndodhi! Provoni më vonë!";
+
+            foreach ($dates as $date) {
+                $stmt = $conn->prepare("INSERT INTO event_dates (event_id, event_date) VALUES (?, ?)");
+                if (!$stmt) {
+                    throw new Exception("Gabim në përgatitjen e datave të eventit.");
+                }
+                $stmt->bind_param("is", $event_id, $date);
+                if (!$stmt->execute()) {
+                    throw new Exception("Gabim gjatë ruajtjes së një date të eventit.");
+                }
+                $stmt->close();
+            }
+
+            $conn->commit();
+            header("Location: add-event.php?update=success");
+            exit();
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            $errors[] = "Një problem ndodhi: " . $e->getMessage();
+        }
+    }
+
+    if (!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<div class='error-message'>$error</div>";
         }
     }
 
@@ -174,6 +190,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     ?>
+    <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+        <div class='errors show' style='background-color: rgba(131, 173, 68)'>
+            <p style='color: #E4E4E4;'>Eventi u shtua me sukses!</p>
+        </div>
+    <?php endif; ?>
 </div>
 <script src="../assets/js/flatpickr.min.js"></script>
 <script src="../assets/js/functions.js"></script>
@@ -199,6 +220,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             time_24hr: true
         });
     });
+</script>
+<script>
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('update');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
 </script>
 </body>
 </html>
