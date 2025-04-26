@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
     $posterPath = getPosterPath($conn, "shows", $id);
 
     $result = isHallAvailable($conn, $hall, $time, $dates, $id);
-    if(!$result['available']) {
+    if (!$result['available']) {
         showError("Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']));
     }
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
 
                 if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
                     $posterPath = $targetPath;
-                    if(!deletePoster($conn, "shows", $id)) {
+                    if (!deletePoster($conn, "shows", $id)) {
                         showError("Një problem ndodhi! Provoni më vonë!");
                     }
                 } else {
@@ -48,43 +48,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
         }
     }
 
-    $sql = "UPDATE shows SET 
-        title = ?, 
-        hall = ?, 
-        genre_id = ?, 
-        time = ?, 
-        description = ?, 
-        trailer = ?, 
-        price = ?,
-        poster = ?
-        WHERE id = ?"
-    ;
+    try {
+        $conn->begin_transaction();
 
-    $stmt = mysqli_prepare($conn, $sql);
-    $stmt->bind_param('ssisssisi', $title, $hall, $genre_id, $time, $description, $trailer, $price, $posterPath, $id);
+        $sql = "UPDATE shows SET 
+            title = ?, 
+            hall = ?, 
+            genre_id = ?, 
+            time = ?, 
+            description = ?, 
+            trailer = ?, 
+            price = ?,
+            poster = ?
+            WHERE id = ?"
+        ;
 
-    if(!$stmt->execute()) {
-        showError("Një problem ndodhi! Provoni më vonë!");
-    }
+        $stmt = mysqli_prepare($conn, $sql);
+        $stmt->bind_param('ssisssisi', $title, $hall, $genre_id, $time, $description, $trailer, $price, $posterPath, $id);
 
-    $sql = "DELETE FROM show_dates WHERE show_id = ?";
-    $stmt = mysqli_prepare($conn, $sql);
-    $stmt->bind_param('i', $id);
-
-    if(!$stmt->execute()) {
-        showError("Një problem ndodhi! Provoni më vonë!");
-    }
-
-    foreach ($dates as $date) {
-        $stmt = $conn->prepare("INSERT INTO show_dates (show_id, show_date) VALUES (?, ?)");
-        $stmt->bind_param("is", $id, $date);
-        if(!$stmt->execute()) {
-            showError("Një problem ndodhi! Provoni më vonë!");
+        if (!$stmt->execute()) {
+            throw new Exception("Nuk mund të përditësohej shfaqja.");
         }
+
+        $sql = "DELETE FROM show_dates WHERE show_id = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        $stmt->bind_param('i', $id);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Nuk mund të fshiheshin datat e shfaqjes.");
+        }
+
+        foreach ($dates as $date) {
+            $stmt = $conn->prepare("INSERT INTO show_dates (show_id, show_date) VALUES (?, ?)");
+            $stmt->bind_param("is", $id, $date);
+            if (!$stmt->execute()) {
+                throw new Exception("Nuk mund të shtoheshin datat e reja.");
+            }
+        }
+
+        $conn->commit();
+
+        header('Location: admin-shows.php?update=success');
+        exit();
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        showError("Një problem ndodhi! Provoni më vonë!");
     }
 
-    header('Location: admin-shows.php?update=success');
-    exit();
 } else {
     showError("Nuk ka informacion mbi të dhënat që duhen update-uar!");
 }

@@ -16,7 +16,7 @@ $events_result = $conn->query($query);
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
     <link rel="icon" href="../assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Menaxho Shfaqje</title>
+    <title>Teatri Metropol | Menaxho Eventet</title>
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -126,7 +126,7 @@ $events_result = $conn->query($query);
             <div class="card shadow-sm border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Eventeve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-show.php'"
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-event.php'"
                         style="padding: 7px 20px;">Shto Event</button>
                 </div>
                 <div class="card-body">
@@ -150,8 +150,6 @@ $events_result = $conn->query($query);
                                 $i = 1;
 
                                 while ($row = $events_result->fetch_assoc()) {
-
-
 
                                     $datesQuery = $conn->prepare("SELECT * FROM event_dates WHERE event_id = ? ORDER BY event_date ASC");
                                     $datesQuery->bind_param("i", $row['id']);
@@ -202,7 +200,7 @@ $events_result = $conn->query($query);
                                                     data-name="<?php echo $row['title'] ?>" data-toggle="modal"
                                                     data-target="#deleteUserModal">Fshi</button>
                                                 <button class="btn btn-sm btn-outline-success"
-                                                    onclick="window.location.href = 'show_details.php?id=<?php echo $row['id'] ?>'"
+                                                    onclick="window.location.href = 'event_details.php?id=<?php echo $row['id'] ?>'"
                                                     style="width: 100%;">Më shumë info</button>
                                                 <button class="btn btn-sm btn-outline-warning"
                                                     style="width: 100%;">Rezervo</button>
@@ -222,15 +220,6 @@ $events_result = $conn->query($query);
             </div>
         </section>
 
-
-        <?php
-        $genresQuery = "SELECT * FROM genres";
-        $genresResult = mysqli_query($conn, $genresQuery);
-        $genres = [];
-        while ($row = mysqli_fetch_assoc($genresResult)) {
-            $genres[] = $row;
-        }
-        ?>
 
     </div>
 
@@ -302,7 +291,7 @@ $events_result = $conn->query($query);
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                    <button type="submit" class="btn btn-primary" name="edit-show"
+                    <button type="submit" class="btn btn-primary" name="edit-event"
                         style="background-color: #8f793f; border: none;">
                         Ruaj Ndryshimet
                     </button>
@@ -314,22 +303,22 @@ $events_result = $conn->query($query);
     <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" action="delete_show.php">
+            <form method="POST" action="delete_event.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen e Shfaqjes</h5>
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen e Eventit</h5>
                         <button type="button" class="close text-gray-700" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të fshini shfaqjen <strong id="showToDeleteTitle"></strong>?
+                        <p>Jeni i sigurt që doni të fshini eventin <strong id="showToDeleteTitle"></strong>?
                         </p>
-                        <input type="hidden" name="showId" id="deleteShowId">
+                        <input type="hidden" name="eventId" id="deleteShowId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="delete-show" class="btn btn-danger">Fshi</button>
+                        <button type="submit" name="delete-event" class="btn btn-danger">Fshi</button>
                     </div>
                 </div>
             </form>
@@ -376,7 +365,6 @@ $events_result = $conn->query($query);
         $('#editShowId').val($(this).data('id'));
         $('#editTitle').val($(this).data('title'));
         $('#editHall').val($(this).data('hall'));
-        $('#editGenre').val($(this).data('genre'));
         $('#editTime').val($(this).data('time'));
         $('#editDescription').val($(this).data('description'));
         $('#editTrailer').val($(this).data('trailer'));
