@@ -15,16 +15,16 @@ if (!$show_id) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ticket Booking</title>
-  <link rel="stylesheet" type="text/css" href="../assets/css/style-starter.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/style-starter.css">
   <link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
-  <link rel="stylesheet" type="text/css" href="../assets/css/progress.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/progress.css">
 
-  <link rel="stylesheet" type="text/css" href="../assets/css/ticket-booking.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/ticket-booking.css">
 
   <!-- ..............For progress-bar............... -->
-  <link rel="stylesheet" type="text/css" href="../assets/css/e-ticket.css">
+  <link rel="stylesheet" type="text/css" href="../../assets/css/e-ticket.css">
 
-  <link rel="stylesheet" type="text/css" href="../assets/css/payment.css" />
+  <link rel="stylesheet" type="text/css" href="../../assets/css/payment.css" />
   <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
 </head>
 
@@ -208,7 +208,7 @@ if (!$show_id) {
               <div>
                 <iframe id="seat-sel-iframe"
                   style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 770px; height: 670px; display: block; margin-left: auto; margin-right: auto;"
-                  src="../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
+                  src="../../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
               </div>
               <br>
               <input type="button" name="next-step" class="next-step" value="Proceed to Payment" />
@@ -511,8 +511,8 @@ if (!$show_id) {
 <script type="text/javascript" src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js'>
 </script>
 <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-<script src="../assets/js/theme-change.js"></script>
+<script src="../../assets/js/theme-change.js"></script>
 
-<script type="text/javascript" src="../assets/js/ticket-booking.js"></script>
+<script type="text/javascript" src="../../assets/js/ticket-booking.js"></script>
 
 </html>

@@ -1,8 +1,8 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
     $id = $_POST['show_id'];
@@ -25,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
         if (!empty($_FILES['file-input']['name'])) {
             $check = getimagesize($_FILES['file-input']['tmp_name']);
             if ($check !== false) {
-                $targetDir = '../assets/img/shows/';
+                $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/shows/';
                 $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
-                $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
+                $uniqueName = uniqid('poster_', true) . 'views' . strtolower($ext);
                 $targetPath = $targetDir . $uniqueName;
 
                 if (!is_dir($targetDir)) {
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
 
         $conn->commit();
 
-        header('Location: admin-shows.php?update=success');
+        header('Location: index.php?update=success');
         exit();
 
     } catch (Exception $e) {

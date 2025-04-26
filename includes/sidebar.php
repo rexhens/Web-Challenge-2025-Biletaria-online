@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
+
 <link href="/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <link
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -31,7 +31,7 @@
     style="background-color: #8f793f !important;">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/biletaria_online/views/admin.php">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/biletaria_online/views/admin/index.php">
         <div class=" sidebar-brand-text mx-3">Paneli i menaxhimit</div>
     </a>
 
@@ -46,7 +46,7 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="/biletaria_online/views/admin.php#graphs-section">
+        <a class="nav-link" href="/biletaria_online/views/admin/index.php#graphs-section">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Grafiket</span></a>
     </li>
@@ -88,8 +88,8 @@
         <div id="collapseShows" class="collapse" aria-labelledby="headingShows" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
-                <a class="collapse-item" href="/biletaria_online/views/add-show.php">Shto Shfaqje</a>
-                <a class="collapse-item" href="/biletaria_online/views/admin-shows.php">Te gjitha Shfaqjet</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/shows/add-show.php">Shto Shfaqje</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/shows/index.php">Te gjitha Shfaqjet</a>
             </div>
         </div>
     </li>
@@ -105,7 +105,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
                 <a class="collapse-item" href="/biletaria_online/views/admin/actors/index.php">Te gjithe Aktoret</a>
-                <a class="collapse-item" href="/biletaria_online/views/actors/add.php">Shto nje Aktor te ri</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/actors/add.php">Shto nje Aktor te ri</a>
             </div>
         </div>
     </li>
@@ -120,8 +120,8 @@
         <div id="collapseEvents" class="collapse" aria-labelledby="headingEvents" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
-                <a class="collapse-item" href="/biletaria_online/views/add-event.php">Shto Event te ri</a>
-                <a class="collapse-item" href="/biletaria_online/views/admin-events.php">Te gjitha Eventet</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/events/add-event.php">Shto Event te ri</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/events/index.php">Te gjitha Eventet</a>
             </div>
         </div>
     </li>

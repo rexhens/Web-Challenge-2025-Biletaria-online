@@ -1,39 +1,38 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-event'])) {
-    $id = $_POST['eventId'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-show'])) {
+    $id = $_POST['showId'];
 
-    // Start transaction
     $conn->begin_transaction();
 
     try {
-        $sql = "DELETE FROM event_dates WHERE event_id = ?";
+        $sql = "DELETE FROM show_dates WHERE event_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $id);
         if (!$stmt->execute()) {
-            throw new Exception("Nuk u fshinë datat e eventit!");
+            throw new Exception("Nuk u fshinë datat e shfaqjes!");
         }
         $stmt->close();
 
-        if (!deletePoster($conn, "events", $id)) {
+        if (!deletePoster($conn, "shows", $id)) {
             throw new Exception("Posteri nuk u fshi!");
         }
 
-        $sql = "DELETE FROM events WHERE id = ?";
+        $sql = "DELETE FROM shows WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         if (!$stmt->execute()) {
-            throw new Exception("Eventi nuk u fshi!");
+            throw new Exception("Shfaqja nuk u fshi!");
         }
         $stmt->close();
 
         $conn->commit();
 
-        header('Location: admin-events.php?update=success');
+        header('Location: index.php?update=success');
         exit();
 
     } catch (Exception $e) {

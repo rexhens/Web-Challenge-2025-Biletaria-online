@@ -290,7 +290,7 @@ require '../includes/header.php';
 
 
 <!-- JavaScript for Applications Page -->
-<script type="text/javascript" src="../assets/js/as-alert-message.min.js"></script>
+<script type="text/javascript" src="../../assets/js/as-alert-message.min.js"></script>
 <script>
 // File input display
 document.querySelectorAll('input[type="file"]').forEach(input => {

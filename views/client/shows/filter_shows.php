@@ -1,8 +1,8 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 $filter = $_POST['show_time_filter'] ?? 'available';
 $genre_id = $_POST['genre_id'] ?? '';
@@ -48,6 +48,8 @@ if (!empty($genre_id)) {
     $types .= "i";
 }
 
+$query .= " ORDER BY s.id DESC";
+
 $stmt = $conn->prepare($query);
 if (!empty($params)) {
     $stmt->bind_param($types, ...$params);
@@ -57,7 +59,7 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while ($show = $result->fetch_assoc()) {
-        $posterUrl = "get_image.php?show_id=" . $show['id'];
+        $posterUrl = '/biletaria_online/includes/get_image.php?show_id=' . $show['id'];
 
         $datesQuery = $conn->prepare("SELECT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
         $datesQuery->bind_param("i", $show['id']);
@@ -74,23 +76,16 @@ if ($result->num_rows > 0) {
         <div class='overlay'>
             <h3>" . htmlspecialchars($show['title']) . "</h3>
             <p class='show-dates'>" . implode(', ', $groupedDates) . "</p>" .
-            (checkAdmin($conn) ?
-                "<div class='btn-group' style='margin-bottom: 10px;'>
-                    <button onclick=\"redirectTo('edit-show.php?id=" . $show['id'] . "')\">Edito</button>
-                    <button onclick=\"redirectTo('reservations?id=" . $show['id'] . "')\" class='black-btn'>Rezervime</button>
-                </div>"
-                :
-                "<p class='show-description'>" . htmlspecialchars($show['description']) . "</p>"
-            ) .
+            "<p class='show-description'>" . htmlspecialchars($show['description']) . "</p>" .
             "<div class='btn-group'>
-                <button onclick=\"redirectTo('show_details.php?id=" . $show['id'] . "')\">Më shumë info</button>
-                <button onclick=\"redirectTo('reserve.php?id=" . $show['id'] . "')\" class='black-btn'>Rezervo</button>
+                <button onclick=\"redirectTo('/biletaria_online/views/client/shows/show_details.php?id=" . $show['id'] . "')\">Më shumë info</button>
+                <button onclick=\"redirectTo('/biletaria_online/views/client/reserve.php?id=" . $show['id'] . "')\" class='black-btn'>Rezervo</button>
             </div>
         </div>
     </div>";
     }
 } else {
-    $posterUrl = "../assets/img/background-image.png";
+    $posterUrl = "/biletaria_online/assets/img/background-image.png";
     echo "<div class='show-card item' style='background-image: url($posterUrl);'>
         <div class='overlay'>
             <h3>Teatri Metropol</h3>

@@ -7,7 +7,7 @@ require '../includes/header.php';
 <div class="w3l-breadcrumbs">
 		<nav id="breadcrumbs" class="breadcrumbs">
 			<div class="container page-wrapper">
-				<a href="index.php">Kreu</a> » <span class="breadcrumb_last" aria-current="page">Rreth Nesh</span>
+				<a href="../../index.php">Kreu</a> » <span class="breadcrumb_last" aria-current="page">Rreth Nesh</span>
 			</div>
 		</nav>
 	</div>
@@ -36,8 +36,8 @@ require '../includes/header.php';
             </div>
         </div></p>
 					<div class="ready-more mt-4">
-						<a href="../index.php" class="btn read-button">Lexo me shume <span class="fa fa-angle-double-right ml-2"
-                                                                                           aria-hidden="true"></span></a>
+						<a href="../../index.php" class="btn read-button">Lexo me shume <span class="fa fa-angle-double-right ml-2"
+                                                                                              aria-hidden="true"></span></a>
 					</div>
 				</div>
 			</div>
@@ -172,16 +172,16 @@ require '../includes/header.php';
 
 
 
-<script src="../assets/js/jquery-3.3.1.min.js"></script>
+<script src="../../assets/js/jquery-3.3.1.min.js"></script>
 <!-- stats -->
-<script src="../assets/js/jquery.waypoints.min.js"></script>
-<script src="../assets/js/jquery.countup.js"></script>
-<script type="text/javascript" src='../assets/js/swiper.min.js'></script>
+<script src="../../assets/js/jquery.waypoints.min.js"></script>
+<script src="../../assets/js/jquery.countup.js"></script>
+<script type="text/javascript" src='../../assets/js/swiper.min.js'></script>
 <script>
 	$('.counter').countUp();
 </script>
 <!--/theme-change-->
-<script src="../assets/js/theme-change.js"></script>
+<script src="../../assets/js/theme-change.js"></script>
 <script>
 	const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
 	const currentTheme = localStorage.getItem('theme');
@@ -218,7 +218,7 @@ require '../includes/header.php';
 	}
 	toggleSwitch.addEventListener('change', switchTheme, false);
 </script>
-<script src="../assets/js/owl.carousel.js"></script>
+<script src="../../assets/js/owl.carousel.js"></script>
 <!-- script for banner slider-->
 <script>
 	$(document).ready(function () {
@@ -367,4 +367,4 @@ require '../includes/header.php';
 		});
 	});
 </script>
-<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../../assets/js/bootstrap.min.js"></script>

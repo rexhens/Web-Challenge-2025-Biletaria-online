@@ -1,8 +1,8 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 
 <?php
@@ -47,11 +47,11 @@ $groupedDates = groupDates($dates);
 <html lang="sq">
 
 <head>
-    <?php require '../includes/links.php'; ?>
-    <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Teatri Metropol | <?php echo htmlspecialchars($event['title']); ?></title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
 </head>
 
 <body>
@@ -72,13 +72,13 @@ $groupedDates = groupDates($dates);
     <div id="cover"></div>
     <div class="overlay">
         <div class="show-poster">
-            <img src="get_image.php?event_id=<?php echo $event['id']; ?>" alt="Poster">
+            <img src="/biletaria_online/includes/get_image.php?event_id=<?php echo $event['id']; ?>" alt="Poster">
         </div>
         <div class="show-reserve">
             <div>
                 <h3><?php echo htmlspecialchars($event['title']); ?></h3>
             </div>
-            <button onclick="redirectTo('reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
+            <button onclick="redirectTo('../reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
         </div>
     </div>
 </div>
@@ -95,9 +95,8 @@ $groupedDates = groupDates($dates);
         <p><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
     </div>
     <div class='btn-group'>
-        <button onclick="redirectTo('reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
+        <button onclick="redirectTo('../reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
         <?php if (checkAdmin($conn)): ?>
-            <button onclick="redirectTo('edit-show.php?id=<?= $event['id'] ?>')" class='black-btn'>Edito</button>
             <button onclick="redirectTo('reservations?id=<?= $event['id'] ?>')">Rezervime</button>
         <?php endif; ?>
     </div>
@@ -110,7 +109,7 @@ $groupedDates = groupDates($dates);
         </div>
     </div>
 -->
-<script src="../assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/functions.js"></script>
 <script>
     var player;
     var isMuted = true;
