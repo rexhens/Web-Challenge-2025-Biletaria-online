@@ -4,7 +4,7 @@ require "../config/db_connect.php";
 require "../auth/auth.php";
 require "../includes/functions.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-event'])) {
     $id = $_POST['event_id'];
     $title = $_POST['title'];
     $hall = $_POST['hall'];
@@ -20,69 +20,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         showError("Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']));
     }
 
-    if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
-        if (!empty($_FILES['file-input']['name'])) {
-            $check = getimagesize($_FILES['file-input']['tmp_name']);
-            if ($check !== false) {
-                $targetDir = '../assets/img/events/';
-                $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
-                $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
-                $targetPath = $targetDir . $uniqueName;
+    $conn->begin_transaction();
 
-                if (!is_dir($targetDir)) {
-                    mkdir($targetDir, 0755, true);
-                }
+    try {
+        if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
+            if (!empty($_FILES['file-input']['name'])) {
+                $check = getimagesize($_FILES['file-input']['tmp_name']);
+                if ($check !== false) {
+                    $targetDir = '../assets/img/events/';
+                    $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
+                    $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
+                    $targetPath = $targetDir . $uniqueName;
 
-                if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
-                    $posterPath = $targetPath;
-                    if (!deletePoster($conn, "events", $id)) {
-                        showError("Një problem ndodhi! Provoni më vonë!");
+                    if (!is_dir($targetDir)) {
+                        mkdir($targetDir, 0755, true);
+                    }
+
+                    if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
+                        if (!deletePoster($conn, "events", $id)) {
+                            throw new Exception("Nuk mund të fshihej posteri i vjetër!");
+                        }
+                        $posterPath = $targetPath;
+                    } else {
+                        throw new Exception("Nuk mund të ngarkohej imazhi.");
                     }
                 } else {
-                    showError("Nuk mund të ngarkohej imazhi.");
+                    throw new Exception("Skedari nuk është një imazh i vlefshëm.");
                 }
-            } else {
-                showError("Skedari nuk është një imazh i vlefshëm.");
             }
         }
-    }
 
-    $sql = "UPDATE events SET 
-        title = ?, 
-        hall = ?, 
-        time = ?, 
-        description = ?, 
-        trailer = ?, 
-        price = ?,
-        poster = ?
-        WHERE id = ?"
-    ;
-
-    $stmt = mysqli_prepare($conn, $sql);
-    $stmt->bind_param('sssssisi', $title, $hall, $time, $description, $trailer, $price, $posterPath, $id);
-
-    if (!$stmt->execute()) {
-        showError("Një problem ndodhi! Provoni më vonë!");
-    }
-
-    $sql = "DELETE FROM event_dates WHERE event_id = ?";
-    $stmt = mysqli_prepare($conn, $sql);
-    $stmt->bind_param('i', $id);
-
-    if (!$stmt->execute()) {
-        showError("Një problem ndodhi! Provoni më vonë!");
-    }
-
-    foreach ($dates as $date) {
-        $stmt = $conn->prepare("INSERT INTO event_dates (event_id, event_date) VALUES (?, ?)");
-        $stmt->bind_param("is", $id, $date);
+        $sql = "UPDATE events SET 
+            title = ?, 
+            hall = ?, 
+            time = ?, 
+            description = ?, 
+            trailer = ?, 
+            price = ?,
+            poster = ?
+            WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('sssssisi', $title, $hall, $time, $description, $trailer, $price, $posterPath, $id);
         if (!$stmt->execute()) {
-            showError("Një problem ndodhi! Provoni më vonë!");
+            throw new Exception("Nuk mund të përditësohej eventi!");
         }
+        $stmt->close();
+
+        $sql = "DELETE FROM event_dates WHERE event_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $id);
+        if (!$stmt->execute()) {
+            throw new Exception("Nuk mund të fshiheshin datat e vjetra!");
+        }
+        $stmt->close();
+
+        $sql = "INSERT INTO event_dates (event_id, event_date) VALUES (?, ?)";
+        $stmt = $conn->prepare($sql);
+        foreach ($dates as $date) {
+            $stmt->bind_param("is", $id, $date);
+            if (!$stmt->execute()) {
+                throw new Exception("Nuk mund të ruheshin datat e reja!");
+            }
+        }
+        $stmt->close();
+
+        $conn->commit();
+
+        header('Location: admin-events.php?update=success');
+        exit();
+
+    } catch (Exception $e) {
+        $conn->rollback();
+        showError("Një problem ndodhi! " . $e->getMessage());
     }
 
-    header('Location: admin-events.php?update=success');
-    exit();
 } else {
     showError("Nuk ka informacion mbi të dhënat që duhen update-uar!");
 }

@@ -4,35 +4,36 @@ require "../config/db_connect.php";
 require "../auth/auth.php";
 require "../includes/functions.php";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-show'])) {
-    $id = $_POST['showId'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-event'])) {
+    $id = $_POST['eventId'];
 
+    // Start transaction
     $conn->begin_transaction();
 
     try {
-        $sql = "DELETE FROM show_dates WHERE event_id = ?";
+        $sql = "DELETE FROM event_dates WHERE event_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $id);
         if (!$stmt->execute()) {
-            throw new Exception("Nuk u fshinë datat e shfaqjes!");
+            throw new Exception("Nuk u fshinë datat e eventit!");
         }
         $stmt->close();
 
-        if (!deletePoster($conn, "shows", $id)) {
+        if (!deletePoster($conn, "events", $id)) {
             throw new Exception("Posteri nuk u fshi!");
         }
 
-        $sql = "DELETE FROM shows WHERE id = ?";
+        $sql = "DELETE FROM events WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id);
         if (!$stmt->execute()) {
-            throw new Exception("Shfaqja nuk u fshi!");
+            throw new Exception("Eventi nuk u fshi!");
         }
         $stmt->close();
 
         $conn->commit();
 
-        header('Location: admin-shows.php?update=success');
+        header('Location: admin-events.php?update=success');
         exit();
 
     } catch (Exception $e) {
