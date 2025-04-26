@@ -60,6 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if(empty($errors)){
+        $conn->begin_transaction();
+
         $sql = "INSERT INTO shows (title, hall, genre_id, time, description, poster, trailer, price) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -73,17 +75,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bind_param("is", $show_id, $date);
                     if(!$stmt->execute()) {
                         $errors[] = "Një problem ndodhi! Provoni më vonë!";
+                        break;
                     }
                 }
                 if(empty($errors)) {
+                    $conn->commit();
                     header("Location: assign_actors.php?show_id=" . $show_id);
                     exit();
+                } else {
+                    $conn->rollback();
                 }
             } else {
+                $conn->rollback();
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
             }
             $stmt->close();
         } else {
+            $conn->rollback();
             $errors[] = "Një problem ndodhi! Provoni më vonë!";
         }
     }
