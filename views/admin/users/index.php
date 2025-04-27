@@ -335,6 +335,7 @@ $users_result = $conn->query($query);
         });
     });
 
+    let initialFormData;
 
     $(document).ready(function () {
         $('.editUserBtn').on('click', function () {
@@ -353,49 +354,30 @@ $users_result = $conn->query($query);
             $('#editPhone').val(phone);
             $('#editRole').val(role);
 
+            initialFormData = $('#editUserForm').serializeArray();
+
             // Show the modal
             $('#editUserModal').modal('show');
         });
-
-        // Example Save (You can handle this via AJAX)
-        $('#saveUserBtn').on('click', function () {
-            const userData = {
-                id: $('#editUserId').val(),
-                name: $('#editName').val(),
-                surname: $('#editSurname').val(),
-                email: $('#editEmail').val(),
-                phone: $('#editPhone').val(),
-                role: $('#editRole').val()
-            };
-
-            console.log("Saving user data:", userData);
-
-            // You can send this data via AJAX to a PHP file for update.
-            $('#editUserModal').modal('hide');
-        });
     });
 
-    $(document).ready(function () {
-        $('.editBtn').on('click', function () {
-            const button = $(this);
-            $('#formAction').val('update');
-            $('#userId').val(button.data('id'));
-            $('#emri').val(button.data('emri'));
-            $('#mbiemri').val(button.data('mbiemri'));
-            $('#email').val(button.data('email'));
-            $('#username').val(button.data('username'));
-            $('#roli').val(button.data('role'));
+    function isFormChanged() {
+        let currentFormData = $('#editUserForm').serializeArray();
 
-            $('#addUserModalLabel').text('Përditëso Përdoruesin');
-            $('#submitUserBtn').text('Ruaj Ndryshimet');
-        });
+        for (let i = 0; i < initialFormData.length; i++) {
+            if (initialFormData[i].value !== currentFormData[i].value) {
+                return true;
+            }
+        }
 
-        $('#addUserModal').on('hidden.bs.modal', function () {
-            $('#userForm')[0].reset();
-            $('#formAction').val('insert');
-            $('#addUserModalLabel').text('Shto Përdorues');
-            $('#submitUserBtn').text('Shto');
-        });
+        return false;
+    }
+
+    $('#editUserForm').submit(function (e) {
+        if (!isFormChanged()) {
+            e.preventDefault();
+            alert('Nuk ka asnjë ndryshim për të ruajtur.');
+        }
     });
 
     document.addEventListener("DOMContentLoaded", function () {

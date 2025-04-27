@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-event'])) {
                 if ($check !== false) {
                     $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/events/';
                     $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
-                    $uniqueName = uniqid('poster_', true) . 'views' . strtolower($ext);
+                    $uniqueName = uniqid('poster_', true) . 'views.' . strtolower($ext);
                     $targetPath = $targetDir . $uniqueName;
 
                     if (!is_dir($targetDir)) {

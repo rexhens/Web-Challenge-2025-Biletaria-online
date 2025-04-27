@@ -34,7 +34,7 @@ $events_result = $conn->query($events_query);
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Paneli i Adminit</title>
+    <title>Teatri Metropol | Paneli i Menaxhimit</title>
 
 
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">

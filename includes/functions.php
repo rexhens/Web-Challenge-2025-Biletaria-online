@@ -261,7 +261,7 @@ function isHallAvailable($conn, $hall, $time, $dates, $id): array {
 
 function deletePoster($conn, $table, $id): bool {
 
-    $allowedTables = ['shows', 'events'];
+    $allowedTables = ['shows', 'events', 'actors'];
     if (!in_array($table, $allowedTables)) {
         return false;
     }
@@ -287,6 +287,12 @@ function deletePoster($conn, $table, $id): bool {
 }
 
 function getPosterPath($conn, $table, $id): string {
+
+    $allowedTables = ['shows', 'events', 'actors'];
+    if (!in_array($table, $allowedTables)) {
+        return false;
+    }
+
     $query = "SELECT poster FROM $table WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $id);
