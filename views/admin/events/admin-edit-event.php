@@ -15,6 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-event'])) {
     $price = $_POST['price'];
     $posterPath = getPosterPath($conn, "events", $id);
 
+    if(empty($id) || empty($title) || empty($hall) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price) || empty($posterPath)) {
+        showError("Të dhënat mungojnë!");
+    }
+
     $result = isHallAvailable($conn, $hall, $time, $dates, $id);
     if (!$result['available']) {
         showError("Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']));

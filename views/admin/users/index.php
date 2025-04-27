@@ -1,6 +1,9 @@
 <?php
 // Include database connection
-include_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 // Fetch users from the database
 $query = "SELECT * FROM users";
@@ -100,13 +103,24 @@ $users_result = $conn->query($query);
     <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
       <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
+        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+            <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
+                 style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
+                Ndryshimet u kryen me sukses!
+                <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
+                        style="top: 50%; transform: translateY(-50%);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
 
         <section id="users-section">
-            <div class="card shadow-sm border-0 rounded">
+            <div class="card shadow border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Përdoruesve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = './add-user.php'">Shto
-                        Përdorues</button>
+                    <button class="btn btn-sm btn-primary-report"
+                            onclick="window.location.href = 'add-user.php'"
+                            style="padding: 7px 20px;">Shto Përdorues</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -123,9 +137,11 @@ $users_result = $conn->query($query);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                <?php
+                                $i = 1;
+                                while ($row = $users_result->fetch_assoc()) { ?>
                                     <tr>
-                                        <td><?php echo $row['id'] ?></td>
+                                        <td><?php echo $i ?></td>
                                         <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
                                         <td><?php echo $row['email'] ?></td>
                                         <td><?php echo $row['phone'] ?></td>
@@ -137,7 +153,8 @@ $users_result = $conn->query($query);
                                             <td><span class="badge badge-danger">Jo Aktiv</span></td>
                                         <?php } ?>
                                         <td>
-                                            <button class="btn-sm btn-outline-secondary editUserBtn"
+                                            <button class="btn btn-sm btn-outline-secondary editUserBtn"
+                                                    style="width: 48%;"
                                                 data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
                                                 data-surname="<?php echo $row['surname'] ?>"
                                                 data-email="<?php echo $row['email'] ?>"
@@ -145,19 +162,23 @@ $users_result = $conn->query($query);
                                                 data-role="<?php echo $row['role'] ?>"
                                                 data-status="<?php echo $row['status'] ?>">Edito</button>
                                             <?php if ($row['status'] == 'active') { ?>
-                                                <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                                <button class="btn btn-sm btn-outline-danger deleteUserBtn"
+                                                        style="width: 48%;"
                                                     data-id="<?php echo $row['id'] ?>"
                                                     data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
                                                     data-toggle="modal" data-target="#deleteUserModal">Caktivizo</button>
                                             <?php } else { ?>
-                                                <button class="btn-sm btn-outline-success activateUserBtn"
+                                                <button class="btn btn-sm btn-outline-success activateUserBtn"
+                                                        style="width: 48%;"
                                                     data-id="<?php echo $row['id'] ?>"
                                                     data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
                                                     data-toggle="modal" data-target="#activateUserModal">Aktivizo</button>
                                             <?php } ?>
                                         </td>
                                     </tr>
-                                <?php } ?>
+                                <?php
+                                    $i++;
+                                } ?>
                             </tbody>
                         </table>
                     </div>
@@ -205,9 +226,9 @@ $users_result = $conn->query($query);
                         <div class="form-group">
                             <label for="editRole">Roli</label>
                             <select class="form-control" id="editRole" name="roli"> <!-- added name -->
-                                <option value="admin">Admin</option>
-                                <option value="biletari">Biletari</option>
-                                <option value="perdorues">Përdorues</option>
+                                <option value="admin">Administrator</option>
+                                <option value="biletary">Biletari</option>
+                                <option value="user">Përdorues</option>
                             </select>
                         </div>
                         <input type="hidden" name="formAction" id="formAction" value="edit">
@@ -216,9 +237,8 @@ $users_result = $conn->query($query);
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                    <button type="submit" class="btn btn-primary" form="editUserForm"
-                        style="background-color: #8f793f !important; border: #8f793f;">
-                        Edito
+                    <button type="submit" class="btn btn-primary" form="editUserForm" name="edit-user"
+                        style="background-color: #8f793f !important; border: #8f793f;">Edito
                     </button>
                 </div>
             </div>
@@ -279,8 +299,6 @@ $users_result = $conn->query($query);
     </div>
 
 
-
-
 </body>
 
 </html>
@@ -306,8 +324,13 @@ $users_result = $conn->query($query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
             }
         });
     });
@@ -402,4 +425,12 @@ $users_result = $conn->query($query);
             });
         });
     });
+</script>
+
+<script>
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('update');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
 </script>

@@ -1,5 +1,8 @@
 <?php
+/** @var mysqli $conn */
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -295,7 +298,7 @@ $events_result = $conn->query($events_query);
         }
 
         .paginate_button page-item active {
-            border-color: none !important;
+            border-color: transparent !important;
         }
 
         .page-item.active .page-link {
@@ -493,7 +496,7 @@ $events_result = $conn->query($events_query);
                                         </span>
                                         <span class="mr-2">
                                             <i class="fas fa-circle text-success"
-                                                style="    color: #716a69 !important"></i> Ne biletari
+                                                style="color: #716a69 !important"></i> Ne biletari
                                         </span>
 
                                     </div>
@@ -504,11 +507,11 @@ $events_result = $conn->query($events_query);
 
                     <!-- Tabela e userave -->
                     <section id="users-section">
-                        <div class="card shadow-sm border-0 rounded">
+                        <div class="card shadow border-0 rounded">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
-                                    onclick="window.location.href = 'users/add-user.php'">Shto Përdorues</button>
+                                    onclick="window.location.href = 'users/add-user.php'" style="padding: 7px 20px;">+ Shto Përdorues</button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -524,16 +527,20 @@ $events_result = $conn->query($events_query);
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                            <?php
+                                            $i = 1;
+                                            while ($row = $users_result->fetch_assoc()) { ?>
                                                 <tr>
-                                                    <td><?php echo $row['id'] ?></td>
+                                                    <td><?php echo $i ?></td>
                                                     <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
                                                     <td><?php echo $row['email'] ?></td>
                                                     <td><?php echo $row['phone'] ?></td>
                                                     <td><?php echo $row['role'] ?></td>
 
                                                 </tr>
-                                            <?php } ?>
+                                            <?php
+                                                $i++;
+                                            } ?>
 
                                             <!-- Add more rows here -->
                                         </tbody>
@@ -543,17 +550,17 @@ $events_result = $conn->query($events_query);
                         </div>
                     </section>
                     <!-- Menaxhimi i Shfaqjeve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="shows-section">
+                    <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
+                            <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
                             <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = 'shows/add-show.php'">+ Shto Shfaqje</button>
+                                onclick="window.location.href = 'shows/add-show.php'" style="padding: 7px 20px;">+ Shto Shfaqje</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="showsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="table-light text-secondary small text-uppercase">
+                                    <thead class="thead-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>Titulli</th>
@@ -564,16 +571,20 @@ $events_result = $conn->query($events_query);
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
-                                        <?php while ($row = $shows_result->fetch_assoc()) { ?>
+                                        <?php
+                                        $i = 1;
+                                        while ($row = $shows_result->fetch_assoc()) { ?>
                                             <tr>
-                                                <td class="text-muted"><?php echo $row['id']; ?></td>
+                                                <td class="text-muted"><?php echo $i; ?></td>
                                                 <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
                                                 <td><?php echo number_format($row['price'], 2); ?> Leke</td>
 
                                             </tr>
-                                        <?php } ?>
+                                        <?php
+                                            $i++;
+                                        } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -583,19 +594,17 @@ $events_result = $conn->query($events_query);
 
 
                     <!-- Menaxhimi i aktoreve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="actors-section">
+                    <div class="card shadow border-0 rounded-4 mt-5" id="actors-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>
-                            <button class="btn btn-sm btn-outline-primary"
-                                style="background-color: #8f793f!important; color: white; border: #8f793f;"
-                                onclick="window.location.href = 'actors/add.php'">+ Shto
-                                Aktor</button>
+                            <h5 class="mb-0 text-primary-1">Lista e Aktorëve</h5>
+                            <button class="btn btn-sm btn-primary-report"
+                                onclick="window.location.href = 'actors/add.php'" style="padding: 7px 20px;">+ Shto Aktor</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="table-light text-secondary small text-uppercase">
+                                    <thead class="thead-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>Emri</th>
@@ -605,9 +614,11 @@ $events_result = $conn->query($events_query);
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
-                                        <?php while ($row = $actors_result->fetch_assoc()) { ?>
+                                        <?php
+                                        $i = 1;
+                                        while ($row = $actors_result->fetch_assoc()) { ?>
                                             <tr>
-                                                <td class="text-muted"><?php echo $row['id']; ?></td>
+                                                <td class="text-muted"><?php echo $i; ?></td>
                                                 <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                                 <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
@@ -616,7 +627,9 @@ $events_result = $conn->query($events_query);
                                                 </td>
 
                                             </tr>
-                                        <?php } ?>
+                                        <?php
+                                            $i++;
+                                        } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -625,18 +638,18 @@ $events_result = $conn->query($events_query);
 
 
                     <!-- Menaxhimi i Eventeve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="events-section"
+                    <div class="card shadow border-0 rounded-4 mt-5" id="events-section"
                         style="margin-bottom: 100px;">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 fw-semibold text-dark">Eventet</h5>
+                            <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
                             <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = 'events/add-event.php'">+ Shto Event </button>
+                                onclick="window.location.href = 'events/add-event.php'" style="padding: 7px 20px;">+ Shto Event </button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="table-light text-secondary small text-uppercase">
+                                    <thead class="thead-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>Titulli</th>
@@ -647,16 +660,20 @@ $events_result = $conn->query($events_query);
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
-                                        <?php while ($row = $events_result->fetch_assoc()) { ?>
+                                        <?php
+                                        $i = 1;
+                                        while ($row = $events_result->fetch_assoc()) { ?>
                                             <tr>
-                                                <td class="text-muted"><?php echo $row['id']; ?></td>
+                                                <td class="text-muted"><?php echo $i; ?></td>
                                                 <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['time']); ?></td>
                                                 <td><?php echo number_format($row['price'], 2); ?> Leke</td>
 
                                             </tr>
-                                        <?php } ?>
+                                        <?php
+                                            $i++;
+                                        } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -724,8 +741,13 @@ $events_result = $conn->query($events_query);
                         "next": "›"
                     },
                     "zeroRecords": "Asnjë rezultat i gjetur",
-                    "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                    "info": "Duke shfaqur _END_ nga _TOTAL_",
                     "infoEmpty": "Nuk ka të dhëna"
+                },
+                "initComplete": function () {
+                    $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                    $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                    $('.dataTables_filter input').css({'padding-left': '40px'});
                 }
             });
         });
@@ -741,12 +763,14 @@ $events_result = $conn->query($events_query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
-            "columnDefs": [
-                { "orderable": false, "targets": 4 }
-            ]
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
+            }
         });
         $('#showsTable').DataTable({
             "pageLength": 5,
@@ -760,8 +784,34 @@ $events_result = $conn->query($events_query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
+            }
+        });
+        $('#eventsTable').DataTable({
+            "pageLength": 5,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko event...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
             }
         });
 
