@@ -106,10 +106,10 @@ session_start();
         if(empty($name) || empty($surname) || empty($email) || empty($phone) || empty($password) || empty($passwordConfirm)) {
             $errors[] = "Të gjitha fushat duhen plotësuar!";
         }
-        if (!preg_match('/^[a-zA-Z ]+$/', $name)) {
+        if (!preg_match('/^[a-zA-ZëËçÇ ]+$/', $name)) {
             $errors[] = "Emri s'mund të përmbajë numra ose karaktere speciale.";
         }
-        if (!preg_match('/^[a-zA-Z ]+$/', $surname)) {
+        if (!preg_match('/^[a-zA-ZëËçÇ ]+$/', $surname)) {
             $errors[] = "Mbiemri s'mund të përmbajë numra ose karaktere speciale.";
         }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

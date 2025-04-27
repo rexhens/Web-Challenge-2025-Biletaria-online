@@ -16,6 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
     $price = $_POST['price'];
     $posterPath = getPosterPath($conn, "shows", $id);
 
+    if(empty($id) || empty($title) || empty($hall) || empty($genre_id) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price) || empty($posterPath)) {
+        showError("Të dhënat mungojnë!");
+    }
+
     $result = isHallAvailable($conn, $hall, $time, $dates, $id);
     if (!$result['available']) {
         showError("Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']));

@@ -112,7 +112,7 @@
                     -->
                     <div class="Login_SignUp" id="login"
                         style="font-size: 2rem ; display: inline-block; position: relative;">
-                        <a class="nav-link" href="../auth/login.php"><i class="fa fa-user-circle-o"></i></a>
+                        <a class="nav-link" href="/biletaria_online/auth/login.php"><i class="fa fa-user-circle-o"></i></a>
                     </div>
                 </div>
                 <!-- toggle switch for light and dark theme -->

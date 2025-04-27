@@ -1,5 +1,5 @@
 const isValidNameOrSurname = (element) => {
-    return /^[a-zA-Z\s]+$/.test(element.value.trim());
+    return /^[a-zA-ZëËçÇ ]+$/.test(element.value.trim());
 }
 
 const isValidEmail = (element) => {

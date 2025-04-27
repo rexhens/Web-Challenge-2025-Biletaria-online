@@ -123,7 +123,7 @@ $events_result = $conn->query($query);
 
 
         <section id="users-section">
-            <div class="card shadow-sm border-0 rounded">
+            <div class="card shadow border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Eventeve</h5>
                     <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-event.php'"
@@ -351,8 +351,13 @@ $events_result = $conn->query($query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
             }
         });
     });
