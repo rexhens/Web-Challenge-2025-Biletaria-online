@@ -1,6 +1,8 @@
 <?php
-// Include database connection
-include_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 // Fetch users from the database
 $query = "SELECT * FROM actors";
@@ -13,18 +15,20 @@ $actors_result = $conn->query($query);
 <html lang="sq">
 
 <head>
-    <?php require '../../../includes/links.php'; ?>
-    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
-    <link rel="icon" href="../../../assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Shto Përdorues</title>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png">
+    <title>Teatri Metropol | Menaxho Aktorët</title>
 
     <!-- Styles -->
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-    <link href="../../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-    <link href="../../../assets/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="/biletaria_online/assets/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
@@ -36,6 +40,24 @@ $actors_result = $conn->query($query);
             box-shadow: #8f793f !important;
             border-color: transparent;
             /* optional */
+        }
+
+        table.dataTable td,
+        table.dataTable th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .desc-col {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: calc(1.4em * 8);
+            line-height: 1.4em;
+            max-width: 350px;
+            white-space: normal;
         }
 
 
@@ -95,52 +117,78 @@ $actors_result = $conn->query($query);
 <body id="page-top">
 
     <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
-        <?php include_once '../../sidebar.php'; ?>
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
+
+        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+            <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
+                 style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
+                Ndryshimet u kryen me sukses!
+                <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
+                        style="top: 50%; transform: translateY(-50%);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
 
 
         <section id="users-section" style="margin-top: 1%;">
-            <div class="card shadow-sm border-0 rounded">
+            <div class="card shadow border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Aktoreve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = './add.php'">Shto
-                        Aktor</button>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add.php'" style="padding: 7px 20px;">
+                        Shto Aktor</button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
-                            <thead class="table-light text-secondary small text-uppercase">
+                            <thead class="thead-light">
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Emri</th>
                                     <th>Email</th>
                                     <th>Datëlindja</th>
                                     <th>Biografia</th>
+                                    <th>Portreti</th>
                                     <th class="text-end">Veprime</th>
                                 </tr>
                             </thead>
                             <tbody class="text-dark">
-                                <?php while ($row = $actors_result->fetch_assoc()) { ?>
+                                <?php
+                                $i = 1;
+                                while ($row = $actors_result->fetch_assoc()) {
+                                    $posterUrl = "../../../includes/get_image.php?actor_id=" . $row['id'];
+                                    ?>
                                     <tr>
-                                        <td class="text-muted"><?php echo $row['id']; ?></td>
+                                        <td class="text-muted"><?php echo $i; ?></td>
                                         <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
                                         <td><?php echo htmlspecialchars($row['email']); ?></td>
                                         <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
-                                        <td class="text-truncate" style="max-width: 200px;">
-                                            <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
+                                        <td>
+                                            <div class="desc-col">
+                                                <?php echo $row['description'] ?>
+                                            </div>
                                         </td>
+                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster"
+                                                 style="width: 150px; height: auto; border-radius: 5px;"></td>
                                         <td class="text-end">
-                                            <button class="btn-sm btn-outline-secondary editUserBtn"
-                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                            <button class="btn btn-sm btn-outline-secondary editUserBtn"
+                                                    style="width: 48%;"
+                                                data-id="<?php echo $row['id'] ?>"
+                                                data-name="<?php echo $row['name'] ?>"
                                                 data-email="<?php echo $row['email'] ?>"
                                                 data-birthday="<?php echo $row['birthday'] ?>"
-                                                data-biography="<?php echo $row['description'] ?>">
+                                                data-biography="<?php echo $row['description'] ?>"
+                                                data-poster="<?php echo $posterUrl ?>">
                                                 Edito</button>
-                                            <button class="btn-sm btn-outline-danger deleteUserBtn"
+                                            <button class="btn btn-sm btn-outline-danger deleteUserBtn"
+                                                    style="width: 48%;"
                                                 data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
                                                 data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
                                         </td>
                                     </tr>
-                                <?php } ?>
+                                <?php
+                                    $i++;
+                                } ?>
                             </tbody>
                         </table>
                     </div>
@@ -162,7 +210,7 @@ $actors_result = $conn->query($query);
                 </div>
                 <div class="modal-body">
                     <!-- Form Fields -->
-                    <form id="editUserForm" method="POST" action="edit.php">
+                    <form id="editActorForm" method="POST" action="edit.php" enctype="multipart/form-data">
                         <input type="hidden" id="editUserId" name="id"> <!-- Hidden field for actor ID -->
 
                         <div class="form-group">
@@ -177,7 +225,7 @@ $actors_result = $conn->query($query);
 
                         <div class="form-group">
                             <label for="editBirthday">Datëlindja</label>
-                            <input type="date" class="form-control" id="editBirthday" name="birthday" required>
+                            <input type="text" class="form-control" id="editBirthday" name="birthday" required>
                         </div>
 
                         <div class="form-group">
@@ -185,11 +233,23 @@ $actors_result = $conn->query($query);
                             <textarea class="form-control" id="editDescription" name="description" rows="4"
                                 required></textarea>
                         </div>
+
+                        <div class="form-group">
+                            <label for="editPoster">Ndrysho portretin</label><br>
+                            <img id="currentPoster" src="" alt="Portreti aktual"
+                                 style="width: 50%; height: auto; margin-bottom: 10px; border-radius: 5px;">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="editPoster" name="file-input"
+                                       accept="image/*">
+                                <label class="custom-file-label" for="editPoster">Zgjidh një skedar</label>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                    <button type="submit" class="btn btn-primary" form="editUserForm"
+                    <button type="submit" class="btn btn-primary" form="editActorForm" name="edit-actor"
                         style="background-color: #8f793f !important; border: #8f793f;">
                         Ruaj Ndryshimet
                     </button>
@@ -226,10 +286,6 @@ $actors_result = $conn->query($query);
         </div>
     </div>
 
-
-
-
-
 </body>
 
 </html>
@@ -255,71 +311,91 @@ $actors_result = $conn->query($query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
             }
         });
     });
 
+    let initialFormData;
 
     $(document).ready(function () {
         $('.editUserBtn').on('click', function () {
+            let editDatesPicker;
+
             const userId = $(this).data('id');
             const name = $(this).data('name');
-            const surname = $(this).data('surname');
             const email = $(this).data('email');
             const biography = $(this).data('biography');
-            const birthday = $(this).data('birthday');
 
-            // Populate modal fields
             $('#editUserId').val(userId);
             $('#editName').val(name);
-            $('#editSurname').val(surname);
             $('#editEmail').val(email);
-            $('#editBirthday').val(birthday);
-
             $('#editDescription').val(biography);
+            $('#currentPoster').attr('src', $(this).data('poster'));
 
-            // Show the modal
+            const dateString = $(this).data('birthday');
+
+            if (editDatesPicker) {
+                editDatesPicker.setDate(dateString);
+            } else {
+                editDatesPicker = flatpickr("#editBirthday", {
+                    mode: "single",
+                    dateFormat: "Y-m-d",
+                    defaultDate: dateString
+                });
+            }
+
+            initialFormData = $('#editActorForm').serializeArray();
+
             $('#editUserModal').modal('show');
-        });
-
-        // Example Save (You can handle this via AJAX)
-        $('#saveUserBtn').on('click', function () {
-            const userData = {
-                id: $('#editUserId').val(),
-                name: $('#editName').val(),
-                email: $('#editEmail').val(),
-                birthdate: $('#editBirthday').val(),
-                description: $('#editDescription').val(),
-            };
-
-            console.log("Saving user data:", userData);
-
-            // You can send this data via AJAX to a PHP file for update.
-            $('#editUserModal').modal('hide');
         });
     });
 
-    $(document).ready(function () {
-        $('.editBtn').on('click', function () {
-            const button = $(this);
-            $('#formAction').val('update');
-            $('#userId').val(button.data('id'));
-            $('#emri').val(button.data('emri'));
-            $('#mbiemri').val(button.data('mbiemri'));
-            $('#email').val(button.data('email'));
+    $('#editPoster').on('change', function () {
+        const file = this.files[0];
 
-            $('#addUserModalLabel').text('Përditëso Përdoruesin');
-            $('#submitUserBtn').text('Ruaj Ndryshimet');
-        });
+        if (file) {
+            const reader = new FileReader();
 
-        $('#addUserModal').on('hidden.bs.modal', function () {
-            $('#userForm')[0].reset();
-            $('#formAction').val('insert');
-            $('#addUserModalLabel').text('Shto Përdorues');
-            $('#submitUserBtn').text('Shto');
-        });
+            reader.onload = function (event) {
+                $('#currentPoster').attr('src', event.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+
+    function isFormChanged() {
+        let currentFormData = $('#editActorForm').serializeArray();
+
+        for (let i = 0; i < initialFormData.length; i++) {
+            if (initialFormData[i].value !== currentFormData[i].value) {
+                return true;
+            }
+        }
+
+        let currentFile = $('input[name="file-input"]')[0].files[0];
+        if (currentFile) {
+            return true;
+        }
+
+        return false;
+    }
+
+    $('#editActorForm').submit(function (e) {
+        if (!isFormChanged()) {
+            e.preventDefault();
+            alert('Nuk ka asnjë ndryshim për të ruajtur.');
+        }
     });
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -335,18 +411,14 @@ $actors_result = $conn->query($query);
             });
         });
     });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".activateUserBtn");
-
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const userId = button.getAttribute("data-id");
-                const userName = button.getAttribute("data-name");
-
-                document.getElementById("activateUserId").value = userId;
-                document.getElementById("userToActivateName").textContent = userName;
-            });
-        });
-    });
 </script>
+
+<script>
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('update');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
+</script>
+
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>

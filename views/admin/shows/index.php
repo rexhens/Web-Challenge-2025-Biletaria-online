@@ -140,7 +140,7 @@ $users_result = $conn->query($query);
                                     <th>Zhaneri</th>
                                     <th>Datat</th>
                                     <th>Ora</th>
-                                    <th>Çmimi i biletës</th>
+                                    <th>Bileta</th>
                                     <th>Përshkrimi</th>
                                     <th>Poster</th>
                                     <th>Veprime</th>

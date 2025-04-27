@@ -139,7 +139,7 @@ $events_result = $conn->query($query);
                                     <th>Salla</th>
                                     <th>Datat</th>
                                     <th>Ora</th>
-                                    <th>Çmimi i biletës</th>
+                                    <th>Bileta</th>
                                     <th>Përshkrimi</th>
                                     <th>Poster</th>
                                     <th>Veprime</th>
@@ -226,8 +226,8 @@ $events_result = $conn->query($query);
     <!-- Edit Show Modal -->
     <div class="modal fade" id="editShowModal" tabindex="-1" aria-labelledby="editShowModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <form id="editShowForm" method="POST" action="admin-edit-event.php" enctype="multipart/form-data""
-                  class=" modal-content">
+            <form id="editShowForm" method="POST" action="admin-edit-event.php" enctype="multipart/form-data"
+                  class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editShowModalLabel">Edito Shfaqjen</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Edito">

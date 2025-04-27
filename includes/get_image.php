@@ -31,7 +31,7 @@ if (isset($_GET['show_id'])) {
     $conn->close();
 } else if (isset($_GET['actor_id'])) {
     $id = intval($_GET['actor_id']);
-    $query = "SELECT photo FROM actors WHERE id = ?";
+    $query = "SELECT poster FROM actors WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $id);
     $stmt->execute();
@@ -39,7 +39,7 @@ if (isset($_GET['show_id'])) {
     $stmt->fetch();
     $stmt->close();
 
-    if (!empty($poster)) {
+    if (!empty($photo)) {
         $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/actors/' . basename($photo); // secure the path
         if (file_exists($imagePath)) {
             $mimeType = mime_content_type($imagePath);
