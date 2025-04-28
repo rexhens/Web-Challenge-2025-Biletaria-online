@@ -1,8 +1,8 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require "../../config/db_connect.php";
+require "../../auth/auth.php";
+require "../../includes/functions.php";
 
 // --------------------------------------------------
 // 1) grab show id from URL
@@ -32,27 +32,7 @@ $today        = new DateTime('today');
 
 
 
-$ticketId = intval($_GET['id']);
 
-$q = $conn->prepare(
- "SELECT t.ticket_code,t.expires_at,
-        r.seat_id,r.hall,r.date,
-        s.title,s.time,s.price,
-        u.name,u.surname
-   FROM tickets t
-   JOIN reservations r ON r.id = t.reservation_id
-   JOIN shows       s ON s.id = r.show_id
-   JOIN users       u ON u.id = r.user_id
-  WHERE t.id = ?");
-$q->bind_param("i",$ticketId);
-$q->execute();
-$tk = $q->get_result()->fetch_assoc();
-if (!$tk) die("Ticket not found");
-
-// friendly formats
-$showDate  = (new DateTime($tk['date']))->format('F j Y');
-$showTime  = (new DateTime($tk['time']))->format('g:i A');
-$expires   = (new DateTime($tk['expires_at']))->format('F j Y');
 ?>
 
 
@@ -220,10 +200,10 @@ HTML;
               <div>
                 <iframe id="seat-sel-iframe"
                   style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 770px; height: 1200px; display: block; margin-left: auto; margin-right: auto;"
-                  src="../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
+                  src="../../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
               </div>
               <br>
-              <input type="button" name="next-step" class="next-step" value="Proceed to Payment" />
+              <input type="button" name="next-step" class="next-step" value="Next" />
               <input type="button" name="previous-step" class="previous-step" value="Back" />
             </fieldset>
             <fieldset>
