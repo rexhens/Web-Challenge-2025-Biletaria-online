@@ -27,9 +27,9 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="/biletaria_online/views/admin/rent/index.php">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Raporti Mujor</span></a>
+            <span>Salla me qera</span></a>
     </li>
 
     <li class="nav-item">
