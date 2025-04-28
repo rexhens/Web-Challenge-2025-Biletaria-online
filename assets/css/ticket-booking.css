@@ -224,3 +224,10 @@ h2 {
 #form .home-page-btn:focus { 
 	background-color: #c70050;
 }
+.date-month{
+	font-size: .8rem;
+	line-height: 1;
+	margin-top: -4px;     /* tucks it a bit closer to the day number */
+	color: #555;          /* subtle text colour */
+  }
+  
