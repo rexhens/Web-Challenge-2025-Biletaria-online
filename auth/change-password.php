@@ -11,6 +11,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
     <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Tetari Metropol | Ndrysho Falëkalimin</title>
     <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background: url('/biletaria_online/assets/img/background-image.png') no-repeat center center fixed;
@@ -26,16 +27,22 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 <form action="change-password.php" method="post" id="change-password-form" class="form-container">
     <h1><span>Ndryshoni fjalëkalimin</span></h1>
     <div class="form-group">
-        <input type="email" name="email" id="email" placeholder=" " required>
+        <input type="email" name="email" id="email" placeholder=" " value="<?php echo $_POST['email'] ?? ''; ?>" required>
         <label for="email">Email</label>
     </div>
     <div class="form-group">
         <input type="password" name="password" id="password" placeholder=" " required>
         <label for="password">Fjalëkalimi i Ri</label>
+        <span class="eye-icon" id="password-icon" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <div class="form-group">
         <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
         <label for="password-confirm">Konfirmoni Fjalëkalimin</label>
+        <span class="eye-icon" id="password-confirm-icon" onclick="toggleConfirmPassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <button type="submit" name="submit" id="change">Ndrysho</button>
 </form>

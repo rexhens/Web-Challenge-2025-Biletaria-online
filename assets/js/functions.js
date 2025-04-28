@@ -55,3 +55,33 @@ const observer = new IntersectionObserver((entries, observer) => {
 }, {
     threshold: 0.1
 });
+
+function togglePassword() {
+    const passwordField = document.getElementById('password');
+    const eyeIcon = document.querySelector('#password-icon i');
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = "password";
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}
+
+function toggleConfirmPassword() {
+    const passwordField = document.getElementById('password-confirm');
+    const eyeIcon = document.querySelector('#password-confirm-icon i');
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = "password";
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+}

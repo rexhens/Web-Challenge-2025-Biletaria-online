@@ -7,6 +7,15 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 
 <?php
+
+$title = '';
+$hall = '';
+$dates = '';
+$time = '';
+$description = '';
+$trailer = '';
+$price = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $title = $_POST["title"];
@@ -101,12 +110,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if (!empty($errors)) {
-        foreach ($errors as $error) {
-            echo "<div class='error-message'>$error</div>";
-        }
-    }
-
     $conn->close();
 }
 ?>
@@ -129,40 +132,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Event</span></h1>
     <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px;">
         <div class="form-group">
-            <input type="text" name="title" id="title" placeholder=" " required>
+            <input type="text" name="title" id="title" placeholder=" " value="<?php echo htmlspecialchars($title); ?>" required>
             <label for="title">Titulli</label>
         </div>
 
         <div class="form-group">
             <select name="hall" id="hall" required>
-                <option value="" disabled selected>-- Zgjidh sallën --</option>
-                <option value="Shakespare">Shakespare</option>
-                <option value="Çehov">Çehov</option>
-                <option value="Bodrum">Bodrum</option>
+                <option value="" disabled <?php echo empty($hall) ? 'selected' : ''; ?>>-- Zgjidh sallën --</option>
+                <option value="Shakespare" <?php echo ($hall == 'Shakespare') ? 'selected' : ''; ?>>Shakespare</option>
+                <option value="Çehov" <?php echo ($hall == 'Çehov') ? 'selected' : ''; ?>>Çehov</option>
+                <option value="Bodrum" <?php echo ($hall == 'Bodrum') ? 'selected' : ''; ?>>Bodrum</option>
             </select>
         </div>
 
         <div class="form-group">
-            <input type="text" id="event_dates" name="event_dates" placeholder=" " readonly required>
+            <input type="text" id="event_dates" name="event_dates" placeholder=" " value="<?php echo $dates ? implode(',', $dates) : ''; ?>" readonly required>
             <label for="event_dates">Datat</label>
         </div>
 
         <div class="form-group">
-            <input type="text" id="time" name="time" placeholder=" " required>
+            <input type="text" id="time" name="time" placeholder=" " value="<?php echo htmlspecialchars($time); ?>" required>
             <label for="time">Ora</label>
         </div>
 
         <div class="form-group">
-            <textarea name="description" id="description" placeholder="Përshkrimi i eventit..." required></textarea>
+            <textarea name="description" id="description" placeholder="Përshkrimi i eventit..." required><?php echo htmlspecialchars($description); ?></textarea>
         </div>
 
         <div class="form-group">
-            <input type="text" id="trailer" name="trailer" placeholder=" " required>
+            <input type="text" id="trailer" name="trailer" placeholder=" " value="<?php echo htmlspecialchars($trailer); ?>" required>
             <label for="trailer">Trailer</label>
         </div>
 
         <div class="form-group">
-            <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " required>
+            <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " value="<?php echo htmlspecialchars($price); ?>" required>
             <label for="price">Çmimi i biletës</label>
             <div class="custom-spinner">
                 <div class="plus" onclick="document.querySelector('.custom-number').stepUp()">+</div>

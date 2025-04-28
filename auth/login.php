@@ -11,6 +11,7 @@ session_start();
     <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Teatri Metropol | Identifikohu</title>
     <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background: url('/biletaria_online/assets/img/background-image.png') no-repeat center center fixed;
@@ -36,12 +37,15 @@ session_start();
         <span>Teatrin Metropol</span>
     </h1>
     <div class="form-group">
-        <input type="email" name="email" id="email" placeholder=" " required>
+        <input type="email" name="email" id="email" placeholder=" " value="<?php echo $_POST['email'] ?? ''; ?>" required>
         <label for="email">Email</label>
     </div>
     <div class="form-group">
         <input type="password" name="password" id="password" placeholder=" " required>
         <label for="password">Fjalëkalimi</label>
+        <span class="eye-icon" id="password-icon" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <div class="checkbox-container">
         <input type="checkbox" value="remember_me" id="remember_me" name="remember_me">
