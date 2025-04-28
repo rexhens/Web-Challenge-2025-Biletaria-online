@@ -85,106 +85,119 @@ if (isset($_POST['submit'])) {
     <link rel="icon" href="../../../assets/img/metropol_icon.png">
     <title>Teatri Metropol | Shto Përdorues</title>
     <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 </head>
 
 <body id="page-top" class="light">
+    <div style=" display: flex; min-height: 100vh; justify-content: flex-start; width: 100%; gap: 20%;">
 
-    <form action="add-user.php" method="POST" class="form-container light" id="signup-form">
-        <h1 style="color: black; font-size: 25px;">Shtoni një <span>Përdorues</span></h1>
+        <!-- Sidebar -->
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
-        <div class="form-group">
-            <input type="text" name="name" id="name" placeholder=" " required
-                   value="<?php echo htmlspecialchars($name ?? '') ?>">
-            <label for="name">Emri</label>
-        </div>
+        <!-- Main Content -->
+        <div style="flex: 1; padding: 20px;">
+            <form action="add-user.php" method="POST" class="form-container light" id="signup-form">
+                <h1 style="color: black; font-size: 25px;">Shtoni një <span
+                        style="color: #8f793f!important;">Përdorues</span>
+                </h1>
 
-        <div class="form-group">
-            <input type="text" name="surname" id="surname" placeholder=" " required
-                   value="<?php echo htmlspecialchars($surname ?? '') ?>">
-            <label for="surname">Mbiemri</label>
-        </div>
+                <div class="form-group">
+                    <input type="text" name="name" id="name" placeholder=" " required
+                        value="<?php echo htmlspecialchars($name ?? '') ?>">
+                    <label for="name">Emri</label>
+                </div>
 
-        <div class="form-group">
-            <input type="email" name="email" id="email" placeholder=" " required
-                   value="<?php echo htmlspecialchars($email ?? '') ?>">
-            <label for="email">Email</label>
-        </div>
+                <div class="form-group">
+                    <input type="text" name="surname" id="surname" placeholder=" " required
+                        value="<?php echo htmlspecialchars($surname ?? '') ?>">
+                    <label for="surname">Mbiemri</label>
+                </div>
 
-        <div class="form-group">
-            <input type="tel" name="phone" id="phone" placeholder=" " required
-                   value="<?php echo htmlspecialchars($phone ?? '') ?>">
-            <label for="phone">Numri i Telefonit</label>
-        </div>
+                <div class="form-group">
+                    <input type="email" name="email" id="email" placeholder=" " required
+                        value="<?php echo htmlspecialchars($email ?? '') ?>">
+                    <label for="email">Email</label>
+                </div>
 
-        <div class="form-group">
-            <input type="password" name="password" id="password" placeholder=" " required>
-            <label for="password">Krijoni një fjalëkalim</label>
-            <span class="eye-icon" id="password-icon" onclick="togglePassword()">
-                <i class="fas fa-eye"></i>
-            </span>
-        </div>
+                <div class="form-group">
+                    <input type="tel" name="phone" id="phone" placeholder=" " required
+                        value="<?php echo htmlspecialchars($phone ?? '') ?>">
+                    <label for="phone">Numri i Telefonit</label>
+                </div>
 
-        <div class="form-group">
-            <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
-            <label for="password-confirm">Konfirmoni fjalëkalimin</label>
-            <span class="eye-icon" id="password-confirm-icon" onclick="toggleConfirmPassword()">
-                <i class="fas fa-eye"></i>
-            </span>
-        </div>
+                <div class="form-group">
+                    <input type="password" name="password" id="password" placeholder=" " required>
+                    <label for="password">Krijoni një fjalëkalim</label>
+                    <span class="eye-icon" id="password-icon" onclick="togglePassword()">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
 
-        <div class="form-group">
-            <select name="role" id="role" required>
-                <option value="" disabled <?php echo empty($roles) ? 'selected' : ''; ?>>-- Zgjidh rolin --</option>
-                <option value="user" <?php echo ($roles === 'user') ? 'selected' : ''; ?>>Përdorues</option>
-                <option value="ticketOffice" <?php echo ($roles === 'ticketOffice') ? 'selected' : ''; ?>>Biletari</option>
-                <option value="admin" <?php echo ($roles === 'admin') ? 'selected' : ''; ?>>Administrator</option>
-            </select>
-        </div>
+                <div class="form-group">
+                    <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
+                    <label for="password-confirm">Konfirmoni fjalëkalimin</label>
+                    <span class="eye-icon" id="password-confirm-icon" onclick="toggleConfirmPassword()">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
 
-        <button type="submit" name="submit" style="margin-top: 20px;">Shto Përdorues</button>
+                <div class="form-group">
+                    <select name="role" id="role" required>
+                        <option value="" disabled <?php echo empty($roles) ? 'selected' : ''; ?>>-- Zgjidh rolin --
+                        </option>
+                        <option value="user" <?php echo ($roles === 'user') ? 'selected' : ''; ?>>Përdorues</option>
+                        <option value="ticketOffice" <?php echo ($roles === 'ticketOffice') ? 'selected' : ''; ?>>Biletari
+                        </option>
+                        <option value="admin" <?php echo ($roles === 'admin') ? 'selected' : ''; ?>>Administrator</option>
+                    </select>
+                </div>
 
-    </form>
+                <button type="submit" name="submit" style="margin-top: 20px;">Shto Përdorues</button>
 
-    <div class="info-container">
-        <div class="name-error errors" id="name-error">
-            <p>Emri s'mund të përmbajë numra ose karaktere speciale.</p>
-        </div>
-        <div class="surname-error errors" id="surname-error">
-            <p>Mbiemri s'mund të përmbajë numra ose karaktere speciale.</p>
-        </div>
-        <div class="email-error errors" id="email-error">
-            <p>Adresë e pasaktë email-i!</p>
-        </div>
-        <div class="phone-error errors" id="phone-error">
-            <p>Numër i pasaktë telefoni!</p>
-        </div>
-        <div class="password-error errors" id="password-error">
-            <p><strong>Kriteret e Fjalëkalimit : </strong><br>
-                Përmban të paktën 8 karaktere.<br>
-                Përmban të paktën një shkronjë të madhe.<br>
-                Përmban të paktën një shkronjë të vogël.<br>
-                Përmban të paktën një numër.<br>
-                Përmban të paktën një karakter special. (p.sh., @, #, $, etj.).</p>
-        </div>
-        <div class="password-confirm-error errors" id="password-confirm-error">
-            <p>Fjalëkalimet nuk përputhen.</p>
-        </div>
-        <?php
-        if (!empty($errors)) {
-            foreach ($errors as $error) {
-                echo "<div class='errors show'><p>$error</p></div>";
-            }
-        }
+            </form>
 
-        if ($success) {
-            echo "<div class='errors show' style='background-color: rgba(131, 173, 68)'>
+
+            <div class="info-container">
+                <div class="name-error errors" id="name-error">
+                    <p>Emri s'mund të përmbajë numra ose karaktere speciale.</p>
+                </div>
+                <div class="surname-error errors" id="surname-error">
+                    <p>Mbiemri s'mund të përmbajë numra ose karaktere speciale.</p>
+                </div>
+                <div class="email-error errors" id="email-error">
+                    <p>Adresë e pasaktë email-i!</p>
+                </div>
+                <div class="phone-error errors" id="phone-error">
+                    <p>Numër i pasaktë telefoni!</p>
+                </div>
+                <div class="password-error errors" id="password-error">
+                    <p><strong>Kriteret e Fjalëkalimit : </strong><br>
+                        Përmban të paktën 8 karaktere.<br>
+                        Përmban të paktën një shkronjë të madhe.<br>
+                        Përmban të paktën një shkronjë të vogël.<br>
+                        Përmban të paktën një numër.<br>
+                        Përmban të paktën një karakter special. (p.sh., @, #, $, etj.).</p>
+                </div>
+                <div class="password-confirm-error errors" id="password-confirm-error">
+                    <p>Fjalëkalimet nuk përputhen.</p>
+                </div>
+                <?php
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        echo "<div class='errors show'><p>$error</p></div>";
+                    }
+                }
+
+                if ($success) {
+                    echo "<div class='errors show' style='background-color: rgba(131, 173, 68)'>
                 <p style='color: #E4E4E4;'>Përdoruesi u shtua me sukses!</p>
               </div>";
-        }
-        ?>
-    </div>
+                }
+                ?>
+            </div>
+
+        </div>
+    </div> <!-- FLEX CONTAINER ENDS -->
 
     <script>
         const elementsToHide = document.getElementsByClassName("show");
@@ -195,6 +208,16 @@ if (isset($_POST['submit'])) {
     <script src="/biletaria_online/assets/js/functions.js"></script>
     <script src="/biletaria_online/assets/js/signupValidations.js"></script>
 
+    <!-- Sidebar toggle -->
+    <script>
+        $(document).ready(function () {
+            $("#sidebarToggle").on('click', function (e) {
+                e.preventDefault();
+                $("body").toggleClass("sidebar-toggled");
+                $(".sidebar").toggleClass("toggled");
+            });
+        });
+    </script>
 </body>
 
 </html>
