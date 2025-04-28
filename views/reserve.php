@@ -1,12 +1,60 @@
 <?php
-// reserve.php
+/** @var mysqli $conn */
+require "../config/db_connect.php";
+require "../auth/auth.php";
+require "../includes/functions.php";
+
 // --------------------------------------------------
 // 1) grab show id from URL
 $show_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if (!$show_id) {
     die("Invalid show ID.");
 }
+
+// fetch all dates for the chosen show
+$datesQuery = $conn->prepare(
+    "SELECT show_date 
+       FROM show_dates 
+      WHERE show_id = ? 
+   ORDER BY show_date ASC"
+);
+$datesQuery->bind_param("i", $show_id);
+$datesQuery->execute();
+$datesResult = $datesQuery->get_result();
+$dates = [];
+while ($row = $datesResult->fetch_assoc()) {
+    $dates[] = $row['show_date'];          // yyyy-mm-dd
+}
+
+$groupedDates = groupDates($dates);        // helper defined in includes/functions.php
+$today        = new DateTime('today');
+
+
+
+
+$ticketId = intval($_GET['id']);
+
+$q = $conn->prepare(
+ "SELECT t.ticket_code,t.expires_at,
+        r.seat_id,r.hall,r.date,
+        s.title,s.time,s.price,
+        u.name,u.surname
+   FROM tickets t
+   JOIN reservations r ON r.id = t.reservation_id
+   JOIN shows       s ON s.id = r.show_id
+   JOIN users       u ON u.id = r.user_id
+  WHERE t.id = ?");
+$q->bind_param("i",$ticketId);
+$q->execute();
+$tk = $q->get_result()->fetch_assoc();
+if (!$tk) die("Ticket not found");
+
+// friendly formats
+$showDate  = (new DateTime($tk['date']))->format('F j Y');
+$showTime  = (new DateTime($tk['time']))->format('g:i A');
+$expires   = (new DateTime($tk['expires_at']))->format('F j Y');
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -72,134 +120,98 @@ if (!$show_id) {
       <div class="col">
         <div class="px-0 pt-4 pb-0 mt-3 mb-3">
           <form id="form">
-            <ul id="progressbar" class="progressbar-class">
-              <li class="active" id="step1">Show timing selection</li>
-              <li id="step2" class="not_active">Seat Selection</li>
-              <li id="step3" class="not_active">Payment</li>
-              <li id="step4" class="not_active">E-Ticket</li>
-            </ul>
+          <ul id="progressbar" class="progressbar-class">
+  <li class="active" id="step1">Rezervimi i kohes</li>
+  <li id="step2" class="not_active">Rezervimi i vendeve</li>
+  <li id="step3" class="not_active">Informacioni juaj</li>
+  <li id="step4" class="not_active">Bileta</li>
+</ul>
             <br>
             <fieldset>
-              <div id="screen-select-div">
-                <h2>Show time Selection</h2>
-                <div class="carousel carousel-nav" data-flickity='{"contain": true, "pageDots": false }'>
-                  <div class="carousel-cell" id="1" onclick="myFunction(1)">
-                    <div class="date-numeric">13</div>
-                    <div class="date-day">Today</div>
-                  </div>
+            <?php
+/* -----------------------------------------------------------------
+ *  SHOW-DATE CAROUSEL  +  SCREEN / TIME LIST
+ * -----------------------------------------------------------------*/
+?>
+<div id="screen-select-div">
+  <h2>Show time Selection</h2>
+  <p><span>Datat: </span><?php echo implode(', ', $groupedDates); ?></p>
 
-                  <div class="carousel-cell" id="2" onclick="myFunction(2)">
-                    <div class="date-numeric">14</div>
-                    <div class="date-day">Tomorrow</div>
-                  </div>
-                  <div class="carousel-cell" id="3" onclick="myFunction(3)">
-                    <div class="date-numeric">15</div>
-                    <div class="date-day">Monday</div>
-                  </div>
-                  <div class="carousel-cell" id="4" onclick="myFunction(4)">
-                    <div class="date-numeric">16</div>
-                    <div class="date-day">Tuesday</div>
-                  </div>
-                  <div class="carousel-cell" id="5" onclick="myFunction(5)">
-                    <div class="date-numeric">17</div>
-                    <div class="date-day">Wednesday</div>
-                  </div>
-                  <div class="carousel-cell" id="6" onclick="myFunction(6)">
-                    <div class="date-numeric">18</div>
-                    <div class="date-day">Thursday</div>
-                  </div>
-                  <div class="carousel-cell" id="7" onclick="myFunction(7)">
-                    <div class="date-numeric">19</div>
-                    <div class="date-day">Friday</div>
-                  </div>
-                </div>
-                <ul class="time-ul">
-                  <li class="time-li">
-                    <div class="screens">
-                      Screen 1
-                    </div>
-                    <div class="time-btn">
-                      <button class="screen-time" onclick="timeFunction()">
-                        1:05 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        4:00 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        9:00 PM
-                      </button>
-                    </div>
-                  </li>
-                  <li class="time-li">
-                    <div class="screens">
-                      Screen 2
-                    </div>
-                    <div class="time-btn">
-                      <button class="screen-time" onclick="timeFunction()">
-                        3:00 PM
-                      </button>
-                    </div>
-                  </li>
-                  <li class="time-li">
-                    <div class="screens">
-                      Screen 3
-                    </div>
-                    <div class="time-btn">
-                      <button class="screen-time" onclick="timeFunction()">
-                        9:05 AM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        10:00 PM
-                      </button>
-                    </div>
-                  </li>
-                  <li class="time-li">
-                    <div class="screens">
-                      Screen 4
-                    </div>
-                    <div class="time-btn">
-                      <button class="screen-time" onclick="timeFunction()">
-                        9:05 AM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        11:00 AM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        3:00 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        7:00 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        10:00 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        11:00 PM
-                      </button>
-                    </div>
-                  </li>
-                  <li class="time-li">
-                    <div class="screens">
-                      Screen 5
-                    </div>
-                    <div class="time-btn">
-                      <button class="screen-time" onclick="timeFunction()">
-                        9:05 AM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        12:00 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        1:00 PM
-                      </button>
-                      <button class="screen-time" onclick="timeFunction()">
-                        3:00 PM
-                      </button>
-                    </div>
-                  </li>
+  <!------ 1. DATE CAROUSEL ------------------------------------------------->
+  <div class="carousel carousel-nav"
+       data-flickity='{"contain": true, "pageDots": false }'>
+    <?php
+    foreach ($dates as $idx => $dateStr) {
+        $d        = new DateTime($dateStr);
+        $dayNum   = $d->format('j');          // 1–31
+        $month    = $d->format('M');          // Jan, Feb …
+        $weekday  = $d->format('l');          // Monday …
+        $diffDays = (int)$today->diff($d)->format('%r%a');
 
-                </ul>
-              </div>
+        $label = ($diffDays === 0)
+                 ? 'Today'
+                 : (($diffDays === 1) ? 'Tomorrow' : $weekday);
+
+        $cellId = $idx + 1;                  // keep 1-based IDs for JS
+        echo <<<HTML
+      <div class="carousel-cell" id="$cellId" onclick="myFunction($cellId)">
+        <div class="date-numeric">$dayNum</div>
+        <div class="date-month">$month</div>
+        <div class="date-day">$label</div>
+      </div>
+HTML;
+    }
+    ?>
+  </div>
+
+  <!------ 2. FETCH HALLS & TIMES FROM DATABASE -------------------------->
+  <?php
+  /* The shows table has one or more rows for this $show_id.
+     Each row contains a hall (e.g. 1, 2, “Blue Hall”) and a time
+     (TIME or DATETIME).  Collect them into $hallTimes[hall][] = time */
+  $hallTimes = [];
+
+  $hallStmt = $conn->prepare(
+      "SELECT hall, time
+         FROM shows
+        WHERE id = ?"
+  );
+  $hallStmt->bind_param("i", $show_id);
+  $hallStmt->execute();
+  $hallStmt->bind_result($hall, $rawTime);
+
+  while ($hallStmt->fetch()) {
+      // normalise the time to “h:mm AM/PM”
+      $fmtTime = (new DateTime($rawTime))->format('g:i A');
+      $hallTimes[$hall][] = $fmtTime;
+  }
+  $hallStmt->close();
+
+  // sort halls and their times for a neat display
+  ksort($hallTimes);                   // sort halls (1,2,3…)
+  foreach ($hallTimes as &$tArr) {
+      sort($tArr);                     // sort times within each hall
+  }
+  unset($tArr);
+  ?>
+
+  <!------ 3.  SCREEN / TIME LIST ----------------------------------------->
+  <ul class="time-ul">
+    <?php foreach ($hallTimes as $hall => $times): ?>
+      <li class="time-li">
+        <div class="screens">Salla <?php echo htmlspecialchars($hall); ?></div>
+        <div class="time-btn">
+          <?php foreach ($times as $t): ?>
+            <button class="screen-time" onclick="timeFunction()">
+              <?php echo $t; ?>
+            </button>
+          <?php endforeach; ?>
+        </div>
+      </li>
+    <?php endforeach; ?>
+  </ul>
+</div>
+
               <input id="screen-next-btn" type="button" name="next-step" class="next-step" value="Continue Booking"
                 disabled />
             </fieldset>
@@ -207,7 +219,7 @@ if (!$show_id) {
 
               <div>
                 <iframe id="seat-sel-iframe"
-                  style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 770px; height: 670px; display: block; margin-left: auto; margin-right: auto;"
+                  style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 770px; height: 1200px; display: block; margin-left: auto; margin-right: auto;"
                   src="../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
               </div>
               <br>
@@ -216,88 +228,41 @@ if (!$show_id) {
             </fieldset>
             <fieldset>
               <!-- Payment Page -->
-              <div id="payment_div">
-                <div class="payment-row">
-                  <div class="col-75">
-                    <div class="payment-container">
-                      <div class="payment-row">
-                        <div class="col-50">
-                          <h3 id="payment-h3">Payment</h3>
-                          <div class="payment-row payment">
-                            <div class="col-50 payment">
-                              <label for="card" class="method card">
-                                <div class="icon-container">
-                                  <i class="fa fa-cc-visa" style="color: navy"></i>
-                                  <i class="fa fa-cc-amex" style="color: blue"></i>
-                                  <i class="fa fa-cc-mastercard" style="color: red"></i>
-                                  <i class="fa fa-cc-discover" style="color: orange"></i>
-                                </div>
-                                <div class="radio-input">
-                                  <input type="radio" id="card" />
-                                  Pay RS.200.00 with credit card
-                                </div>
-                              </label>
-                            </div>
-                            <div class="col-50 payment">
-                              <label for="paypal" class="method paypal">
-                                <div class="icon-container">
-                                  <i class="fa fa-paypal" style="color: navy"></i>
-                                </div>
-                                <div class="radio-input">
-                                  <input id="paypal" type="radio" checked>
-                                  Pay $30.00 with PayPal
-                                </div>
-                              </label>
-                            </div>
-                          </div>
+              <fieldset>
+  <h2>Enter your details</h2>
+  <div class="payment-row">
+    <div class="col-50">
+      <label for="fullname">Full name</label>
+      <input id="fullname" name="fullname" type="text" required>
+    </div>
+    <div class="col-50">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" required>
+    </div>
+  </div>
+  <div class="payment-row">
+    <div class="col-50">
+      <label for="phone">Phone</label>
+      <input id="phone" name="phone" type="tel" required>
+    </div>
+    <div class="col-50">
+      <label for="notes">Notes (optional)</label>
+      <input id="notes" name="notes" type="text">
+    </div>
+  </div>
 
-                          <div class="payment-row">
-                            <div class="col-50">
-                              <label for="cname">Cardholder's Name</label>
-                              <input type="text" id="cname" name="cardname" placeholder="Firstname Lastname" required />
-                            </div>
-                            <div class="col-50">
-                              <label for="ccnum">Credit card number</label>
-                              <input type="text" id="ccnum" name="cardnumber" placeholder="xxxx-xxxx-xxxx-xxxx"
-                                required />
-                            </div>
-                          </div>
-                          <div class="payment-row">
-                            <div class="col-50">
-                              <label for="expmonth">Exp Month</label>
-                              <input type="text" id="expmonth" name="expmonth" placeholder="September" required />
-                            </div>
-                            <div class="col-50">
-                              <div class="payment-row">
-                                <div class="col-50">
-                                  <label for="expyear">Exp Year</label>
-                                  <input type="text" id="expyear" name="expyear" placeholder="yyyy" required />
-                                </div>
-                                <div class="col-50">
-                                  <label for="cvv">CVV</label>
-                                  <input type="text" id="cvv" name="cvv" placeholder="xxx" required />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <input type="button" name="next-step" class="next-step pay-btn" value="Confirm Payment" />
-              <input type="button" name="previous-step" class="cancel-pay-btn" value="Cancel Payment"
-                onclick="location.href='index.html';" />
-            </fieldset>
+  <input type="button" class="next-step"     value="Review Ticket">
+  <input type="button" class="previous-step" value="Back">
+</fieldset>
+             
             <fieldset>
               <h2>E-Ticket</h2>
               <div class="ticket-body">
                 <div class="ticket">
                   <div class="holes-top"></div>
                   <div class="title">
-                    <p class="cinema">MyShowz Entertainment</p>
-                    <p class="movie-title">Movie Name</p>
+                    <p class="cinema">Metropol Theatre</p>
+                    <p class="movie-title"><?= htmlspecialchars($tk['title']) ?></p>
                   </div>
                   <div class="poster">
                     <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/only-god-forgives.jpg"
@@ -480,8 +445,8 @@ if (!$show_id) {
                   </div>
                 </div>
               </div>
-              <input type="button" name="previous-step" class="home-page-btn" value="Browse to Home Page"
-                onclick="location.href='index.html';" />
+              <input type="button" name="previous-step" class="home-page-btn" value="Shkoni tek Kryefaqja"
+                onclick="location.href='index.php';" />
             </fieldset>
           </form>
         </div>
