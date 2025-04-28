@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="sq">
 
 <head>
@@ -10,9 +10,9 @@
     <meta property="og:title" content="Teatri Metropol">
     <meta property="og:description" content="Your theater experience in Albania.">
     <meta property="og:image" content="assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
-    <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
 
     <title>Tetari Metropol <?php echo isset($pageTitle) ? '| ' . $pageTitle : ''; ?></title>
 
@@ -21,7 +21,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style-starter.css">
     <link href="//fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
     
     <!-- Page-specific CSS -->
@@ -40,14 +39,14 @@
         <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
             <div class="container">
 
-                <a class="navbar-brand" href="../views/index.php">
-                    <img src="../assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
+                <a class="navbar-brand" href="/biletaria_online/index.php">
+                    <img src="/biletaria_online/assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
                 </a>
-                
-                <a class="navbar-brand" href="../views/index.php">
+
+                <a class="navbar-brand" href="/biletaria_online/index.php">
                     Teatri <b style="color: #836e4f;">Metropol</b>
-                </a>    
-                
+                </a>
+
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse"
                     data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -57,26 +56,28 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/index.php">Kreu</a>
+                        <li class="nav-item <?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/index.php' ? 'active' : ''; ?>">
+                            <a class="nav-link" href="/biletaria_online/index.php">Kreu</a>
                         </li>
-                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'shows.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/shows.php">Shfaqje</a>
+
+                        <li class="nav-item <?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/shows/index.php' ? 'active' : ''; ?>">
+                            <a class="nav-link" href="/biletaria_online/views/client/shows/index.php">Shfaqje</a>
                         </li>
-                        <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'events.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/events.php">Evente</a>
+
+                        <li class="nav-item <?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/events/index.php' ? 'active' : ''; ?>">
+                            <a class="nav-link" href="/biletaria_online/views/client/events/index.php">Evente</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/about.php">Rreth Nesh</a>
+                            <a class="nav-link" href="/biletaria_online/views/client/about.php">Rreth Nesh</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/contact.php">Kontakt</a>
+                            <a class="nav-link" href="/biletaria_online/views/client/contact.php">Kontakt</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'applications.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../views/applications.php">Aplikime</a>
+                            <a class="nav-link" href="/biletaria_online/views/client/applications.php">Aplikime</a>
                         </li>
                         <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'logout.php' ? 'active' : ''; ?>">
-                            <a class="nav-link" href="../auth/logout.php">Shkyçu</a>
+                            <a class="nav-link" href="/biletaria_online/auth/logout.php">Shkyçu</a>
                         </li>
                     </ul>
 <!--
@@ -111,7 +112,7 @@
                     -->
                     <div class="Login_SignUp" id="login"
                         style="font-size: 2rem ; display: inline-block; position: relative;">
-                        <a class="nav-link" href="../auth/login.php"><i class="fa fa-user-circle-o"></i></a>
+                        <a class="nav-link" href="/biletaria_online/auth/login.php"><i class="fa fa-user-circle-o"></i></a>
                     </div>
                 </div>
                 <!-- toggle switch for light and dark theme -->

@@ -1,19 +1,20 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 <!DOCTYPE html>
 <html lang="sq">
 <head>
     <?php require '../includes/links.php'; ?>
     <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Tetari Metropol | Ndrysho Falëkalimin</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background: url('../assets/img/background-image.png') no-repeat center center fixed;
+            background: url('/biletaria_online/assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -26,16 +27,22 @@ require "../includes/functions.php";
 <form action="change-password.php" method="post" id="change-password-form" class="form-container">
     <h1><span>Ndryshoni fjalëkalimin</span></h1>
     <div class="form-group">
-        <input type="email" name="email" id="email" placeholder=" " required>
+        <input type="email" name="email" id="email" placeholder=" " value="<?php echo $_POST['email'] ?? ''; ?>" required>
         <label for="email">Email</label>
     </div>
     <div class="form-group">
         <input type="password" name="password" id="password" placeholder=" " required>
         <label for="password">Fjalëkalimi i Ri</label>
+        <span class="eye-icon" id="password-icon" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <div class="form-group">
         <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
         <label for="password-confirm">Konfirmoni Fjalëkalimin</label>
+        <span class="eye-icon" id="password-confirm-icon" onclick="toggleConfirmPassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <button type="submit" name="submit" id="change">Ndrysho</button>
 </form>
@@ -138,7 +145,7 @@ require "../includes/functions.php";
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="../assets/js/functions.js"></script>
-<script src="../assets/js/changePasswordValidations.js"></script>
+<script src="/biletaria_online/assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/changePasswordValidations.js"></script>
 </body>
 </html>

@@ -118,11 +118,3 @@
             <!-- /move top -->
         </section>
     </footer>
-    
-    <!-- All JS files -->
-    <script src="../assets/js/jquery-1.9.1.min.js"></script>
-    <script src="../assets/js/easyResponsiveTabs.js"></script>
-    <script src="../assets/js/theme-change.js"></script>
-    <script src="../assets/js/owl.carousel.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/bootstrap.min.js"></script>

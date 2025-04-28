@@ -1,314 +1,424 @@
+<?php
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+
+// Fetch users from the database
+$query = "SELECT * FROM actors";
+$actors_result = $conn->query($query);
+?>
+
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="assets/img/favicon.png" rel="icon">
-    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png">
+    <title>Teatri Metropol | Menaxho Aktorët</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect">
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
+    <link href="/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
+    <link href="/biletaria_online/assets/css/sb-admin-2.min.css" rel="stylesheet">
 
-    <!-- Vendor CSS Files -->
-    <link href="../../../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="../../../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-    <link href="../../../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 
-    <link rel="stylesheet" href='../../../assets/css/actors.css'>
-    <title>Actors Page</title>
     <style>
-        body {
-            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: var(--default-font);
-            margin: 0;
+        button:focus {
+            outline: none;
+            box-shadow: #8f793f !important;
+            border-color: transparent;
+            /* optional */
+        }
+
+        table.dataTable td,
+        table.dataTable th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .desc-col {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 8;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: calc(1.4em * 8);
+            line-height: 1.4em;
+            max-width: 350px;
+            white-space: normal;
+        }
+
+
+        .dataTables_filter {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .dataTables_filter label {
+            width: 100%;
+            display: flex;
+        }
+
+        .dataTables_filter input {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #ccc;
+            height: 50px;
+        }
+
+        .btn-primary-report {
+            background-color: #8f793f !important;
+            background-image: none !important;
+            color: white !important;
+
+        }
+
+        #users-section {
+            flex: 1;
+            /* allows it to take all the remaining width */
             padding: 20px;
         }
 
-        .team .member {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100%;
-            background: rgba(228, 228, 228, 0.04);
-            -webkit-backdrop-filter: blur(5px);
-            /* Dark background similar to the form */
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
-            overflow: hidden;
-        }
-
-        .container a {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #fbbf24;
-            /* Gold background similar to the form button */
-            color: #2d3748;
-            /* Dark text */
-            font-weight: 600;
-            font-size: 16px;
-            text-transform: uppercase;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease-in-out;
-            margin-top: 20px;
-        }
-
-        /* Add button hover effect */
-        .container a:hover {
-            background-color: #f59e0b;
-            /* Darker shade of gold */
-            transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Matching card text color */
-        .team .member h4,
-        .team .member span,
-        .team .member p {
-            color: #fff;
-            /* White text for better contrast */
-        }
-
-        .team .member img {
+        .card {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 8px;
         }
 
-        .team .member-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            margin-top: 16px;
+        .table-responsive {
+            width: 100%;
         }
 
-        .team .member h4,
-        .team .member span,
-        .team .member p {
-            margin: 0 0 8px;
+        table.dataTable {
+            width: 100% !important;
+            /* forces table full width */
         }
 
-        .team .member .social {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-top: auto;
-        }
-
-        .team .member .social a {
-            text-decoration: none;
-            padding: 8px 15px;
-            font-size: 14px;
-            font-weight: 600;
-            text-transform: uppercase;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .team .member .social .edit-btn {
-            background: #75612b;
-            color: white;
-            border: 2px solid rgba(14, 21, 16, 0.4);
-        }
-
-        .team .member .social .edit-btn:hover {
-            background-color: white;
-            color: #000;
-            box-shadow: 0 4px 10px rgba(238, 162, 162, 0.4);
-            transform: scale(1.1);
-        }
-
-        .team .member .social .delete-btn {
-            background: black;
-            border: 1px solid #8f793f;
-            color: #8f793f;
-
-        }
-
-        .team .member .social .delete-btn:hover {
-            background-color: rgba(29, 26, 26, 0.3);
-            color: #444;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-        }
-
-        /* Ensures consistent height for the cards */
-        .card-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
-
-        .team .member .social a.edit-btn,
-        .team .member .social a.delete-btn {
-            display: inline-block !important;
-            width: 48%;
-        }
-
-
-        /* Responsive Button Layout */
-        @media (max-width: 768px) {
-            .team .member .social {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-            }
-
-            .team .member .social .edit-btn,
-            .team .member .social .delete-btn {
-                width: 100%;
-                max-width: 120px;
-            }
-        }
-
-        .hidden {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
+        input {
+            box-shadow: none !important;
         }
     </style>
+
+
+
 </head>
 
-<body>
+<body id="page-top">
 
-    <section id="team" class="team section">
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Actors Page</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
-        </div><!-- End Section Title -->
+    <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
-        <!-- Search Bar -->
-        <div class="container">
-            <input type="text" id="search" class="form-control" placeholder="Search actors..."
-                onkeyup="searchActors()" />
-            <a href="add.php">Add</a>
-        </div>
-
-        <div class="container">
-            <div class="big-container">
-                <?php
-                require_once '../../../config/db_connect.php';
-                $result = $conn->query('SELECT * FROM actors');
-                if ($result->num_rows > 0) {
-                    while ($row = $result->fetch_assoc()) {
-                        ?>
-                        <div class="col-lg-4 col-md-6 d-flex card-container" data-aos="fade-up" data-aos-delay="100">
-                            <div class="member">
-                                <img src="get_image.php?id=<?php echo $row['id']; ?>" class="img-fluid" alt="">
-                                <div class="member-content">
-                                    <h4><?php echo htmlspecialchars($row['name']); ?></h4>
-                                    <span><?php echo "I lindur me: " . htmlspecialchars($row['birthdate']); ?></span>
-                                    <p><?php echo htmlspecialchars($row['biography']); ?></p>
-                                    <div class="social">
-
-                                        <a class="edit-btn" href="edit.php?id=<?php echo $row['id']; ?>">Edit</a>
-
-                                        <a class="delete-btn" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                            data-id="<?php echo $row['id']; ?>">
-                                            Fshij
-                                        </a>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- End Team Member -->
-                        <?php
-                    }
-                } else {
-                    echo "No actors found.";
-                }
-                ?>
+        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+            <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
+                 style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
+                Ndryshimet u kryen me sukses!
+                <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
+                        style="top: 50%; transform: translateY(-50%);">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div><!-- End container -->
-    </section><!-- /Team Section -->
-    <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <?php endif; ?>
+
+
+        <section id="users-section" style="margin-top: 1%;">
+            <div class="card shadow border-0 rounded">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Aktoreve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add.php'" style="padding: 7px 20px;">
+                        Shto Aktor</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Emri</th>
+                                    <th>Email</th>
+                                    <th>Datëlindja</th>
+                                    <th>Biografia</th>
+                                    <th>Portreti</th>
+                                    <th class="text-end">Veprime</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark">
+                                <?php
+                                $i = 1;
+                                while ($row = $actors_result->fetch_assoc()) {
+                                    $posterUrl = "../../../includes/get_image.php?actor_id=" . $row['id'];
+                                    ?>
+                                    <tr>
+                                        <td class="text-muted"><?php echo $i; ?></td>
+                                        <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                        <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
+                                        <td>
+                                            <div class="desc-col">
+                                                <?php echo $row['description'] ?>
+                                            </div>
+                                        </td>
+                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster"
+                                                 style="width: 150px; height: auto; border-radius: 5px;"></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-outline-secondary editUserBtn"
+                                                    style="width: 48%;"
+                                                data-id="<?php echo $row['id'] ?>"
+                                                data-name="<?php echo $row['name'] ?>"
+                                                data-email="<?php echo $row['email'] ?>"
+                                                data-birthday="<?php echo $row['birthday'] ?>"
+                                                data-biography="<?php echo $row['description'] ?>"
+                                                data-poster="<?php echo $posterUrl ?>">
+                                                Edito</button>
+                                            <button class="btn btn-sm btn-outline-danger deleteUserBtn"
+                                                    style="width: 48%;"
+                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
+                                        </td>
+                                    </tr>
+                                <?php
+                                    $i++;
+                                } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+    </div>
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Jepni konfirmimin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title" id="editUserModalLabel">Edito Aktorin</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Mbyll">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    Jeni i sigurt qe doni ta hiqni nga faqja e teatrit kete aktor?
+                    <!-- Form Fields -->
+                    <form id="editActorForm" method="POST" action="edit.php" enctype="multipart/form-data">
+                        <input type="hidden" id="editUserId" name="id"> <!-- Hidden field for actor ID -->
+
+                        <div class="form-group">
+                            <label for="editName">Emri</label>
+                            <input type="text" class="form-control" id="editName" name="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" class="form-control" id="editEmail" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editBirthday">Datëlindja</label>
+                            <input type="text" class="form-control" id="editBirthday" name="birthday" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editDescription">Biografia</label>
+                            <textarea class="form-control" id="editDescription" name="description" rows="4"
+                                required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editPoster">Ndrysho portretin</label><br>
+                            <img id="currentPoster" src="" alt="Portreti aktual"
+                                 style="width: 50%; height: auto; margin-bottom: 10px; border-radius: 5px;">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="editPoster" name="file-input"
+                                       accept="image/*">
+                                <label class="custom-file-label" for="editPoster">Zgjidh një skedar</label>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mbrapa</button>
-                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger ">Fshij</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                    <button type="submit" class="btn btn-primary" form="editActorForm" name="edit-actor"
+                        style="background-color: #8f793f !important; border: #8f793f;">
+                        Ruaj Ndryshimet
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        function searchActors() {
-            let input = document.getElementById('search').value.toLowerCase();
-            let actors = document.querySelectorAll('.card-container');
+    <!-- Delete Modal -->
 
-            actors.forEach(function (actor) {
-                let name = actor.querySelector('h4').textContent.toLowerCase();
-                if (name.indexOf(input) > -1) {
-
-                    actor.classList.remove("hidden");
-                } else {
-
-                    actor.classList.add("hidden");
-                }
-            });
-        }
-        document.addEventListener("DOMContentLoaded", function () {
-            let deleteButtons = document.querySelectorAll(".delete-btn");
-            let confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
-            let deleteModalElement = document.getElementById("deleteModal");
-            let deleteModal = new bootstrap.Modal(deleteModalElement, { keyboard: false });
-
-            deleteButtons.forEach(button => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault(); // Prevent default link behavior
-                    let actorId = this.getAttribute("data-id");
-                    confirmDeleteBtn.href = `delete.php?id=` + actorId;
-
-                    // Ensure the modal is fully initialized before showing
-                    deleteModalElement.removeAttribute("aria-hidden");
-                    deleteModalElement.style.display = "block";
-                    deleteModal.show();
-                });
-            });
-
-            // Ensure modal is properly hidden when closed
-            deleteModalElement.addEventListener("hidden.bs.modal", function () {
-                deleteModalElement.setAttribute("aria-hidden", "true");
-                deleteModalElement.style.display = "none";
-            });
-        });
-
-
-
-    </script>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST" action="delete.php">
+                <div class="modal-content">
+                    <div class="modal-header text-red">
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Fshirjen</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jeni i sigurt që doni të fshini nga lista aktorin <strong id="userToDeleteName"></strong>?
+                        </p>
+                        <input type="hidden" name="id" id="deleteUserId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
+                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Fshij</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
 </body>
 
 </html>
+
+<script>
+    $(document).ready(function () {
+        $("#sidebarToggle").on('click', function (e) {
+            e.preventDefault();
+            $("body").toggleClass("sidebar-toggled");
+            $(".sidebar").toggleClass("toggled");
+        });
+    });
+    $(document).ready(function () {
+        $('#userTable').DataTable({
+            "pageLength": 10,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko aktor...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
+            }
+        });
+    });
+
+    let initialFormData;
+
+    $(document).ready(function () {
+        $('.editUserBtn').on('click', function () {
+            let editDatesPicker;
+
+            const userId = $(this).data('id');
+            const name = $(this).data('name');
+            const email = $(this).data('email');
+            const biography = $(this).data('biography');
+
+            $('#editUserId').val(userId);
+            $('#editName').val(name);
+            $('#editEmail').val(email);
+            $('#editDescription').val(biography);
+            $('#currentPoster').attr('src', $(this).data('poster'));
+
+            const dateString = $(this).data('birthday');
+
+            if (editDatesPicker) {
+                editDatesPicker.setDate(dateString);
+            } else {
+                editDatesPicker = flatpickr("#editBirthday", {
+                    mode: "single",
+                    dateFormat: "Y-m-d",
+                    defaultDate: dateString
+                });
+            }
+
+            initialFormData = $('#editActorForm').serializeArray();
+
+            $('#editUserModal').modal('show');
+        });
+    });
+
+    $('#editPoster').on('change', function () {
+        const file = this.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+                $('#currentPoster').attr('src', event.target.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        var fileName = $(this).val().split('\\').pop();
+        $(this).next('.custom-file-label').html(fileName);
+    });
+
+    function isFormChanged() {
+        let currentFormData = $('#editActorForm').serializeArray();
+
+        for (let i = 0; i < initialFormData.length; i++) {
+            if (initialFormData[i].value !== currentFormData[i].value) {
+                return true;
+            }
+        }
+
+        let currentFile = $('input[name="file-input"]')[0].files[0];
+        if (currentFile) {
+            return true;
+        }
+
+        return false;
+    }
+
+    $('#editActorForm').submit(function (e) {
+        if (!isFormChanged()) {
+            e.preventDefault();
+            alert('Nuk ka asnjë ndryshim për të ruajtur.');
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".deleteUserBtn");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const userId = button.getAttribute("data-id");
+                const userName = button.getAttribute("data-name");
+
+                document.getElementById("deleteUserId").value = userId;
+                document.getElementById("userToDeleteName").textContent = userName;
+            });
+        });
+    });
+</script>
+
+<script>
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('update');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
+</script>
+
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>

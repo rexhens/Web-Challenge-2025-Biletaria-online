@@ -1,5 +1,5 @@
 <?php
-require_once '../config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 
 // Get the show ID from the URL
 if (!isset($_GET['show_id']) || empty($_GET['show_id'])) {
@@ -28,11 +28,11 @@ if ($result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assign Actors</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../../../assets/css/styles.css">
 
     <style>
         body {
-            background: url('../assets/img/background-image.png') no-repeat center center/cover;
+            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
             background-color: var(--background-color);
             color: var(--text-color);
             font-family: var(--default-font);
@@ -70,7 +70,7 @@ if ($result->num_rows > 0) {
     <div class="w-full max-w-4xl p-6  rounded-lg shadow-lg" style="background-color: rgba(228, 228, 228, 0.04)">
         <h2 class=" text-2xl font-bold text-center mb-4">Assign Actors to Show</h2>
 
-        <form id="assignActorsForm" action="admin/shows/save_show_actors.php" method="POST">
+        <form id="assignActorsForm" action="save_show_actors.php" method="POST">
             <input type="hidden" name="show_id" value="<?php echo $show_id; ?>">
 
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">

@@ -1,8 +1,8 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 $show_id = isset($_GET['show_id']) ? (int)$_GET['show_id'] : 0;
 if (!$show_id) {

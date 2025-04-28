@@ -1,19 +1,20 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 session_start();
 ?>
 <!DOCTYPE html>
 <html lang="sq">
 <head>
-    <?php require '../includes/links.php'; ?>
-    <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Teatri Metropol | Identifikohu</title>
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            background: url('../assets/img/background-image.png') no-repeat center center fixed;
+            background: url('/biletaria_online/assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
         }
 
@@ -36,12 +37,15 @@ session_start();
         <span>Teatrin Metropol</span>
     </h1>
     <div class="form-group">
-        <input type="email" name="email" id="email" placeholder=" " required>
+        <input type="email" name="email" id="email" placeholder=" " value="<?php echo $_POST['email'] ?? ''; ?>" required>
         <label for="email">Email</label>
     </div>
     <div class="form-group">
         <input type="password" name="password" id="password" placeholder=" " required>
         <label for="password">Fjalëkalimi</label>
+        <span class="eye-icon" id="password-icon" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <div class="checkbox-container">
         <input type="checkbox" value="remember_me" id="remember_me" name="remember_me">
@@ -95,7 +99,7 @@ session_start();
                 if($user["is_verified"] == 0) {
                     $errors[] = "Duhet të verifikoni email-in si fillim! Kontrolloni email-in tuaj!";
                 } else {
-                    if($user["failed_attempts"] >= 7 && strtotime($user["lock_time"]) > time()) {
+                    if ($user["failed_attempts"] >= 7 && $user["lock_time"] && strtotime($user["lock_time"]) > time()) {
                         $errors[] = "Llogaria juaj është bllokuar! Provoni më vonë";
                     } else {
                         if(!password_verify($password, $user["password"])) {
@@ -185,7 +189,7 @@ session_start();
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
-<script src="../assets/js/functions.js"></script>
-<script src="../assets/js/loginValidations.js"></script>
+<script src="/biletaria_online/assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/loginValidations.js"></script>
 </body>
 </html>

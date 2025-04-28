@@ -1,5 +1,8 @@
 <?php
-require_once '../../config/db_connect.php';
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -13,6 +16,11 @@ $shows_query = "
     JOIN genres ON shows.genre_id = genres.id
 ";
 $shows_result = $conn->query($shows_query);
+
+$events_query = "
+    SELECT events.id, events.title, events.description, events.hall, events.time, events.price
+    FROM events";
+$events_result = $conn->query($events_query);
 ?>
 
 <!DOCTYPE html>
@@ -26,29 +34,18 @@ $shows_result = $conn->query($shows_query);
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Paneli i Adminit</title>
+    <title>Teatri Metropol | Paneli i Menaxhimit</title>
 
 
     <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
 
-    <link rel="icon" type="image/x-icon" href="../../assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <!-- Custom fonts for this template-->
     <link href="../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
-    <!-- Custom styles for this template-->
-    <link href="../../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Popper.js (required for Bootstrap) -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <style>
         .bg-gold {
@@ -106,7 +103,7 @@ $shows_result = $conn->query($shows_query);
             border-color: #8f793f;
         }
 
-        .text-primary {
+        .text-primary-1 {
             color: #8f793f !important;
         }
 
@@ -278,6 +275,35 @@ $shows_result = $conn->query($shows_query);
                 float: none !important;
             }
         }
+
+        #content-wrapper {
+            margin-left: 250px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Kur sidebar është i toggled = i vogël */
+        body.sidebar-toggled #content-wrapper {
+            margin-left: 100px;
+            /* ose 0px nëse sidebar fshihet totalisht */
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0% !important;
+            margin: 0% !important;
+            border: 0.3px solid transparent !important;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            border: none !important;
+        }
+
+        .paginate_button page-item active {
+            border-color: transparent !important;
+        }
+
+        .page-item.active .page-link {
+            border-color: #8f793f !important;
+        }
     </style>
 
 </head>
@@ -289,119 +315,7 @@ $shows_result = $conn->query($shows_query);
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
-
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-
-                <div class="sidebar-brand-text mx-3">Paneli i menaxhimit</div>
-            </a>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Raporti Mujor</span></a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Grafiket</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Menaxhimi
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>Menaxho Perdoruesit</span>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="./users/add-user.php">Shto perdorues te ri</a>
-                        <a class="collapse-item" href="./users/index.php">Shiko te gjithe</a>
-                    </div>
-                </div>
-            </li>
-
-
-            <!-- Nav Item - Utilities Collapse Menu -->
-            <!-- Menaxho Shfaqjet -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseShows"
-                    aria-expanded="true" aria-controls="collapseShows">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Menaxho Shfaqjet</span>
-                </a>
-                <div id="collapseShows" class="collapse" aria-labelledby="headingShows" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="../add-show.php">Shto Shfaqje</a>
-                        <a class="collapse-item" href="../shows.php">Te gjitha Shfaqjet</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Menaxho Aktoret -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseActors"
-                    aria-expanded="true" aria-controls="collapseActors">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Menaxho Aktoret</span>
-                </a>
-                <div id="collapseActors" class="collapse" aria-labelledby="headingActors"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="./actors/index.php">Te gjithe Aktoret</a>
-                        <a class="collapse-item" href="./actors/add.php">Shto nje Aktor te ri</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Menaxho Eventet -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEvents"
-                    aria-expanded="true" aria-controls="collapseEvents">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Menaxho Eventet</span>
-                </a>
-                <div id="collapseEvents" class="collapse" aria-labelledby="headingEvents"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Veprime</h6>
-                        <a class="collapse-item" href="./events/add.php">Shto Event te ri</a>
-                        <a class="collapse-item" href="./events/index.php">Te gjitha Eventet</a>
-                    </div>
-                </div>
-            </li>
-
-
-
-
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
-        </ul>
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
 
@@ -413,7 +327,7 @@ $shows_result = $conn->query($shows_query);
                 <!-- End of Topbar -->
 
                 <!-- Begin Page Content -->
-                <div class="container-fluid">
+                <div class="container-fluid" style="background-color: white;">
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -518,12 +432,13 @@ $shows_result = $conn->query($shows_query);
                     <div class="row">
 
                         <!-- Graphs -->
-                        <div class="col-xl-8 col-lg-7">
+                        <div class="col-xl-8 col-lg-7" id="graphs-section">
                             <div class="card shadow mb-4">
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Te ardhurat e gjeneruara kete vit</h6>
+                                    <h6 class="m-0 font-weight-bold text-primary-1">Te ardhurat e gjeneruara kete vit
+                                    </h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -554,7 +469,7 @@ $shows_result = $conn->query($shows_query);
                                 <!-- Card Header - Dropdown -->
                                 <div
                                     class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Prenotimi i biletave </h6>
+                                    <h6 class="m-0 font-weight-bold text-primary-1">Prenotimi i biletave </h6>
                                     <div class="dropdown no-arrow">
                                         <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -577,10 +492,11 @@ $shows_result = $conn->query($shows_query);
                                     </div>
                                     <div class="mt-4 text-center small">
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-primary"></i> Online
+                                            <i class="fas fa-circle text-primary-1"></i> Online
                                         </span>
                                         <span class="mr-2">
-                                            <i class="fas fa-circle text-success"></i> Ne biletari
+                                            <i class="fas fa-circle text-success"
+                                                style="color: #716a69 !important"></i> Ne biletari
                                         </span>
 
                                     </div>
@@ -591,11 +507,11 @@ $shows_result = $conn->query($shows_query);
 
                     <!-- Tabela e userave -->
                     <section id="users-section">
-                        <div class="card shadow-sm border-0 rounded">
+                        <div class="card shadow border-0 rounded">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-primary">Lista e Përdoruesve</h5>
+                                <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
                                 <button class="btn btn-sm btn-primary-report"
-                                    onclick="window.location.href = './users/add-user.php'">Shto Përdorues</button>
+                                    onclick="window.location.href = 'users/add-user.php'" style="padding: 7px 20px;">+ Shto Përdorues</button>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -611,16 +527,20 @@ $shows_result = $conn->query($shows_query);
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php while ($row = $users_result->fetch_assoc()) { ?>
+                                            <?php
+                                            $i = 1;
+                                            while ($row = $users_result->fetch_assoc()) { ?>
                                                 <tr>
-                                                    <td><?php echo $row['id'] ?></td>
+                                                    <td><?php echo $i ?></td>
                                                     <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
                                                     <td><?php echo $row['email'] ?></td>
                                                     <td><?php echo $row['phone'] ?></td>
                                                     <td><?php echo $row['role'] ?></td>
 
                                                 </tr>
-                                            <?php } ?>
+                                            <?php
+                                                $i++;
+                                            } ?>
 
                                             <!-- Add more rows here -->
                                         </tbody>
@@ -630,36 +550,41 @@ $shows_result = $conn->query($shows_query);
                         </div>
                     </section>
                     <!-- Menaxhimi i Shfaqjeve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="shows-section">
+                    <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 fw-semibold text-dark">Shfaqjet</h5>
-                            <button class="btn btn-sm btn-primary-report">+ Shto Shfaqje</button>
+                            <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
+                            <button class="btn btn-sm btn-primary-report"
+                                onclick="window.location.href = 'shows/add-show.php'" style="padding: 7px 20px;">+ Shto Shfaqje</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="showsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="table-light text-secondary small text-uppercase">
+                                    <thead class="thead-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>Titulli</th>
                                             <th>Salla</th>
                                             <th>Zhanri</th>
                                             <th>Çmimi</th>
-                                         
+
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
-                                        <?php while ($row = $shows_result->fetch_assoc()) { ?>
+                                        <?php
+                                        $i = 1;
+                                        while ($row = $shows_result->fetch_assoc()) { ?>
                                             <tr>
-                                                <td class="text-muted"><?php echo $row['id']; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>                                         
+                                                <td class="text-muted"><?php echo $i; ?></td>
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['hall']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
-                                                <td><?php echo number_format($row['price'], 2); ?> €</td>
-                                               
+                                                <td><?php echo number_format($row['price'], 2); ?> Leke</td>
+
                                             </tr>
-                                        <?php } ?>
+                                        <?php
+                                            $i++;
+                                        } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -669,46 +594,92 @@ $shows_result = $conn->query($shows_query);
 
 
                     <!-- Menaxhimi i aktoreve -->
-                    <div class="card shadow-sm border-0 rounded-4 mt-5" id="actors-section">
+                    <div class="card shadow border-0 rounded-4 mt-5" id="actors-section">
                         <div
                             class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 fw-semibold text-dark">Aktorët</h5>
-                            <button class="btn btn-sm btn-outline-primary">+ Shto Aktor</button>
+                            <h5 class="mb-0 text-primary-1">Lista e Aktorëve</h5>
+                            <button class="btn btn-sm btn-primary-report"
+                                onclick="window.location.href = 'actors/add.php'" style="padding: 7px 20px;">+ Shto Aktor</button>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="table-light text-secondary small text-uppercase">
+                                    <thead class="thead-light">
                                         <tr>
                                             <th>ID</th>
                                             <th>Emri</th>
                                             <th>Email</th>
                                             <th>Datëlindja</th>
                                             <th>Biografia</th>
-                                            <th class="text-end">Veprime</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-dark">
-                                        <?php while ($row = $actors_result->fetch_assoc()) { ?>
+                                        <?php
+                                        $i = 1;
+                                        while ($row = $actors_result->fetch_assoc()) { ?>
                                             <tr>
-                                                <td class="text-muted"><?php echo $row['id']; ?></td>
+                                                <td class="text-muted"><?php echo $i; ?></td>
                                                 <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
                                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                                <td><?php echo date("d M Y", strtotime($row['birthdate'])); ?></td>
+                                                <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
                                                 <td class="text-truncate" style="max-width: 200px;">
-                                                    <?php echo mb_strimwidth(strip_tags($row['biography']), 0, 80, "..."); ?>
+                                                    <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
                                                 </td>
-                                                <td class="text-end">
-                                                    <button class="btn btn-sm btn-outline-secondary">Shiko</button>
-                                                    <button class="btn btn-sm btn-outline-danger">Fshij</button>
-                                                </td>
+
                                             </tr>
-                                        <?php } ?>
+                                        <?php
+                                            $i++;
+                                        } ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+
+
+                    <!-- Menaxhimi i Eventeve -->
+                    <div class="card shadow border-0 rounded-4 mt-5" id="events-section"
+                        style="margin-bottom: 100px;">
+                        <div
+                            class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                            <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
+                            <button class="btn btn-sm btn-primary-report"
+                                onclick="window.location.href = 'events/add-event.php'" style="padding: 7px 20px;">+ Shto Event </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Titulli</th>
+                                            <th>Salla</th>
+                                            <th>Orari</th>
+                                            <th>Çmimi</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-dark">
+                                        <?php
+                                        $i = 1;
+                                        while ($row = $events_result->fetch_assoc()) { ?>
+                                            <tr>
+                                                <td class="text-muted"><?php echo $i; ?></td>
+                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['hall']); ?></td>
+                                                <td><?php echo htmlspecialchars($row['time']); ?></td>
+                                                <td><?php echo number_format($row['price'], 2); ?> Leke</td>
+
+                                            </tr>
+                                        <?php
+                                            $i++;
+                                        } ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
 
 
 
@@ -770,8 +741,13 @@ $shows_result = $conn->query($shows_query);
                         "next": "›"
                     },
                     "zeroRecords": "Asnjë rezultat i gjetur",
-                    "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                    "info": "Duke shfaqur _END_ nga _TOTAL_",
                     "infoEmpty": "Nuk ka të dhëna"
+                },
+                "initComplete": function () {
+                    $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                    $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                    $('.dataTables_filter input').css({'padding-left': '40px'});
                 }
             });
         });
@@ -787,12 +763,14 @@ $shows_result = $conn->query($shows_query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
-            "columnDefs": [
-                { "orderable": false, "targets": 5 }
-            ]
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
+            }
         });
         $('#showsTable').DataTable({
             "pageLength": 5,
@@ -806,8 +784,34 @@ $shows_result = $conn->query($shows_query);
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
+            }
+        });
+        $('#eventsTable').DataTable({
+            "pageLength": 5,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko event...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({'padding-left': '40px'});
             }
         });
 

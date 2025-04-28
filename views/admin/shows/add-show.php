@@ -1,12 +1,21 @@
 <?php
 /** @var mysqli $conn */
-require "../config/db_connect.php";
-require "../auth/auth.php";
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 ?>
 
 <?php
+
+$title = '';
+$hall = '';
+$dates = '';
+$time = '';
+$description = '';
+$trailer = '';
+$price = '';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST["title"];
     $hall = $_POST["hall"];
@@ -23,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
-    $result = isHallAvailable($conn, $hall, $time, $dates);
+    $result = isHallAvailable($conn, $hall, $time, $dates, null);
 
     if(!$result['available']) {
         $errors[] = "Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']);
@@ -34,9 +43,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (!empty($_FILES['file-input']['name'])) {
                 $check = getimagesize($_FILES['file-input']['tmp_name']);
                 if ($check !== false) {
-                    $targetDir = '../assets/img/shows/';
+                    $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/shows/';
                     $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
-                    $uniqueName = uniqid('poster_', true) . '.' . strtolower($ext);
+                    $uniqueName = uniqid('poster_', true) . 'views.' . strtolower($ext);
                     $targetPath = $targetDir . $uniqueName;
 
                     if (!is_dir($targetDir)) {
@@ -60,6 +69,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if(empty($errors)){
+        $conn->begin_transaction();
+
         $sql = "INSERT INTO shows (title, hall, genre_id, time, description, poster, trailer, price) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -73,17 +84,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bind_param("is", $show_id, $date);
                     if(!$stmt->execute()) {
                         $errors[] = "Një problem ndodhi! Provoni më vonë!";
+                        break;
                     }
                 }
                 if(empty($errors)) {
+                    $conn->commit();
                     header("Location: assign_actors.php?show_id=" . $show_id);
                     exit();
+                } else {
+                    $conn->rollback();
                 }
             } else {
+                $conn->rollback();
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
             }
             $stmt->close();
         } else {
+            $conn->rollback();
             $errors[] = "Një problem ndodhi! Provoni më vonë!";
         }
     }
@@ -96,30 +113,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="sq">
 
 <head>
-    <?php require '../includes/links.php'; ?>
-    <meta property="og:image" content="../assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="../assets/img/metropol_icon.png">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online4/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Teatri Metropol | Shto Shfaqe</title>
-    <link rel="stylesheet" href="../assets/css/flatpickr.min.css">
-    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
 </head>
 
-<body>
+<body class="light">
 
 <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
     <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Shfaqje</span></h1>
-    <div class="form-container">
+    <div class="form-container light">
         <div class="form-group">
-            <input type="text" name="title" id="title" placeholder=" " required>
+            <input type="text" name="title" id="title" placeholder=" " value="<?php echo htmlspecialchars($title); ?>" required>
             <label for="title">Titulli</label>
         </div>
 
         <div class="form-group">
             <select name="hall" id="hall" required>
-                <option value="" disabled selected>-- Zgjidh sallën --</option>
-                <option value="Shakespare">Shakespare</option>
-                <option value="Çehov">Çehov</option>
-                <option value="Bodrum">Bodrum</option>
+                <option value="" disabled <?php echo empty($hall) ? 'selected' : ''; ?>>-- Zgjidh sallën --</option>
+                <option value="Shakespare" <?php echo ($hall == 'Shakespare') ? 'selected' : ''; ?>>Shakespare</option>
+                <option value="Çehov" <?php echo ($hall == 'Çehov') ? 'selected' : ''; ?>>Çehov</option>
+                <option value="Bodrum" <?php echo ($hall == 'Bodrum') ? 'selected' : ''; ?>>Bodrum</option>
             </select>
         </div>
 
@@ -130,26 +147,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div class="form-group">
-            <input type="text" id="show_dates" name="show_dates" placeholder=" " readonly required>
+            <input type="text" id="show_dates" name="show_dates" placeholder=" " value="<?php echo $dates ? implode(',', $dates) : ''; ?>" readonly required>
             <label for="show_dates">Datat</label>
         </div>
 
         <div class="form-group">
-            <input type="text" id="time" name="time" placeholder=" " required>
+            <input type="text" id="time" name="time" placeholder=" " value="<?php echo htmlspecialchars($time); ?>" required>
             <label for="time">Ora</label>
         </div>
 
         <div class="form-group">
-            <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required></textarea>
+            <textarea name="description" id="description" placeholder="Përshkrimi i shfaqjes..." required><?php echo htmlspecialchars($description); ?></textarea>
         </div>
 
         <div class="form-group">
-            <input type="text" id="trailer" name="trailer" placeholder=" " required>
+            <input type="text" id="trailer" name="trailer" placeholder=" " value="<?php echo htmlspecialchars($trailer); ?>" required>
             <label for="trailer">Trailer</label>
         </div>
 
         <div class="form-group">
-            <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " required>
+            <input type="number" id="price" name="price" class="custom-number" min="0" placeholder=" " value="<?php echo htmlspecialchars($price); ?>" required>
             <label for="price">Çmimi i biletës</label>
             <div class="custom-spinner">
                 <div class="plus" onclick="document.querySelector('.custom-number').stepUp()">+</div>
@@ -158,9 +175,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 
-    <div class="side-container">
+    <div class="side-container light">
         <div class="photo-container">
-            <img src="../assets/img/show-icon.png" alt="poster" id="picture"></img>
+            <img src="../../../assets/img/show-icon.png" alt="poster" id="picture"></img>
             <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
             <button type="button" id="change-photo" name="change-photo">Ngarko Poster</button>
         </div>
@@ -188,7 +205,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     document.addEventListener("DOMContentLoaded", function () {
         const genreSelect = document.getElementById("select-genre");
 
-        fetch(`get_genres.php`)
+        fetch(`../../../includes/get_genres.php`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
@@ -213,7 +230,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         flatpickr("#show_dates", {
             mode: "multiple",
             dateFormat: "Y-m-d",
-            minDate: "today",
             locale: "sq"
         });
 
@@ -221,13 +237,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             enableTime: true,
             noCalendar: true,
             dateFormat: "H:i",
-            time_24hr: true,
-            theme: "dark"
+            time_24hr: true
         });
     });
 </script>
-<script src="../assets/js/flatpickr.min.js"></script>
-<script src="../assets/js/functions.js"></script>
-<script src="../assets/js/uploadPicture.js"></script>
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+<script src="/biletaria_online/assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/uploadPicture.js"></script>
 </body>
 </html>

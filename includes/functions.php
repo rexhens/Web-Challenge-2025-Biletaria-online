@@ -6,11 +6,10 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 //Load Composer's autoloader
-require '../assets/vendor/autoload.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/vendor/autoload.php';
 
 use Dotenv\Dotenv;
 
-// Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 function sendEmail(string $email, string $subject, string $body): bool {
@@ -65,14 +64,14 @@ function checkAdmin($conn): bool {
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        header("Location: ../auth/login.php");
+        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/login.php');
         exit;
     }
 }
 
 function redirectIfNotAdmin($conn): void {
     if(!checkAdmin($conn)) {
-        header("Location: ../auth/no-access.php");
+        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/no-access.php');
         exit;
     }
 }
@@ -126,13 +125,13 @@ function showError($error): void {
     echo "<!DOCTYPE html>
       <html lang='sq'>
       <head>";
-    require '../includes/links.php';
+    require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
     echo "<title>Teatri Metropol | Mesazh</title>
-      <link rel='icon' type='image/x-icon' href='../assets/img/metropol_icon.png'>
-      <link rel='stylesheet' href='../assets/css/styles.css'>
+      <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
+      <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
       <style>
           body {
-            background: url('../assets/img/error.png') no-repeat center center fixed;
+            background: url('/biletaria_online/assets/img/error.png') no-repeat center center fixed;
             background-size: cover;
             justify-content: center;
           }
@@ -147,4 +146,167 @@ function showError($error): void {
     exit;
 }
 
+function isHallAvailable($conn, $hall, $time, $dates, $id): array {
+    $placeholders = implode(',', array_fill(0, count($dates), '?'));
+    $idCondition = $id !== null ? " AND s.id != ?" : "";
 
+    $sql = "
+        SELECT s.time AS existing_start_time, sd.show_date
+        FROM show_dates sd
+        JOIN shows s ON sd.show_id = s.id
+        WHERE s.hall = ? AND sd.show_date IN ($placeholders)$idCondition
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        showError("Një gabim ndodhi! Provoni më vonë!");
+    }
+
+    $params = array_merge([$hall], $dates);
+    $types = str_repeat('s', 1 + count($dates));
+
+    if ($id !== null) {
+        $params[] = $id;
+        $types .= 's';
+    }
+
+    $bindParams = [];
+    $bindParams[] = &$types;
+    foreach ($params as $key => $value) {
+        $bindParams[] = &$params[$key];
+    }
+
+    call_user_func_array([$stmt, 'bind_param'], $bindParams);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $conflicts = [];
+
+    $fixedDurationSeconds = 4 * 60 * 60;
+    $newStart = strtotime($time);
+    $newEnd = $newStart + $fixedDurationSeconds;
+
+    while ($row = $result->fetch_assoc()) {
+        $existingStart = strtotime($row['existing_start_time']);
+        $existingEnd = $existingStart + $fixedDurationSeconds;
+
+        if ($newStart < $existingEnd && $newEnd > $existingStart) {
+            $conflicts[] = $row['show_date'] . ' nga ora ' . $row['existing_start_time'];
+        }
+    }
+
+    $stmt->close();
+
+    if (!empty($conflicts)) {
+        return [
+            'available' => false,
+            'conflict_info' => $conflicts
+        ];
+    }
+
+    $idCondition = $id !== null ? " AND e.id != ?" : "";
+
+    $sql = "
+        SELECT e.time AS existing_start_time, ed.event_date
+        FROM event_dates ed
+        JOIN events e ON ed.event_id = e.id
+        WHERE e.hall = ? AND ed.event_date IN ($placeholders)$idCondition
+    ";
+
+    $stmt = $conn->prepare($sql);
+    if (!$stmt) {
+        showError("Një gabim ndodhi! Provoni më vonë!");
+    }
+
+    $params = array_merge([$hall], $dates);
+    $types = str_repeat('s', 1 + count($dates));
+
+    if ($id !== null) {
+        $params[] = $id;
+        $types .= 's';
+    }
+
+    $bindParams = [];
+    $bindParams[] = &$types;
+    foreach ($params as $key => $value) {
+        $bindParams[] = &$params[$key];
+    }
+
+    call_user_func_array([$stmt, 'bind_param'], $bindParams);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $conflicts = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $existingStart = strtotime($row['existing_start_time']);
+        $existingEnd = $existingStart + $fixedDurationSeconds;
+
+        if ($newStart < $existingEnd && $newEnd > $existingStart) {
+            $conflicts[] = $row['event_date'] . ' nga ora ' . $row['existing_start_time'];
+        }
+    }
+
+    $stmt->close();
+
+    if (!empty($conflicts)) {
+        return [
+            'available' => false,
+            'conflict_info' => $conflicts
+        ];
+    }
+
+    return ['available' => true];
+}
+
+function deletePoster($conn, $table, $id): bool {
+
+    $allowedTables = ['shows', 'events', 'actors'];
+    if (!in_array($table, $allowedTables)) {
+        return false;
+    }
+
+    $query = "SELECT poster FROM $table WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    if (!$stmt) return false;
+
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->bind_result($poster);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!empty($poster)) {
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/biletaria_online/assets/img/$table/" . basename($poster);
+        if (file_exists($imagePath)) {
+            return unlink($imagePath);
+        }
+    }
+
+    return false;
+}
+
+function getPosterPath($conn, $table, $id): string {
+
+    $allowedTables = ['shows', 'events', 'actors'];
+    if (!in_array($table, $allowedTables)) {
+        return false;
+    }
+
+    $query = "SELECT poster FROM $table WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $stmt->bind_result($poster);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!empty($poster)) {
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . "/biletaria_online/assets/img/$table/" . basename($poster);
+        if (file_exists($imagePath)) {
+            return $imagePath;
+        }
+    }
+
+    return "File nuk u gjet!";
+}

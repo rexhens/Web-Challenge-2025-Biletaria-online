@@ -1,7 +1,7 @@
 <?php
 /** @var mysqli $conn */
-require_once '../config/db_connect.php';
-require "../includes/functions.php";
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 if (isset($_GET['show_id'])) {
     $id = intval($_GET['show_id']);
@@ -14,24 +14,24 @@ if (isset($_GET['show_id'])) {
     $stmt->close();
 
     if (!empty($poster)) {
-        $imagePath = "../assets/img/shows/" . basename($poster); // secure the path
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/shows/' . basename($poster); // secure the path
         if (file_exists($imagePath)) {
             $mimeType = mime_content_type($imagePath);
             header("Content-Type: $mimeType");
             readfile($imagePath);
         } else {
             header("Content-Type: image/png");
-            readfile("../assets/img/show-icon.png");
+            readfile($_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/show-icon.png');
         }
     } else {
         header("Content-Type: image/png");
-        readfile("../assets/img/show-icon.png");
+        readfile($_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/show-icon.png');
     }
 
     $conn->close();
 } else if (isset($_GET['actor_id'])) {
     $id = intval($_GET['actor_id']);
-    $query = "SELECT photo FROM actors WHERE id = ?";
+    $query = "SELECT poster FROM actors WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $id);
     $stmt->execute();
@@ -39,19 +39,19 @@ if (isset($_GET['show_id'])) {
     $stmt->fetch();
     $stmt->close();
 
-    if (!empty($poster)) {
-        $imagePath = "../assets/img/actors/" . basename($photo); // secure the path
+    if (!empty($photo)) {
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/actors/' . basename($photo); // secure the path
         if (file_exists($imagePath)) {
             $mimeType = mime_content_type($imagePath);
             header("Content-Type: $mimeType");
             readfile($imagePath);
         } else {
             header("Content-Type: image/png");
-            readfile("../assets/img/actor-icon.png");
+            readfile($_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/actor-icon.png');
         }
     } else {
         header("Content-Type: image/png");
-        readfile("../assets/img/actor-icon.png");
+        readfile($_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/actor-icon.png');
     }
 
     $conn->close();
@@ -66,18 +66,18 @@ if (isset($_GET['show_id'])) {
     $stmt->close();
 
     if (!empty($poster)) {
-        $imagePath = "../assets/img/events/" . basename($poster); // secure the path
+        $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/events/' . basename($poster);
         if (file_exists($imagePath)) {
             $mimeType = mime_content_type($imagePath);
             header("Content-Type: $mimeType");
             readfile($imagePath);
         } else {
             header("Content-Type: image/png");
-            readfile("../assets/img/show-icon.png");
+            readfile($_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/show-icon.png');
         }
     } else {
         header("Content-Type: image/png");
-        readfile("../assets/img/show-icon.png");
+        readfile($_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/show-icon.png');
     }
 
     $conn->close();

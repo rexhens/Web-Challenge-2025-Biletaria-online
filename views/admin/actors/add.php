@@ -1,105 +1,169 @@
 <?php
-require_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+
+$name = "";
+$email = "";
+$birthday = "";
+$biography = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $birthday = $_POST['birthday'];
+    $biography = $_POST['description'];
 
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $birthdate = $_POST['birthdate'];
-    $biography = $_POST['biography'];
+    $errors = [];
 
-    // Read image file as binary data
-    $photo = file_get_contents($_FILES['photo']['tmp_name']);
-
-    $stmt = $conn->prepare("INSERT INTO actors (name, birthdate, biography, photo) VALUES (?, ?, ?, ?)");
-    $full_name = $first_name . ' ' . $last_name;
-    $stmt->bind_param("sssb", $full_name, $birthdate, $biography, $null);
-    $stmt->send_long_data(3, $photo); // Send BLOB data
-
-    if ($stmt->execute()) {
-        echo "<script>alert('Actor added successfully!'); window.location.href='index.php';</script>";
-    } else {
-        echo "<script>alert('Error adding actor.');</script>";
+    if(empty($name) || empty($email) || empty($birthday) || empty($biography)) {
+        $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
-    $stmt->close();
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Email-i nuk është i vlefshëm.";
+    }
+
+    if (empty($errors)) {
+        if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
+            if (!empty($_FILES['file-input']['name'])) {
+                $check = getimagesize($_FILES['file-input']['tmp_name']);
+                if ($check !== false) {
+                    $targetDir = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/actors/';
+                    $ext = pathinfo($_FILES['file-input']['name'], PATHINFO_EXTENSION);
+                    $uniqueName = uniqid('poster_', true) . 'views.' . strtolower($ext);
+                    $targetPath = $targetDir . $uniqueName;
+
+                    if (!is_dir($targetDir)) {
+                        mkdir($targetDir, 0755, true);
+                    }
+
+                    if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
+                        $posterPath = $targetPath;
+                    } else {
+                        $errors[] = "Nuk mund të ngarkohej imazhi.";
+                    }
+                } else {
+                    $errors[] = "Skedari nuk është një imazh i vlefshëm.";
+                }
+            } else {
+                $errors[] = "Ju duhet të zgjidhni një imazh për të ngarkuar.";
+            }
+        } else {
+            $errors[] = "Nuk u ngarkua asnjë skedar.";
+        }
+    }
+
+    if(empty($errors)) {
+        $stmt = $conn->prepare("INSERT INTO actors (name, email, birthday, description, poster) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $name, $email, $birthday, $biography, $posterPath);
+        if (!$stmt->execute()) {
+            $errors[] = "Një problem ndodhi! Provoni më vonë!";
+        } else {
+            header("Location: add.php?update=success");
+            exit();
+        }
+    }
+
     $conn->close();
 }
 ?>
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Actor</title>
-    <link rel="stylesheet" href="../../../assets/css/styles.css">
-    <link rel="stylesheet" href="../../../assets/css/styles.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background: url('../../../assets/img/background-image.png') no-repeat center center/cover;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-family: var(--default-font);
-            margin: 0;
-            padding: 20px;
-        }
-    </style>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
+    <title>Teatri Metropol | Shto Aktor</title>
+    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
 </head>
 
-<body class=" text-gold-400 flex justify-center items-center min-h-screen">
-    <div class="form-container" style="max-width: 700px;"">
-        <h2 class=" text-2xl font-bold text-center mb-4">Add New Actor</h2>
-        <form id="actorForm" action="" method="POST" enctype="multipart/form-data" class="space-y-4">
-            <label class="form-group">First Name:
-                <input type="text" name="first_name" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
+<body class="light">
 
-            <label class="form-group">Last Name:
-                <input type="text" name="last_name" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
+<form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
+    <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Aktor</span></h1>
+    <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px; gap: 30px;">
 
-            <label class="form-group">Birthdate:
-                <input type="date" name="birthdate" class="w-full p-2 bg-gray-700 text-white rounded" required>
-            </label>
+        <div class="form-group">
+            <input type="text" name="name" id="name" placeholder=" " value="<?php echo htmlspecialchars($name); ?>" required>
+            <label for="name">Emri i plotë</label>
+        </div>
 
-            <label class="form-group">Biography:
-                <textarea name="biography" class="w-full p-2 bg-gray-700 text-white rounded h-40"
-                    style="background-color: rgba(228, 228, 228, 0.04);" required></textarea>
-            </label>
+        <div class="form-group">
+            <input type="email" name="email" id="email" placeholder=" " value="<?php echo htmlspecialchars($email); ?>" required>
+            <label for="email">Email</label>
+        </div>
 
-            <div class="mb-3 text-center">
-                <label class="cursor-pointer block" onclick="document.getElementById('photoInput').click()">
-                    <img id="photoPreview" class="photo-preview hidden mx-auto w-40 h-40 object-cover rounded-lg"
-                        src="#" alt="Preview">
-                    <p class="text-sm text-gray-400 mt-2">Click to upload photo</p>
-                </label>
-                <input type="file" name="photo" id="photoInput" accept="image/*" class="hidden" required
-                    onchange="previewImage(event)">
-            </div>
+        <div class="form-group">
+            <input type="text" id="birthday" name="birthday" placeholder=" " value="<?php echo htmlspecialchars($birthday); ?>" readonly required>
+            <label for="birthday">Datëlindja</label>
+        </div>
 
-            <button type="submit" class="w-full bg-gold-500 text-gray-900 py-2 rounded hover:bg-gold-600">Add
-                Actor</button>
-        </form>
+        <div class="form-group">
+            <textarea name="description" id="description" placeholder="Pak biografi..." style="height: 100px;" required><?php
+                if (!empty($biography)) {
+                    echo htmlspecialchars($biography);
+                }
+                ?></textarea>
+        </div>
+
     </div>
 
-    <script>
-        function previewImage(event) {
-            const input = event.target;
-            const preview = document.getElementById('photoPreview');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.classList.remove('hidden');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
-</body>
+    <div class="side-container light">
+        <div class="photo-container" style="height: 400px;">
+            <img src="/biletaria_online/assets/img/actor-icon.png" alt="poster" id="picture"></img>
+            <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
+            <button type="button" id="change-photo" name="change-photo">Ngarko Portret</button>
+        </div>
+    </div>
 
+    <button type="submit" name="submit">Shto Aktor</button>
+</form>
+
+<div class="info-container">
+    <?php
+    if(!empty($errors)) {
+        foreach ($errors as $error) {
+            echo "<div class='errors show'><p>$error</p></div>";
+        }
+    }
+    ?>
+    <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+        <div class='errors show' style='background-color: rgba(131, 173, 68)'>
+            <p style='color: #E4E4E4;'>Aktori u shtua me sukses!</p>
+        </div>
+    <?php endif; ?>
+</div>
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+<script src="/biletaria_online/assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/uploadPicture.js"></script>
+<script>
+    const elementsToHide = document.getElementsByClassName("show");
+    setTimeout(() => {
+        Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
+    }, 4500);
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        flatpickr("#birthday", {
+            mode: "single",
+            dateFormat: "Y-m-d",
+            locale: "sq"
+        });
+    });
+</script>
+<script>
+    if (window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.delete('update');
+        window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
+</script>
+</body>
 </html>

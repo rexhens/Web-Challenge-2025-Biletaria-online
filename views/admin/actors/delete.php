@@ -1,29 +1,26 @@
 <?php
-require_once '../../../config/db_connect.php';
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
-// Check if the 'id' parameter is set in the URL
-if (isset($_GET['id'])) {
-    // Get the actor ID from the URL
-    $actor_id = $_GET['id'];
+if (isset($_POST['id'])) {
+    $actor_id = $_POST['id'];
 
-    // Prepare the DELETE SQL query
     $sql = "DELETE FROM actors WHERE id = ?";
-
-    // Prepare the statement
     $stmt = $conn->prepare($sql);
-
-    // Bind the ID parameter to the query
     $stmt->bind_param("i", $actor_id);
 
-    // Execute the query
+    if (!deletePoster($conn, "actors", $actor_id)) {
+        showError("Portreti nuk u fshi!");
+    }
+
     if ($stmt->execute()) {
-        // Redirect to the actors list page after successful deletion
-        header('Location: index.php');
+        header('Location: index.php?update=success');
         exit();
     } else {
-        echo "Error: " . $conn->error;
+        showError("Një problem ndodhi! Provoni më vonë!");
     }
 } else {
-    echo "Error: ID not specified.";
+    showError("Nuk ka informacion mbi të dhënat që duhen fshirë!");
 }
-?>

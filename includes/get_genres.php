@@ -1,6 +1,6 @@
 <?php
 /** @var mysqli $conn */
-require_once '../config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 
 header('Content-Type: application/json');
 
