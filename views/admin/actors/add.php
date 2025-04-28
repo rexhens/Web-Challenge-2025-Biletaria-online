@@ -4,6 +4,11 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
+$name = "";
+$email = "";
+$birthday = "";
+$biography = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $name = $_POST['name'];
@@ -15,6 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if(empty($name) || empty($email) || empty($birthday) || empty($biography)) {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Email-i nuk është i vlefshëm.";
     }
 
     if (empty($errors)) {
@@ -58,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $stmt->close();
     $conn->close();
 }
 ?>
@@ -83,22 +91,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px; gap: 30px;">
 
         <div class="form-group">
-            <input type="text" name="name" id="name" placeholder=" " required>
+            <input type="text" name="name" id="name" placeholder=" " value="<?php echo htmlspecialchars($name); ?>" required>
             <label for="name">Emri i plotë</label>
         </div>
 
         <div class="form-group">
-            <input type="email" name="email" id="email" placeholder=" " required>
+            <input type="email" name="email" id="email" placeholder=" " value="<?php echo htmlspecialchars($email); ?>" required>
             <label for="email">Email</label>
         </div>
 
         <div class="form-group">
-            <input type="text" id="birthday" name="birthday" placeholder=" " readonly required>
+            <input type="text" id="birthday" name="birthday" placeholder=" " value="<?php echo htmlspecialchars($birthday); ?>" readonly required>
             <label for="birthday">Datëlindja</label>
         </div>
 
         <div class="form-group">
-            <textarea name="description" id="description" placeholder="Pak biografi..." style="height: 100px;" required></textarea>
+            <textarea name="description" id="description" placeholder="Pak biografi..." style="height: 100px;" required><?php
+                if (!empty($biography)) {
+                    echo htmlspecialchars($biography);
+                }
+                ?></textarea>
         </div>
 
     </div>

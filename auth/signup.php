@@ -12,6 +12,7 @@ session_start();
     <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
     <title>Teatri Metropol | Regjistrohu</title>
     <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             background: url('/biletaria_online/assets/img/background-image.png') no-repeat center center fixed;
@@ -37,28 +38,34 @@ session_start();
         <span>Teatrin Metropol</span>
     </h1>
     <div class="form-group">
-        <input type="text" name="name" id="name" placeholder=" " required>
+        <input type="text" name="name" id="name" placeholder=" " value="<?php echo $_POST['name'] ?? ''; ?>" required>
         <label for="name">Emri</label>
     </div>
     <div class="form-group">
-        <input type="text" name="surname" id="surname" placeholder=" " required>
+        <input type="text" name="surname" id="surname" placeholder=" " value="<?php echo $_POST['surname'] ?? ''; ?>" required>
         <label for="surname">Mbiemri</label>
     </div>
     <div class="form-group">
-        <input type="email" name="email" id="email" placeholder=" " required>
+        <input type="email" name="email" id="email" placeholder=" " value="<?php echo $_POST['email'] ?? ''; ?>" required>
         <label for="email">Email</label>
     </div>
     <div class="form-group">
-        <input type="tel" name="phone" id="phone" placeholder=" " required>
+        <input type="tel" name="phone" id="phone" placeholder=" " value="<?php echo $_POST['phone'] ?? ''; ?>" required>
         <label for="phone">Numri i Telefonit</label>
     </div>
     <div class="form-group">
         <input type="password" name="password" id="password" placeholder=" " required>
         <label for="password" >Krijoni një fjalëkalim</label>
+        <span class="eye-icon" id="password-icon" onclick="togglePassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <div class="form-group">
         <input type="password" name="password-confirm" id="password-confirm" placeholder=" " required>
         <label for="password-confirm">Konfirmoni fjalëkalimin</label>
+        <span class="eye-icon" id="password-confirm-icon" onclick="toggleConfirmPassword()">
+            <i class="fas fa-eye"></i>
+        </span>
     </div>
     <button type="submit" name="submit" id="signup">Regjistrohu</button>
     <div class="form-footer">

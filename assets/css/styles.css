@@ -146,6 +146,17 @@ p {
     z-index: 1;
 }
 
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 17px;
+    color: rgb(143, 121, 63, 0.5);
+    z-index: 10;
+}
+
 .light .form-group input {
     color: var(--background-color);
 }
@@ -160,6 +171,7 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
     -webkit-text-fill-color: var(--text-color) !important;
+    color: var(--text-color) !important;
     font-family: var(--default-font) !important;
     font-size: 15px !important;
     transition: background-color 9999s ease-in-out 0s !important;
@@ -170,6 +182,7 @@ input:-webkit-autofill:active {
 .light input:-webkit-autofill:hover,
 .light input:-webkit-autofill:active {
     -webkit-text-fill-color: var(--background-color) !important;
+    color: var(--background-color) !important;
 }
 
 .form-group label {

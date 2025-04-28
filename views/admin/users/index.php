@@ -227,7 +227,7 @@ $users_result = $conn->query($query);
                             <label for="editRole">Roli</label>
                             <select class="form-control" id="editRole" name="roli"> <!-- added name -->
                                 <option value="admin">Administrator</option>
-                                <option value="biletary">Biletari</option>
+                                <option value="ticketOffice">Biletari</option>
                                 <option value="user">Përdorues</option>
                             </select>
                         </div>
