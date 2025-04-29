@@ -34,7 +34,7 @@
             </a>
         </li>
         <li>
-            <a href="/biletaria_online/views/client/applications.php"
+            <a href="/biletaria_online/views/client/apply_form.php"
                class="<?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/applications.php' ? 'active' : ''; ?>">
                 Aplikime
             </a>

@@ -80,7 +80,7 @@
 
 <body>
     <h2>Formular për salla me qera</h2>
-    <form method="POST" action="generate_doc.php">
+    <form method="POST" action="generate_pdf.php">
         <div class="form-columns">
             <!-- Left column -->
             <div class="form-column">
