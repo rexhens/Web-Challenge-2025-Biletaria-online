@@ -71,13 +71,18 @@ $pageStyles = [
 
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+    <style>
+        body {
+            padding-top: 70px !important;
+        }
+    </style>
 </head>
 
 <body>
 
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
-    <div class="video-container" style="margin-top: -10px;">
+    <div class="video-container">
         <?php
         $videoId = '';
         $parsedUrl = parse_url($show['trailer']);

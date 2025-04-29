@@ -852,7 +852,7 @@ button:active {
 
 .video-container .overlay {
     position: absolute;
-    bottom: 0;
+    bottom: -0.5px;
     left: 0;
     width: calc(100% - 40px);
     display: flex;
