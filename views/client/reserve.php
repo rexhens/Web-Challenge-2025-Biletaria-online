@@ -1,60 +1,53 @@
 <?php
 /** @var mysqli $conn */
-require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+require "../../config/db_connect.php";
+require "../../auth/auth.php";
+require "../../includes/functions.php";
 
-// --------------------------------------------------
-// 1) grab show id from URL
-$show_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-if (!$show_id) {
-    die("Invalid show ID.");
-}
+/* 1. get show id ------------------------------------------------- */
+$show_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+if (!$show_id) { die("Invalid show ID."); }
 
-// fetch all dates for the chosen show
-$datesQuery = $conn->prepare(
-    "SELECT show_date 
-       FROM show_dates 
-      WHERE show_id = ? 
-   ORDER BY show_date ASC"
+/* 2. fetch title + price (used later on the ticket) -------------- */
+$info = $conn->prepare("SELECT title, price FROM shows WHERE id = ? LIMIT 1");
+$info->bind_param("i", $show_id);
+$info->execute();
+$info->bind_result($showTitle, $ticketPrice);
+$info->fetch();
+$info->close();
+
+/* 3. fetch all distinct dates for this show --------------------- */
+$dq = $conn->prepare(
+  "SELECT DISTINCT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC"
 );
-$datesQuery->bind_param("i", $show_id);
-$datesQuery->execute();
-$datesResult = $datesQuery->get_result();
+$dq->bind_param("i", $show_id);
+$dq->execute();
+$res = $dq->get_result();
 $dates = [];
-while ($row = $datesResult->fetch_assoc()) {
-    $dates[] = $row['show_date'];          // yyyy-mm-dd
-}
+while ($r = $res->fetch_assoc()) $dates[] = $r['show_date'];   // yyyy-mm-dd
+$dq->close();
 
-$groupedDates = groupDates($dates);        // helper defined in includes/functions.php
+$groupedDates = groupDates($dates);          // helper from includes/functions.php
 $today        = new DateTime('today');
 
+/* 4. halls + times for this show -------------------------------- */
+$hallTimes = [];
+$ht = $conn->prepare("SELECT hall, time FROM shows WHERE id = ?");
+$ht->bind_param("i", $show_id);
+$ht->execute();
+$ht->bind_result($hall, $rawTime);
+while ($ht->fetch()) {
+  $hallTimes[$hall][] = (new DateTime($rawTime))->format('g:i A');
+}
+$ht->close();
+ksort($hallTimes); foreach ($hallTimes as &$t) sort($t); unset($t);
 
-
-
-$ticketId = intval($_GET['id']);
-
-$q = $conn->prepare(
- "SELECT t.ticket_code,t.expires_at,
-        r.seat_id,r.hall,r.date,
-        s.title,s.time,s.price,
-        u.name,u.surname
-   FROM tickets t
-   JOIN reservations r ON r.id = t.reservation_id
-   JOIN shows       s ON s.id = r.show_id
-   JOIN users       u ON u.id = r.user_id
-  WHERE t.id = ?");
-$q->bind_param("i",$ticketId);
-$q->execute();
-$tk = $q->get_result()->fetch_assoc();
-if (!$tk) die("Ticket not found");
-
-// friendly formats
-$showDate  = (new DateTime($tk['date']))->format('F j Y');
-$showTime  = (new DateTime($tk['time']))->format('g:i A');
-$expires   = (new DateTime($tk['expires_at']))->format('F j Y');
+$conn->close();
+/* --------------------------------------------------------------- */
+function seatRow(int $seat, int $perRow = 20): string {
+  return chr(64 + (int)ceil($seat / $perRow));            // 1-20→A, 21-40→B, …
+}
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -84,9 +77,13 @@ $expires   = (new DateTime($tk['expires_at']))->format('F j Y');
       <div class="container">
        
 				
-					<a class="navbar-brand" href="index.html"  >
-					 <b style="color: #836e4f;">Metropol</b><i sty>Ticketing</i>
-					</a>	
+      <a class="navbar-brand" href="../../../index.php">
+                    <img src="../../../biletaria_online/assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
+                </a>
+
+                <a class="navbar-brand" href="../../biletaria_online/index.php">
+                    Teatri <b style="color: #836e4f;">Metropol</b>
+                </a>
         
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         </div>
@@ -165,35 +162,6 @@ HTML;
   </div>
 
   <!------ 2. FETCH HALLS & TIMES FROM DATABASE -------------------------->
-  <?php
-  /* The shows table has one or more rows for this $show_id.
-     Each row contains a hall (e.g. 1, 2, “Blue Hall”) and a time
-     (TIME or DATETIME).  Collect them into $hallTimes[hall][] = time */
-  $hallTimes = [];
-
-  $hallStmt = $conn->prepare(
-      "SELECT hall, time
-         FROM shows
-        WHERE id = ?"
-  );
-  $hallStmt->bind_param("i", $show_id);
-  $hallStmt->execute();
-  $hallStmt->bind_result($hall, $rawTime);
-
-  while ($hallStmt->fetch()) {
-      // normalise the time to “h:mm AM/PM”
-      $fmtTime = (new DateTime($rawTime))->format('g:i A');
-      $hallTimes[$hall][] = $fmtTime;
-  }
-  $hallStmt->close();
-
-  // sort halls and their times for a neat display
-  ksort($hallTimes);                   // sort halls (1,2,3…)
-  foreach ($hallTimes as &$tArr) {
-      sort($tArr);                     // sort times within each hall
-  }
-  unset($tArr);
-  ?>
 
   <!------ 3.  SCREEN / TIME LIST ----------------------------------------->
   <ul class="time-ul">
@@ -220,10 +188,10 @@ HTML;
               <div>
                 <iframe id="seat-sel-iframe"
                   style="  box-shadow: 0 14px 12px 0 var(--theme-border), 0 10px 50px 0 var(--theme-border); width: 770px; height: 1200px; display: block; margin-left: auto; margin-right: auto;"
-                  src="../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
+                  src="../../seat_selection/seat_sel.php?show_id=<?php echo $show_id; ?>"></iframe>
               </div>
               <br>
-              <input type="button" name="next-step" class="next-step" value="Proceed to Payment" />
+              <input type="button" name="next-step" class="next-step" value="Next" />
               <input type="button" name="previous-step" class="previous-step" value="Back" />
             </fieldset>
             <fieldset>
@@ -255,46 +223,47 @@ HTML;
   <input type="button" class="previous-step" value="Back">
 </fieldset>
              
-            <fieldset>
-              <h2>E-Ticket</h2>
-              <div class="ticket-body">
-                <div class="ticket">
-                  <div class="holes-top"></div>
-                  <div class="title">
-                    <p class="cinema">Metropol Theatre</p>
-                    <p class="movie-title"><?= htmlspecialchars($tk['title']) ?></p>
-                  </div>
-                  <div class="poster">
-                    <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/25240/only-god-forgives.jpg"
-                      alt="Movie: Only God Forgives" />
-                  </div>
-                  <div class="info">
-                    <table class="info-table ticket-table">
-                      <tr>
-                        <th>SCREEN</th>
-                        <th>ROW</th>
-                        <th>SEAT</th>
-                      </tr>
-                      <tr>
-                        <td class="bigger">18</td>
-                        <td class="bigger">H</td>
-                        <td class="bigger">24</td>
-                      </tr>
-                    </table>
-                    <table class="info-table ticket-table">
-                      <tr>
-                        <th>PRICE</th>
-                        <th>DATE</th>
-                        <th>TIME</th>
-                      </tr>
-                      <tr>
-                        <td>RS.12.00</td>
-                        <td>4/13/21</td>
-                        <td>19:30</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div class="holes-lower"></div>
+<fieldset>
+          <h2>Bileta</h2>
+          <div class="ticket-body"><div class="ticket">
+            <div class="holes-top"></div>
+            <div class="title">
+              <p class="cinema">Teatri Metropol</p>
+              <p class="movie-title"><?= htmlspecialchars($showTitle) ?></p>
+            </div>
+            <div class="poster">
+                   <img src="../../includes/get_image.php?show_id=<?php echo $show_id; ?>" alt="Poster">
+            </div>
+            <div class="info">
+              <!-- SCREEN / ROW / SEAT -->
+              <table class="info-table ticket-table">
+                <tr><th>SCREEN</th><th>ROW</th><th>SEAT</th></tr>
+                <?php
+                  $seats = array_filter(array_map('intval',
+                               explode(',', $_POST['chosen_seats'] ?? '')));
+                  $hall  = htmlspecialchars($_POST['chosen_hall'] ?? '');
+                  foreach ($seats as $s):
+                ?>
+                  <tr>
+                    <td class="bigger"><?= $hall ?></td>
+                    <td class="bigger"><?= seatRow($s) ?></td>
+                    <td class="bigger"><?= $s ?></td>
+                  </tr>
+                <?php endforeach; ?>
+              </table>
+
+              <!-- PRICE / DATE / TIME -->
+              <table class="info-table ticket-table">
+                <tr><th>CMIMI</th><th>DATA</th><th>KOHA</th></tr>
+                <tr>
+                  <td>ALL.<?= number_format($ticketPrice,2) ?></td>
+                  <td><?= date('d/m/y',strtotime($_POST['chosen_date'] ?? '')) ?></td>
+                  <td><?= date('H:i',strtotime($_POST['chosen_time'] ?? '')) ?></td>
+                </tr>
+              </table>
+            </div>
+            <div class="holes-lower"></div>
+
                   <div class="serial">
                     <table class="barcode ticket-table">
                       <tr>
@@ -445,8 +414,16 @@ HTML;
                   </div>
                 </div>
               </div>
+              <!-- download / share buttons -->
+<div style="text-align:center; margin-top:1rem;">
+  <button type="button" id="dl-ticket"   class="home-page-btn">Shkarko Biletën</button>
+  <button type="button" id="share-ticket"
+          class="home-page-btn"
+          style="display:none">Ndaj Biletën</button>
+</div>
+
               <input type="button" name="previous-step" class="home-page-btn" value="Shkoni tek Kryefaqja"
-                onclick="location.href='index.php';" />
+                onclick="location.href='../../index.php';" />
             </fieldset>
           </form>
         </div>
@@ -479,5 +456,39 @@ HTML;
 <script src="../../assets/js/theme-change.js"></script>
 
 <script type="text/javascript" src="../../assets/js/ticket-booking.js"></script>
+
+<!-- 1. bring in html2canvas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+
+<!-- 2. after that (or in a separate .js file), your download/share code -->
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+  const ticket   = document.querySelector('.ticket');
+  const fileName = 'bileta_<?= $show_id ?>.png';
+
+  async function toPNG() {
+    const canvas = await html2canvas(ticket, {scale:2});
+    return canvas.toDataURL('image/png');
+  }
+
+  document.getElementById('dl-ticket').onclick = async () => {
+    const url = await toPNG();
+    const a   = Object.assign(document.createElement('a'),
+                 {href:url, download:fileName});
+    a.click();
+  };
+
+  const shareBtn = document.getElementById('share-ticket');
+  if (navigator.canShare && navigator.canShare({files: []})) {
+    shareBtn.style.display = '';
+    shareBtn.onclick = async () => {
+      const blob = await (await fetch(await toPNG())).blob();
+      await navigator.share({files:[new File([blob], fileName, {type:'image/png'})],
+                             title:'Bileta ime'});
+    };
+  }
+});
+</script>
 
 </html>

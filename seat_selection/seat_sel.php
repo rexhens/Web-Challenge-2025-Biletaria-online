@@ -10,21 +10,23 @@ if (!$show_id) {
 }
 
 // ────────── Fetch show details ──────────
-$stmt = $conn->prepare("SELECT s.title, s.time, s.price, sd.show_date
+$stmt = $conn->prepare("SELECT s.title, s.time, s.price, sd.show_date, s.hall
                           FROM shows AS s
                           JOIN show_dates AS sd ON sd.show_id = s.id
                          WHERE s.id = ?
                          LIMIT 1");
 $stmt->bind_param("i", $show_id);
 $stmt->execute();
-$stmt->bind_result($title, $time, $price, $show_date);
+$stmt->bind_result($title, $time, $price, $show_date, $hall);
 if (!$stmt->fetch()) {
     die("Show not found.");
 }
 $stmt->close();
-
+$hallFile = basename($hall);
 // ────────── Load static seat‑map JSON (structure: { "seats": [{"id":"a[1]", "status":"unavailable"}, …] }) ──────────
-$seatJson = file_get_contents(__DIR__ . '/seats.json');
+$hallFile       = basename($hall);                    // defensive – strips any “/”
+$seatJsonPath   = __DIR__ . '\seats.json';
+$seatJson       = file_get_contents($seatJsonPath);
 $seatData = json_decode($seatJson, true) ?: [];
 $reserved = [];
 foreach ($seatData['seats'] ?? [] as $seat) {
@@ -38,8 +40,8 @@ $displayDate = date('F j, Y', strtotime($show_date));
 $displayTime = date('H:i', strtotime($time));
 
 
-$svg_file_name = __DIR__ . '/salla1.svg';        // rruga deri te skeda
-$svg_markup    = file_get_contents($svg_file_name); // lexo përmbajtjen
+$svgPath        = __DIR__ . '/' . $hallFile . '.svg'; // your seat map as SVG
+$svg_markup     = file_get_contents($svgPath);
 
 ?>
 <!DOCTYPE html>
