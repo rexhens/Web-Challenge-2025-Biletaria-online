@@ -93,7 +93,7 @@
             </div>
             <!-- move top -->
             <button onclick="topFunction()" id="movetop" title="Go to top">
-                <span class="fa fa-arrow-up" aria-hidden="true"></span>
+                <span class="fa fa-arrow-up" aria-hidden="true" style="color: white"></span>
             </button>
             <script>
                 // When the user scrolls down 20px from the top of the document, show the button
