@@ -64,9 +64,13 @@ $today        = new DateTime('today');
       <div class="container">
        
 				
-					<a class="navbar-brand" href="index.html"  >
-					 <b style="color: #836e4f;">Metropol</b><i sty>Ticketing</i>
-					</a>	
+      <a class="navbar-brand" href="../../../biletaria_online/index.php">
+                    <img src="../../../biletaria_online/assets/images/metropol_icon.png" alt="metropol" title="metropol" style="height:35px;" />
+                </a>
+
+                <a class="navbar-brand" href="../../biletaria_online/index.php">
+                    Teatri <b style="color: #836e4f;">Metropol</b>
+                </a>
         
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
         </div>
@@ -236,7 +240,7 @@ HTML;
 </fieldset>
              
             <fieldset>
-              <h2>E-Ticket</h2>
+              <h2>Bileta</h2>
               <div class="ticket-body">
                 <div class="ticket">
                   <div class="holes-top"></div>
@@ -268,7 +272,7 @@ HTML;
                         <th>TIME</th>
                       </tr>
                       <tr>
-                        <td>RS.12.00</td>
+                        <td>ALL.12.00</td>
                         <td>4/13/21</td>
                         <td>19:30</td>
                       </tr>

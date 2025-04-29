@@ -94,7 +94,7 @@ $groupedDates = groupDates($dates);
                     <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                     <p><span>Zhanri: </span><?php echo htmlspecialchars($show['genre_name']); ?></p>
                 </div>
-                <button onclick="redirectTo('reserve.php?id=<?php echo $show['id']; ?>')">Rezervo</button>
+                <button onclick="redirectTo('../reserve.php?id=<?php echo $show['id']; ?>')">Rezervo</button>
             </div>
         </div>
     </div>
