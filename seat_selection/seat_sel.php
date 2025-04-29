@@ -25,7 +25,7 @@ $stmt->close();
 $hallFile = basename($hall);
 // ────────── Load static seat‑map JSON (structure: { "seats": [{"id":"a[1]", "status":"unavailable"}, …] }) ──────────
 $hallFile       = basename($hall);                    // defensive – strips any “/”
-$seatJsonPath   = __DIR__ . '\seats.json';
+$seatJsonPath   = __DIR__ . '/seats.json';
 $seatJson       = file_get_contents($seatJsonPath);
 $seatData = json_decode($seatJson, true) ?: [];
 $reserved = [];
