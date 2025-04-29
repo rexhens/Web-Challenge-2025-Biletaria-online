@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $errors = [];
 
-    if(empty($name) || empty($email) || empty($birthday) || empty($biography)) {
+    if (empty($name) || empty($email) || empty($birthday) || empty($biography)) {
         $errors[] = "Të gjitha fushat duhen plotësuar!";
     }
 
@@ -56,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    if(empty($errors)) {
+    if (empty($errors)) {
         $stmt = $conn->prepare("INSERT INTO actors (name, email, birthday, description, poster) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $name, $email, $birthday, $biography, $posterPath);
         if (!$stmt->execute()) {
@@ -84,86 +84,110 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
 </head>
 
-<body class="light">
+<body id="page-top" class="light">
+    <div style=" display: flex; min-height: 100vh; justify-content: flex-start; width: 100%;">
 
-<form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
-    <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Aktor</span></h1>
-    <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px; gap: 30px;">
+        <!-- Sidebar -->
+        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
+        <!-- Main Content -->
+        <div style="flex: 1; padding: 20px;">
+            <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
+                <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Aktor</span></h1>
+                <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px; gap: 30px;">
 
-        <div class="form-group">
-            <input type="text" name="name" id="name" placeholder=" " value="<?php echo htmlspecialchars($name); ?>" required>
-            <label for="name">Emri i plotë</label>
-        </div>
+                    <div class="form-group">
+                        <input type="text" name="name" id="name" placeholder=" "
+                            value="<?php echo htmlspecialchars($name); ?>" required>
+                        <label for="name">Emri i plotë</label>
+                    </div>
 
-        <div class="form-group">
-            <input type="email" name="email" id="email" placeholder=" " value="<?php echo htmlspecialchars($email); ?>" required>
-            <label for="email">Email</label>
-        </div>
+                    <div class="form-group">
+                        <input type="email" name="email" id="email" placeholder=" "
+                            value="<?php echo htmlspecialchars($email); ?>" required>
+                        <label for="email">Email</label>
+                    </div>
 
-        <div class="form-group">
-            <input type="text" id="birthday" name="birthday" placeholder=" " value="<?php echo htmlspecialchars($birthday); ?>" readonly required>
-            <label for="birthday">Datëlindja</label>
-        </div>
+                    <div class="form-group">
+                        <input type="text" id="birthday" name="birthday" placeholder=" "
+                            value="<?php echo htmlspecialchars($birthday); ?>" readonly required>
+                        <label for="birthday">Datëlindja</label>
+                    </div>
 
-        <div class="form-group">
-            <textarea name="description" id="description" placeholder="Pak biografi..." style="height: 100px;" required><?php
-                if (!empty($biography)) {
-                    echo htmlspecialchars($biography);
+                    <div class="form-group">
+                        <textarea name="description" id="description" placeholder="Pak biografi..."
+                            style="height: 100px;" required><?php
+                            if (!empty($biography)) {
+                                echo htmlspecialchars($biography);
+                            }
+                            ?></textarea>
+                    </div>
+
+                </div>
+
+                <div class="side-container light">
+                    <div class="photo-container" style="height: 400px;">
+                        <img src="/biletaria_online/assets/img/actor-icon.png" alt="poster" id="picture"></img>
+                        <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
+                        <button type="button" id="change-photo" name="change-photo">Ngarko Portret</button>
+                    </div>
+                </div>
+
+                <button type="submit" name="submit">Shto Aktor</button>
+            </form>
+
+            <div class="info-container">
+                <?php
+                if (!empty($errors)) {
+                    foreach ($errors as $error) {
+                        echo "<div class='errors show'><p>$error</p></div>";
+                    }
                 }
-                ?></textarea>
-        </div>
+                ?>
+                <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+                    <div class='errors show' style='background-color: rgba(131, 173, 68)'>
+                        <p style='color: #E4E4E4;'>Aktori u shtua me sukses!</p>
+                    </div>
+                <?php endif; ?>
+            </div>
 
-    </div>
-
-    <div class="side-container light">
-        <div class="photo-container" style="height: 400px;">
-            <img src="/biletaria_online/assets/img/actor-icon.png" alt="poster" id="picture"></img>
-            <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
-            <button type="button" id="change-photo" name="change-photo">Ngarko Portret</button>
         </div>
     </div>
 
-    <button type="submit" name="submit">Shto Aktor</button>
-</form>
-
-<div class="info-container">
-    <?php
-    if(!empty($errors)) {
-        foreach ($errors as $error) {
-            echo "<div class='errors show'><p>$error</p></div>";
-        }
-    }
-    ?>
-    <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
-        <div class='errors show' style='background-color: rgba(131, 173, 68)'>
-            <p style='color: #E4E4E4;'>Aktori u shtua me sukses!</p>
-        </div>
-    <?php endif; ?>
-</div>
-<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
-<script src="/biletaria_online/assets/js/functions.js"></script>
-<script src="/biletaria_online/assets/js/uploadPicture.js"></script>
-<script>
-    const elementsToHide = document.getElementsByClassName("show");
-    setTimeout(() => {
-        Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
-    }, 4500);
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        flatpickr("#birthday", {
-            mode: "single",
-            dateFormat: "Y-m-d",
-            locale: "sq"
+    <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+    <script src="/biletaria_online/assets/js/functions.js"></script>
+    <script src="/biletaria_online/assets/js/uploadPicture.js"></script>
+    <script>
+        const elementsToHide = document.getElementsByClassName("show");
+        setTimeout(() => {
+            Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
+        }, 4500);
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            flatpickr("#birthday", {
+                mode: "single",
+                dateFormat: "Y-m-d",
+                locale: "sq"
+            });
         });
-    });
-</script>
-<script>
-    if (window.history.replaceState) {
-        const url = new URL(window.location);
-        url.searchParams.delete('update');
-        window.history.replaceState({}, document.title, url.pathname + url.search);
-    }
-</script>
+    </script>
+    <script>
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.searchParams.delete('update');
+            window.history.replaceState({}, document.title, url.pathname + url.search);
+        }
+    </script>
+     <!-- Sidebar toggle -->
+    <script>
+        $(document).ready(function () {
+            $("#sidebarToggle").on('click', function (e) {
+                e.preventDefault();
+                $("body").toggleClass("sidebar-toggled");
+                $(".sidebar").toggleClass("toggled");
+            });
+        });
+    </script>
 </body>
+
 </html>

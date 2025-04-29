@@ -58,20 +58,26 @@ $groupedDates = groupDates($dates);
 
 ?>
 
+<?php
+$pageTitle = htmlspecialchars($show['title']);
+$pageStyles = [
+    '/biletaria_online/assets/css/styles.css',
+    '/biletaria_online/assets/css/navbar.css'
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | <?php echo htmlspecialchars($show['title']); ?></title>
-    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 </head>
 
 <body>
 
-    <div class="video-container">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
+
+    <div class="video-container" style="margin-top: -10px;">
         <?php
         $videoId = '';
         $parsedUrl = parse_url($show['trailer']);
