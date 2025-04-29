@@ -10,16 +10,21 @@ $genreQuery = "SELECT * FROM genres";
 $genreResult = $conn->query($genreQuery);
 ?>
 
+<?php
+$pageTitle = 'Shfaqjet';
+$pageStyles = [
+    '/biletaria_online/assets/css/styles.css',
+    '/biletaria_online/assets/css/navbar.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Teatri Metropol | Shfaqjet</title>
-    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+
     <style>
         body {
             padding: 0 30px;
@@ -29,6 +34,9 @@ $genreResult = $conn->query($genreQuery);
 </head>
 
 <body>
+
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
+
     <header>
         <h1>Shfaqjet në <span>Teatrin Metropol</span></h1>
     </header>
@@ -37,7 +45,6 @@ $genreResult = $conn->query($genreQuery);
         <i class="fa fa-search"></i>
         <input class="search-bar" type="text" id="search" placeholder="Kërko shfaqje..." onkeyup="searchShow()">
     </div>
-
 
     <div class="filter-container">
         <select id="genreFilter">
