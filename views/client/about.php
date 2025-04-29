@@ -1,20 +1,31 @@
-<?php 
-$pageTitle = "Rreth nesh";
-require '../includes/header.php';
+<?php
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 
+<?php
+$pageTitle = "Rreth nesh";
+$pageStyles = [
+    '/biletaria_online/assets/css/style-starter.css',
+    '/biletaria_online/assets/css/navbar.css'
+];
+?>
 
-<div class="w3l-breadcrumbs">
-		<nav id="breadcrumbs" class="breadcrumbs">
-			<div class="container page-wrapper">
-				<a href="../../index.php">Kreu</a> » <span class="breadcrumb_last" aria-current="page">Rreth Nesh</span>
-			</div>
-		</nav>
-	</div>
+<!DOCTYPE html>
+<html lang="sq">
+
+<head>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+</head>
+
 	<!-- /about-->
-	<div class="w3l-ab-grids py-5">
+<body class="w3l-ab-grids py-5">
 
-		<div class="container py-lg-4">
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
+
+		<div class="container py-lg-4" style="margin-top: 30px;">
 			<div class="row ab-grids-sec align-items-center">
 				
 				<div class="col-lg-12 ab-left pl-lg-4 mt-lg-1 mt-1">
@@ -166,11 +177,7 @@ require '../includes/header.php';
 		</div>
 	</section>
 
-	
-    <?php require '../includes/footer.php'; ?>
-
-
-
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <script src="../../assets/js/jquery-3.3.1.min.js"></script>
 <!-- stats -->
@@ -182,42 +189,6 @@ require '../includes/header.php';
 </script>
 <!--/theme-change-->
 <script src="../../assets/js/theme-change.js"></script>
-<script>
-	const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
-	const currentTheme = localStorage.getItem('theme');
-
-	if (currentTheme) {
-		document.documentElement.setAttribute('data-theme', currentTheme);
-
-		switchTextColor(currentTheme);
-
-		if (currentTheme === 'dark') {
-			toggleSwitch.checked = true;
-		}
-	}
-
-	function switchTextColor(currTheme) {
-
-		if (currTheme === 'light') {
-			document.getElementById("swiper-container-h1").style.color = 'black';
-			document.getElementById("details-h3-1").style.color = 'black';
-			document.getElementById("details-h3-2").style.color = 'black';
-			document.getElementById("details-h3-3").style.color = 'black';
-			document.getElementById("details-h3-4").style.color = 'black';
-			document.getElementById("details-h3-5").style.color = 'black';
-			document.getElementById("details-h3-6").style.color = 'black';
-		} else {
-			document.getElementById("swiper-container-h1").style.color = 'white';
-			document.getElementById("details-h3-1").style.color = 'white';
-			document.getElementById("details-h3-2").style.color = 'white';
-			document.getElementById("details-h3-3").style.color = 'white';
-			document.getElementById("details-h3-4").style.color = 'white';
-			document.getElementById("details-h3-5").style.color = 'white';
-			document.getElementById("details-h3-6").style.color = 'white';
-		}
-	}
-	toggleSwitch.addEventListener('change', switchTheme, false);
-</script>
 <script src="../../assets/js/owl.carousel.js"></script>
 <!-- script for banner slider-->
 <script>
@@ -368,3 +339,6 @@ require '../includes/header.php';
 	});
 </script>
 <script src="../../assets/js/bootstrap.min.js"></script>
+
+</body>
+</html>

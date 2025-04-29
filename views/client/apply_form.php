@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Formular për salla me qera</title>
-    <link rel="stylesheet" href="../../../assets/css/styles.css">
-    <link rel="stylesheet" href="../../../assets/css/flatpickr.min.css">
-    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
     <style>
         body {
             font-family: var(--default-font, Arial, sans-serif);
-            background: url('../../../assets/img/background-image.png') no-repeat center center fixed;
+            background: url('../../assets/img/background-image.png') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             padding: 20px;
@@ -25,7 +25,6 @@
         form {
             max-width: 1000px;
             margin: 0 auto;
-
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -43,38 +42,11 @@
             min-width: 300px;
         }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="date"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border: 2px solid rgba(143, 121, 63, 0.5);
-            border-radius: 5px;
-            outline: none;
-            background: none;
-            backdrop-filter: blur(5px);
-            font-family: var(--default-font, Arial, sans-serif);
-            font-size: 15px;
-            color: var(--text-color, #333);
-            box-sizing: border-box;
-        }
-
-        textarea {
-            resize: vertical;
-        }
-
         fieldset {
             margin-top: 20px;
             padding: 15px;
-            border: 1px solid #ccc;
+            border: none;
+            /* Removed border from actors div */
             border-radius: 8px;
         }
 
@@ -83,22 +55,25 @@
             padding: 0 10px;
         }
 
-        button[type="submit"] {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            background-color: #3e6cf5;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .actors-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        button[type="submit"]:hover {
-            background-color: #2a54d4;
+        .actors-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* Two columns */
+            grid-template-rows: repeat(3, auto);
+            /* Three rows */
+            gap: 20px;
+            /* Space between fields */
+        }
+
+        .actors-grid label {
+            width: 100%;
+            /* Ensure labels take up full width in the grid */
         }
     </style>
 </head>
@@ -161,15 +136,19 @@
                 <label>As. Regjisor:
                     <input type="text" name="asregjisor">
                 </label>
-                <fieldset>
-                    <legend>Aktorët pjesëmarrës</legend>
-                    <label>1. <input type="text" name="aktoret[]"></label><br>
-                    <label>2. <input type="text" name="aktoret[]"></label><br>
-                    <label>3. <input type="text" name="aktoret[]"></label><br>
-                    <label>4. <input type="text" name="aktoret[]"></label><br>
-                    <label>5. <input type="text" name="aktoret[]"></label><br>
-                    <label>6. <input type="text" name="aktoret[]"></label>
-                </fieldset>
+                <div class="actors-section">
+                    <fieldset>
+                        <legend style="color: #8f793f;">Aktorët pjesëmarrës</legend>
+                        <div class="actors-grid">
+                            <label>1. <input type="text" name="aktoret[]"></label>
+                            <label>2. <input type="text" name="aktoret[]"></label>
+                            <label>3. <input type="text" name="aktoret[]"></label>
+                            <label>4. <input type="text" name="aktoret[]"></label>
+                            <label>5. <input type="text" name="aktoret[]"></label>
+                            <label>6. <input type="text" name="aktoret[]"></label>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
         </div>
         <button type="submit">Gjenero dokumentin Word</button>
