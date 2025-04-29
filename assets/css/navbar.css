@@ -25,7 +25,7 @@ h1 {
     font-weight: lighter;
 }
 
-span {
+.navbar span {
     color: var(--heading2-color);
     font-family: var(--heading-font);
 }
@@ -110,6 +110,7 @@ span {
 .navbar-toggle i:hover {
     color: var(--heading2-color);
 }
+
 /*
 .theme-toggle {
     background: none;

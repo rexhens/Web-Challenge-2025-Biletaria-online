@@ -227,6 +227,7 @@ textarea {
     font-family: var(--default-font);
     font-size: 15px;
     color: var(--text-color);
+    resize: vertical;
 }
 
 .light textarea {
@@ -903,6 +904,29 @@ button:active {
 
 .hidden {
     display: none;
+}
+
+.loading-spinner-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    flex-grow: 1;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 5px solid var(--surface-color);
+    border-top: 5px solid var(--heading2-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 @media (max-width: 1300px) {

@@ -34,12 +34,6 @@
             </a>
         </li>
         <li>
-            <a href="/biletaria_online/views/client/contact.php"
-               class="<?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/contact.php' ? 'active' : ''; ?>">
-                Kontakt
-            </a>
-        </li>
-        <li>
             <a href="/biletaria_online/views/client/applications.php"
                class="<?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/applications.php' ? 'active' : ''; ?>">
                 Aplikime

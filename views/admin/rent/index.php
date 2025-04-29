@@ -135,7 +135,7 @@
         <!-- Main Content -->
         <div style="flex: 1; padding: 20px;">
 
-            <form method="POST" action="generate_pdf.php">
+            <form method="POST" action="../../client/generate_pdf.php">
                 <h1 style="color: #8f793f; font-weight: 700;">Formular Per Salle Me Qera</h1>
                 <div class="form-columns">
                     <!-- Left column -->

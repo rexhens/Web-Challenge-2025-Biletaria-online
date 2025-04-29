@@ -72,6 +72,13 @@ $pageStyles = [
         async function fetchFilteredShows() {
             const genre = genreFilter.value;
             const dateFilterValue = dateFilter.value;
+            const showsContainer = document.getElementById("shows-container");
+
+            showsContainer.innerHTML = `
+                                            <div class="loading-spinner-wrapper">
+                                                <div class="loading-spinner"></div>
+                                            </div>
+                                        `;
 
             try {
                 const response = await fetch('filter_shows.php', {
@@ -83,7 +90,6 @@ $pageStyles = [
                 });
 
                 const html = await response.text();
-                const showsContainer = document.getElementById("shows-container");
                 showsContainer.innerHTML = html;
 
                 document.querySelectorAll('.show-card').forEach(card => {
