@@ -944,6 +944,8 @@ button:active {
     .fcontainer {
         flex-direction: column;
         width: 100%;
+        padding-top: 30px !important;
+        padding-bottom: 30px !important;
     }
 
     .side-container {
