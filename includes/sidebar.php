@@ -14,7 +14,7 @@
         top: 0;
         left: 0;
         font-weight: 600;
-        z-index: 2000 !important;
+        z-index: 1000 !important;
     }
 
     .sidebar-brand-text {
