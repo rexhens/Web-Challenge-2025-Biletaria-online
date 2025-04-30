@@ -3,31 +3,31 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
-
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 $query = "SELECT * FROM events";
 $events_result = $conn->query($query);
+?>
+
+<?php
+$pageTitle = 'Eventet';
+$pageStyles = [
+    '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
+    '/biletaria_online/assets/css/sb-admin-2.min.css',
+    "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i",
+    "/biletaria_online/assets/css/flatpickr.min.css",
+    "https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
+];
 ?>
 
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Menaxho Eventet</title>
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-
-    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
-
-    <!-- jQuery Easing (if used in sb-admin-2) -->
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
     <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
-
     <style>
         table.dataTable td,
         table.dataTable th {
@@ -118,9 +118,7 @@ $events_result = $conn->query($query);
         </div>
     <?php endif; ?>
 
-    <div style="display: flex; justify-content: flex-start; width: 100%;" id="wrapper">
         <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
-
 
         <section id="users-section">
             <div class="card shadow border-0 rounded">
@@ -220,8 +218,6 @@ $events_result = $conn->query($query);
             </div>
         </section>
 
-
-    </div>
 
     <!-- Edit Show Modal -->
     <div class="modal fade" id="editShowModal" tabindex="-1" aria-labelledby="editShowModalLabel" aria-hidden="true">

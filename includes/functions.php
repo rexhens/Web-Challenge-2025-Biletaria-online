@@ -64,14 +64,14 @@ function checkAdmin($conn): bool {
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/login.php');
+        header("Location: " . '/biletaria_online/auth/login.php');
         exit;
     }
 }
 
 function redirectIfNotAdmin($conn): void {
     if(!checkAdmin($conn)) {
-        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/no-access.php');
+        header("Location: " . '/biletaria_online/auth/no-access.php');
         exit;
     }
 }

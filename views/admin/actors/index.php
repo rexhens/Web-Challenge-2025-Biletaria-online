@@ -3,41 +3,33 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
-// Fetch users from the database
 $query = "SELECT * FROM actors";
 $actors_result = $conn->query($query);
 ?>
 
-
+<?php
+$pageTitle = 'Përdoruesit';
+$pageStyles = [
+    '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
+    '/biletaria_online/assets/css/sb-admin-2.min.css',
+    "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i",
+    "/biletaria_online/assets/css/flatpickr.min.css",
+    "https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css",
+];
+?>
 
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Menaxho Aktorët</title>
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-    <link href="/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-    <link href="/biletaria_online/assets/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
     <style>
         button:focus {
             outline: none;
-            box-shadow: #8f793f !important;
             border-color: transparent;
             /* optional */
         }
@@ -116,7 +108,6 @@ $actors_result = $conn->query($query);
 
 <body id="page-top">
 
-    <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
         <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
         <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
@@ -171,19 +162,21 @@ $actors_result = $conn->query($query);
                                         <td><img src="<?php echo $posterUrl ?>" alt="Poster"
                                                  style="width: 150px; height: auto; border-radius: 5px;"></td>
                                         <td class="text-end">
-                                            <button class="btn btn-sm btn-outline-secondary editUserBtn"
-                                                    style="width: 48%;"
-                                                data-id="<?php echo $row['id'] ?>"
-                                                data-name="<?php echo $row['name'] ?>"
-                                                data-email="<?php echo $row['email'] ?>"
-                                                data-birthday="<?php echo $row['birthday'] ?>"
-                                                data-biography="<?php echo $row['description'] ?>"
-                                                data-poster="<?php echo $posterUrl ?>">
-                                                Edito</button>
-                                            <button class="btn btn-sm btn-outline-danger deleteUserBtn"
-                                                    style="width: 48%;"
-                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
-                                                data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
+                                            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
+                                                <button class="btn btn-sm btn-outline-secondary editUserBtn"
+                                                        style="width: 100%;"
+                                                        data-id="<?php echo $row['id'] ?>"
+                                                        data-name="<?php echo $row['name'] ?>"
+                                                        data-email="<?php echo $row['email'] ?>"
+                                                        data-birthday="<?php echo $row['birthday'] ?>"
+                                                        data-biography="<?php echo $row['description'] ?>"
+                                                        data-poster="<?php echo $posterUrl ?>">
+                                                    Edito</button>
+                                                <button class="btn btn-sm btn-outline-danger deleteUserBtn"
+                                                        style="width: 100%;"
+                                                        data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                        data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php
@@ -196,8 +189,6 @@ $actors_result = $conn->query($query);
             </div>
         </section>
 
-
-    </div>
     <!-- Edit Modal -->
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
