@@ -3,6 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-show'])) {
     $id = $_POST['showId'];

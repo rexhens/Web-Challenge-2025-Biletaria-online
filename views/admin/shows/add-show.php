@@ -3,6 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 ?>
 
@@ -109,16 +111,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
+<?php
+$pageTitle = 'Shto Shfaqje';
+$pageStyles = [
+    '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
+    '/biletaria_online/assets/css/sb-admin-2.min.css',
+    "/biletaria_online/assets/css/flatpickr.min.css",
+    '/biletaria_online/assets/css/styles.css'
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online4/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Shto Shfaqe</title>
-    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
-    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
         .navbar-nav span {
             color: white !important;
@@ -128,13 +135,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <body id="page-top" class="light">
 
-    <div style=" display: flex; min-height: 100vh; justify-content: flex-start; width: 100%;">
-
-        <!-- Sidebar -->
         <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
-        <!-- Main Content -->
-        <div style="flex: 1; padding: 20px;">
             <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
                 <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Shfaqje</span></h1>
                 <div class="form-container light">
@@ -216,8 +218,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ?>
             </div>
 
-        </div>
-    </div>
     <script>
         const elementsToHide = document.getElementsByClassName("show");
         setTimeout(() => {

@@ -3,6 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 $name = "";
 $email = "";
@@ -71,29 +73,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
+<?php
+$pageTitle = 'Shto Aktor';
+$pageStyles = [
+    '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
+    '/biletaria_online/assets/css/sb-admin-2.min.css',
+    "/biletaria_online/assets/css/flatpickr.min.css",
+    '/biletaria_online/assets/css/styles.css'
+];
+?>
 
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Shto Aktor</title>
-    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
-    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 </head>
 
 <body id="page-top" class="light">
-    <div style=" display: flex; min-height: 100vh; justify-content: flex-start; width: 100%;">
 
-        <!-- Sidebar -->
         <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
-        <!-- Main Content -->
-        <div style="flex: 1; padding: 20px;">
+
             <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
                 <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Aktor</span></h1>
-                <div class="form-container light" style="padding-top: 47px; padding-bottom: 60px; gap: 30px;">
+                <div class="form-container light" style="padding-top: 50px !important; padding-bottom: 65px !important; gap: 30px !important;">
 
                     <div class="form-group">
                         <input type="text" name="name" id="name" placeholder=" "
@@ -115,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <div class="form-group">
                         <textarea name="description" id="description" placeholder="Pak biografi..."
-                            style="height: 100px;" required><?php
+                            style="height: 100px !important;" required><?php
                             if (!empty($biography)) {
                                 echo htmlspecialchars($biography);
                             }
@@ -125,7 +128,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
 
                 <div class="side-container light">
-                    <div class="photo-container" style="height: 400px;">
+                    <div class="photo-container" style="height: 400px !important;">
                         <img src="/biletaria_online/assets/img/actor-icon.png" alt="poster" id="picture"></img>
                         <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">
                         <button type="button" id="change-photo" name="change-photo">Ngarko Portret</button>
@@ -149,9 +152,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 <?php endif; ?>
             </div>
-
-        </div>
-    </div>
 
     <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
     <script src="/biletaria_online/assets/js/functions.js"></script>

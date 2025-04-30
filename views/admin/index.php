@@ -3,6 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -23,30 +25,25 @@ $events_query = "
 $events_result = $conn->query($events_query);
 ?>
 
+<?php
+$pageTitle = 'Paneli i Menaxhimit';
+$pageStyles = [
+    "/biletaria_online/assets/css/style-starter.css",
+    "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i",
+    "/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css",
+    "/biletaria_online/assets/css/sb-admin-2.min.css",
+    "https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
+];
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Teatri Metropol | Paneli i Menaxhimit</title>
-
-
-    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <!-- Custom fonts for this template-->
-    <link href="../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
-
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
     <style>
         .bg-gold {
             background-color: #8f793f !important;
@@ -58,20 +55,6 @@ $events_result = $conn->query($events_query);
 
         .text-gold {
             color: #8f793f !important;
-        }
-
-        #accordionSidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            height: 100vh;
-            z-index: 1030;
-            /* make sure it stays on top */
-            overflow-y: auto;
-            background-color: #8f793f !important;
-            background-image: none !important;
-            /* removes gradient */
         }
 
         .btn-primary-report {
@@ -111,7 +94,6 @@ $events_result = $conn->query($events_query);
             color: #8f793f !important;
         }
 
-
         .show-overlay h3 {
             font-family: "Russo One", sans-serif !important;
             margin: 0 0 10px !important;
@@ -119,7 +101,6 @@ $events_result = $conn->query($events_query);
             color: white !important;
             font-weight: 900 !important;
         }
-
 
         .show-overlay h3 span {
             color: #836e4f;
@@ -200,9 +181,6 @@ $events_result = $conn->query($events_query);
             transform: translateY(-5px);
         }
 
-
-
-
         .show-overlay p.show-description {
             display: none !important;
         }
@@ -281,12 +259,6 @@ $events_result = $conn->query($events_query);
             transition: margin-left 0.3s ease;
         }
 
-        /* Kur sidebar është i toggled = i vogël */
-        body.sidebar-toggled #content-wrapper {
-            margin-left: 100px;
-            /* ose 0px nëse sidebar fshihet totalisht */
-        }
-
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0% !important;
             margin: 0% !important;
@@ -311,20 +283,13 @@ $events_result = $conn->query($events_query);
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
 
         <!-- Sidebar -->
         <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+
 
             <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-
-                <!-- End of Topbar -->
+            <div id="content" style="padding-top: 30px !important;">
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid" style="background-color: white;">
@@ -694,10 +659,6 @@ $events_result = $conn->query($events_query);
 
             <!-- End of Footer -->
 
-        </div>
-        <!-- End of Content Wrapper -->
-
-    </div>
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
@@ -705,29 +666,20 @@ $events_result = $conn->query($events_query);
         <i class="fas fa-angle-up"></i>
     </a>
 
-
-    <!-- Bootstrap core JavaScript-->
-    <script src="../../assets/vendor/jquery/jquery.min.js"></script>
-    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Core plugin JavaScript-->
-    <script src="../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="../../assets/js/sb-admin-2.min.js"></script>
-
     <!-- Page level plugins -->
     <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
-
     <!-- Page level custom scripts -->
     <script src="../../assets/js/demo/chart-area-demo.js"></script>
     <script src="../../assets/js/demo/chart-pie-demo.js?v=2"></script>
-    <!-- DataTables CSS and JS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
+        $(document).ready(function () {
+            $("#sidebarToggle").on('click', function (e) {
+                e.preventDefault();
+                $("body").toggleClass("sidebar-toggled");
+                $(".sidebar").toggleClass("toggled");
+            });
+        });
         $(document).ready(function () {
             $('#userTable').DataTable({
                 "pageLength": 5,
@@ -814,73 +766,7 @@ $events_result = $conn->query($events_query);
                 $('.dataTables_filter input').css({'padding-left': '40px'});
             }
         });
-
     </script>
-
-    <!-- Scripts for the sidebar movement -->
-    <script>
-        $(document).ready(function () {
-            // Scroll to utilities section when Utilities nav link is clicked
-            $('a[data-target="#collapseTwo"]').on('click', function (e) {
-                // Small delay to ensure collapse opens first
-                setTimeout(function () {
-                    const target = $('#users-section');
-                    if (target.length) {
-                        $('html, body').animate({
-                            scrollTop: target.offset().top
-                        }, 600); // 600ms for smooth scroll
-                    }
-                }, 300); // delay a bit to allow the collapse animation
-            });
-        });
-        $(document).ready(function () {
-            // Scroll to utilities section when Utilities nav link is clicked
-            $('a[data-target="#collapseShows"]').on('click', function (e) {
-                // Small delay to ensure collapse opens first
-                setTimeout(function () {
-                    const target = $('#shows-section');
-                    if (target.length) {
-                        $('html, body').animate({
-                            scrollTop: target.offset().top
-                        }, 600); // 600ms for smooth scroll
-                    }
-                }, 300); // delay a bit to allow the collapse animation
-            });
-        });
-
-        $(document).ready(function () {
-            // Scroll to utilities section when Utilities nav link is clicked
-            $('a[data-target="#collapseActors"]').on('click', function (e) {
-                // Small delay to ensure collapse opens first
-                setTimeout(function () {
-                    const target = $('#actors-section');
-                    if (target.length) {
-                        $('html, body').animate({
-                            scrollTop: target.offset().top
-                        }, 600); // 600ms for smooth scroll
-                    }
-                }, 300); // delay a bit to allow the collapse animation
-            });
-        });
-
-        $(document).ready(function () {
-            // Scroll to utilities section when Utilities nav link is clicked
-            $('a[data-target="#collapseEvents"]').on('click', function (e) {
-                // Small delay to ensure collapse opens first
-                setTimeout(function () {
-                    const target = $('#events-section');
-                    if (target.length) {
-                        $('html, body').animate({
-                            scrollTop: target.offset().top
-                        }, 600); // 600ms for smooth scroll
-                    }
-                }, 300); // delay a bit to allow the collapse animation
-            });
-        });
-    </script>
-
-
-
 </body>
 
 </html>
