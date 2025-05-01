@@ -33,9 +33,9 @@ fetch('../../includes/statistic_data.php')
     var myLineChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: ["Jan", "Shkurt", "Mar", "Prill", "Maj", "Qer", "Korr", "Gusht", "Shtat", "Tet", "Nent", "Dhje"],
         datasets: [{
-          label: "Earnings",
+          label: "",
           lineTension: 0.3,
           backgroundColor: "rgba(78, 115, 223, 0.05)",
           borderColor: "#8f793f",
@@ -110,7 +110,7 @@ fetch('../../includes/statistic_data.php')
           callbacks: {
             label: function(tooltipItem, chart) {
               var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-              return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+              return datasetLabel + 'LEK : ' + number_format(tooltipItem.yLabel);
             }
           }
         }

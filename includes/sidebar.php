@@ -1,4 +1,3 @@
-
 <!-- jQuery for dropdown box elements -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
@@ -38,7 +37,7 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center"
-       href="/biletaria_online/views/admin/index.php">
+        href="/biletaria_online/views/admin/index.php">
 
         <!-- Show icon only on small screens -->
         <div class="d-block d-md-none">
@@ -86,7 +85,8 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
                 <a class="collapse-item" href="/biletaria_online/views/admin/users/index.php">Të gjithë përdoruesit</a>
-                <a class="collapse-item" href="/biletaria_online/views/admin/users/add-user.php">Shto përdorues të ri</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/users/add-user.php">Shto përdorues të
+                    ri</a>
             </div>
         </div>
     </li>
@@ -141,11 +141,30 @@
         </div>
     </li>
 
+    <!-- Menaxho Rezervimet -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseReservations"
+            aria-expanded="true" aria-controls="collapseReservations">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Menaxho Rezervimet</span>
+        </a>
+        <div id="collapseReservations" class="collapse" aria-labelledby="headingEvents" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Veprime</h6>
+                <a class="collapse-item" href="/biletaria_online/views/admin/reservations/index.php">Të gjitha
+                    rezervimet</a>
+                <a class="collapse-item" href="/biletaria_online/views/admin/reserve.php">Bej rezervim</a>
+            </div>
+        </div>
+    </li>
+
+
     <hr class="sidebar-divider d-none d-md-block">
 
     <div style="   display: flex;
                             align-items: center;
                             justify-content: center;">
-        <button class="rounded-circle border-0" id="sidebarToggle" style="background: rgba(255, 255, 255, .2); padding: revert;"></button>
+        <button class="rounded-circle border-0" id="sidebarToggle"
+            style="background: rgba(255, 255, 255, .2); padding: revert;"></button>
     </div>
 </ul>
