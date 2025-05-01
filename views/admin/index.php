@@ -313,7 +313,7 @@ $pageStyles = [
                                     <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
                                         Te ardhurat Mujore
                                     </div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="monthlyRevenue">LEK 0</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -324,7 +324,7 @@ $pageStyles = [
                 </div>
 
 
-                <!-- Earnings (Monthly) Card Example -->
+                <!-- Earnings (Yearly) Card Example -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-gold shadow h-100 py-2">
                         <div class="card-body">
@@ -332,7 +332,7 @@ $pageStyles = [
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
                                         Te ardhurat Vjetore</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="yearlyRevenue">LEK 0</div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -761,6 +761,30 @@ $pageStyles = [
             }
         });
     </script>
+
+    <script>
+        // Format numbers with thousands separator
+        function formatCurrency(value) {
+            return 'LEK ' + value.toLocaleString('en-US', { minimumFractionDigits: 0 });
+        }
+
+        // Load and inject monthly revenue
+        fetch('../../includes/revenues.php?action=monthly')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('monthlyRevenue').textContent = formatCurrency(data);
+            })
+            .catch(error => console.error('Monthly revenue error:', error));
+
+        // Load and inject yearly revenue
+        fetch('../../includes/revenues.php?action=yearly')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('yearlyRevenue').textContent = formatCurrency(data);
+            })
+            .catch(error => console.error('Yearly revenue error:', error));
+    </script>
+
 </body>
 
 </html>
