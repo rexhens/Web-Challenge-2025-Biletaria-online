@@ -1,7 +1,4 @@
 <?php
-// Show errors while testing (REMOVE these two lines when you go live)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 session_start();
 

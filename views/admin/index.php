@@ -784,6 +784,67 @@ $pageStyles = [
             })
             .catch(error => console.error('Yearly revenue error:', error));
     </script>
+    <script>
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseTwo"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#users-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseShows"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#shows-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseActors"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#actors-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseEvents"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#events-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+    </script>
+
 
 </body>
 
