@@ -148,7 +148,7 @@ h1 {
         flex-direction: column;
         background-color: var(--background-color);
         position: fixed;
-        top: 90px;
+        top: 80px;
         width: 95%;
         left: 50%;
         transform: translateX(-50%);

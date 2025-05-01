@@ -6,10 +6,10 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 
 <?php
-$pageTitle = 'Shfaqjet';
+$pageTitle = 'Evente';
 $pageStyles = [
-    '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css',
+    '/biletaria_online/assets/css/styles.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 ];
 ?>
@@ -42,7 +42,7 @@ $pageStyles = [
 
 
 <div class="filter-container">
-    <select id="dateFilter" style="width: 100%;">
+    <select id="dateFilter" style="width: 100% !important;">
         <option value="available">Në vazhdim</option>
         <option value="past">Të kaluarat</option>
         <option value="all">Të gjitha</option>
@@ -70,7 +70,7 @@ $pageStyles = [
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `event_time_filter=${encodeURIComponent(dateFilterValue)}}`,
+                body: `event_time_filter=${encodeURIComponent(dateFilterValue)}`,
             });
 
             const html = await response.text();
