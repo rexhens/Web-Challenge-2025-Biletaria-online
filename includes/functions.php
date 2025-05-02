@@ -19,7 +19,7 @@ function sendEmail(string $email, string $subject, string $body): bool {
 
         $mail->Username = $_ENV['SMTP_USER'];
         $mail->Password = $_ENV['SMTP_PASS'];
-        $mail->SMTPAuth = false;
+        $mail->SMTPAuth = true;
         $mail->Host = $_ENV['SMTP_HOST'];
         $mail->Port = $_ENV['SMTP_PORT'];
         $mail->SMTPSecure = $_ENV['SMTP_ENCRYPTION'];
