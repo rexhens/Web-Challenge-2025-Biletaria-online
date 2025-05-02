@@ -157,8 +157,8 @@ $pageStyles = [
                                     <td>
                                         <div
                                             style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
-                                            <a href="#" class="btn btn-outline-secondary">Edito</a>
-                                            <a href="#" class="btn btn-outline-danger">Anullo</a>
+                                            <a href="#" class="btn btn-outline-secondary" style="width: 100%;">Edito</a>
+                                            <a href="#" class="btn btn-outline-danger" style="width: 100%;">Anullo</a>
 
                                         </div>
                                     </td>

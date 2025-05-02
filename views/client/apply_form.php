@@ -194,9 +194,7 @@ unset($_SESSION['old']);
     <fieldset>
         <legend>Specifikime Teknike</legend>
         <div class="form-group" style="width: 100% !important;">
-            <input type="text" id="specifikime" name="specifikime" placeholder=" "
-                   value="<?php echo htmlspecialchars($old['specifikime'] ?? '') ?>" />
-            <label for="specifikime">Specifikime</label>
+            <textarea name="specifikime" id="specifikime" placeholder="Specifikime teknike..." required style="min-height: 100px !important;"><?php echo htmlspecialchars($old['specifikime'] ?? '') ?></textarea>
         </div>
     </fieldset>
 

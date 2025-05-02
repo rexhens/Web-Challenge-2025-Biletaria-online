@@ -197,7 +197,7 @@ $pageStyles = [
                     </div>
                 </div>
 
-                <div class="side-container light" style="margin: 0%;">
+                <div class="side-container light" style="padding-top: 27px !important; padding-bottom: 27px !important;">
                     <div class="photo-container">
                         <img src="../../../assets/img/show-icon.png" alt="poster" id="picture"></img>
                         <input type="file" name="file-input" id="file-input" accept="image/*" style="display: none">

@@ -1,120 +1,77 @@
-    <!-- footer-66 -->
-    <footer class="w3l-footer">
-        <section class="footer-inner-main">
-            <div class="footer-hny-grids py-5">
-                <div class="container py-lg-4">
-                    <div class="text-txt">
-                        <div class="right-side">
-                            <div class="row footer-about">
-                                <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt1.png"
-                                            alt=""></a>
-                                </div>
-                                <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt2.png"
-                                            alt=""></a>
-                                </div>
-                                <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt3.png"
-                                            alt=""></a>
-                                </div>
-                                <div class="col-md-3 col-6 footer-img mb-lg-0 mb-4">
-                                    <a href="events.php"><img class="img-fluid" src="../assets/images/tt4.png"
-                                            alt=""></a>
-                                </div>
-                            </div>
-                            <div class="row footer-links">
-                                <div class="col-md-3 col-sm-6 sub-two-right mt-5">
-                                    <h6>Shows</h6>
-                                    <ul>
-                                        <li><a href="events.php">Shows</a></li>
-                                        <li><a href="events.php">Videos</a></li>
-                                        <li><a href="events.php">English Shows</a></li>
-                                        <li><a href="events.php">Tailor</a></li>
-                                        <li><a href="events.php">Upcoming Shows</a></li>
-                                        <li><a href="contact.php">Contact Us</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-3 col-sm-6 sub-two-right mt-5">
-                                    <h6>Information</h6>
-                                    <ul>
-                                        <li><a href="index.php">Home</a> </li>
-                                        <li><a href="about.php">About</a> </li>
-                                        <li><a href="events.php">Tv Series</a> </li>
-                                        <li><a href="events.php">Blogs</a> </li>
-                                        <li><a href="auth/login.php">Login</a></li>
-                                        <li><a href="contact.php">Contact</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-3 col-sm-6 sub-two-right mt-5">
-                                    <h6>Locations</h6>
-                                    <ul>
-                                        <li><a href="events.php">Asia</a></li>
-                                        <li><a href="events.php">France</a></li>
-                                        <li><a href="events.php">Taiwan</a></li>
-                                        <li><a href="events.php">United States</a></li>
-                                        <li><a href="events.php">Korea</a></li>
-                                        <li><a href="events.php">United Kingdom</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-3 col-sm-6 sub-two-right mt-5">
-                                    <h6>Newsletter</h6>
-                                    <form action="#" class="subscribe mb-3" method="post">
-                                        <input type="email" name="email" placeholder="Your Email Address" required="">
-                                        <button><span class="fa fa-envelope-o"></span></button>
-                                    </form>
-                                    <p>Enter your email and receive the latest news, updates and special offers from us.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<footer class="footer-glass scroll-fade" id="futuristic-footer">
+    <div class="footer-grid">
+        <div class="footer-section">
+            <h5>Na Kontaktoni</h5>
+            <ul>
+                <li><i class="fas fa-phone"></i>
+                    <a href="tel:+355694567890">+355 67 227 0668</a>
+                </li>
+                <li><i class="fas fa-envelope"></i>
+                    <a href="mailto:teatrimetropol@gmail.com" target="_blank">teatrimetropol@gmail.com</a>
+                </li>
+                <li><i class="fas fa-map-marker-alt"></i>
+                    <a href="https://maps.app.goo.gl/UWvquKDm9JPSiSfZ9" target="_blank">Rruga Ded Gjo Luli, Tiranë 1001</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-section" style="align-items:center;">
+            <h5>Na Ndiqni</h5>
+            <div class="social-icons">
+                <a href="https://x.com/teatrimetropol" aria-label="Twitter" target="_blank"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/teatrimetropol/" aria-label="Instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/channel/UCHzRxQOY9rj34hnWfg_vI3A" aria-label="YouTube" target="_blank"><i class="fab fa-youtube"></i></a>
+                <a href="https://www.facebook.com/teatrimetropol/" aria-label="Facebook" target="_blank"><i class="fab fa-facebook"></i></a>
             </div>
-            <div class="below-section">
-                <div class="container">
-                    <div class="copyright-footer">
-                        <div class="columns text-lg-left">
-                            <p>&copy; <?php echo date('Y'); ?> Theatre. All rights reserved</p>
-                        </div>
+        </div>
 
-                        <ul class="social text-lg-right">
-                            <li><a href="#facebook"><span class="fa fa-facebook" aria-hidden="true"></span></a>
-                            </li>
-                            <li><a href="#linkedin"><span class="fa fa-linkedin" aria-hidden="true"></span></a>
-                            </li>
-                            <li><a href="#twitter"><span class="fa fa-twitter" aria-hidden="true"></span></a>
-                            </li>
-                            <li><a href="#google"><span class="fa fa-google-plus" aria-hidden="true"></span></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- move top -->
-            <button onclick="topFunction()" id="movetop" title="Go to top">
-                <span class="fa fa-arrow-up" aria-hidden="true" style="color: white"></span>
-            </button>
-            <script>
-                // When the user scrolls down 20px from the top of the document, show the button
-                window.onscroll = function () {
-                    scrollFunction()
-                };
+        <div class="footer-section">
+            <h5>Eksploroni Teatrin</h5>
+            <ul>
+                <li><i class="fas fa-angle-right"></i> <a href="/biletaria_online/views/client/about.php">Rreth nesh</a></li>
+                <li><i class="fas fa-angle-right"></i> <a href="/biletaria_online/views/client/actors/index.php">Aktorët</a></li>
+                <li><i class="fas fa-angle-right"></i> <a href="/biletaria_online/views/client/shows/index.php">Shfaqjet</a></li>
+                <li><i class="fas fa-angle-right"></i> <a href="/biletaria_online/views/client/events/index.php">Eventet</a></li>
+                <li><i class="fas fa-angle-right"></i> <a href="/biletaria_online/views/client/apply_form.php">Aplikoni për sallë me qera</a></li>
+            </ul>
+        </div>
+    </div>
 
-                function scrollFunction() {
-                    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                        document.getElementById("movetop").style.display = "block";
-                    } else {
-                        document.getElementById("movetop").style.display = "none";
-                    }
+    <div class="footer-bottom">
+        &copy; <?php echo date('Y'); ?> Teatri Metropol, #teatrijuaj.
+    </div>
+</footer>
+
+<script>
+    // Scroll-fade IntersectionObserver
+    document.addEventListener('DOMContentLoaded', () => {
+        const footer = document.getElementById('futuristic-footer');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
                 }
+            });
+        }, { threshold: 0.1 });
+        observer.observe(footer);
+    });
+</script>
+<script>
+    window.onscroll = function () {
+        scrollFunction()
+    };
 
-                // When the user clicks on the button, scroll to the top of the document
-                function topFunction() {
-                    document.body.scrollTop = 0;
-                    document.documentElement.scrollTop = 0;
-                }
-            </script>
-            <!-- /move top -->
-        </section>
-    </footer>
+    function scrollFunction() {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById("movetop").style.display = "block";
+        } else {
+            document.getElementById("movetop").style.display = "none";
+        }
+    }
+
+    function topFunction() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+</script>
