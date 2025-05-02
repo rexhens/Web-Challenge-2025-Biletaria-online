@@ -311,3 +311,29 @@ function getPosterPath($conn, $table, $id): string {
 
     return "File nuk u gjet!";
 }
+
+function pageDoesNotExist($error): void
+{
+    echo "<!DOCTYPE html>
+      <html lang='sq'>
+      <head>";
+    require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
+    echo "<title>Teatri Metropol | Mesazh</title>
+      <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
+      <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
+      <style>
+          body {
+            background: url('/biletaria_online/assets/img/error.png') no-repeat center center fixed;
+            background-size: cover;
+            justify-content: center !important;
+          }
+      </style>
+      </head>
+      <body>
+      <div class='errors show'>
+            <p>$error</p>
+      </div>
+      </body>
+      </html>";
+    exit;
+}
