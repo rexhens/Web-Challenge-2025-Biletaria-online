@@ -26,13 +26,12 @@ $pageStyles = [
 
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
-    <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <!-- sb-admin-2 (your custom template) -->
-    <script src="../../../assets/js/sb-admin-2.min.js"></script>
-    <!-- jQuery Easing (if used in sb-admin-2) -->
-    <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+  
     <style>
+          a.paginate_button:hover,
+        a.paginate_button:disabled {
+            background-color: #8f793f !important;
+        }
         table.dataTable td,
         table.dataTable th {
             text-align: center;
@@ -289,6 +288,18 @@ $pageStyles = [
             </form>
         </div>
     </div>
+<!-- 1. Load jQuery first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- 2. Then load any plugins that depend on jQuery -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- 3. Then load your main template JS file -->
+<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+
+<!-- 4. Optional: Other JS libraries -->
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 
 
 </body>

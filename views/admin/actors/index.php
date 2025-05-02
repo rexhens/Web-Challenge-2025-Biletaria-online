@@ -28,6 +28,10 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
     <style>
+          a.paginate_button:hover,
+        a.paginate_button:disabled {
+            background-color: #8f793f !important;
+        }
         button:focus {
             outline: none;
             border-color: transparent;
@@ -108,86 +112,86 @@ $pageStyles = [
 
 <body id="page-top">
 
-        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
-        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
-            <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
-                 style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
-                Ndryshimet u kryen me sukses!
-                <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
-                        style="top: 50%; transform: translateY(-50%);">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+    <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+        <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
+            style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
+            Ndryshimet u kryen me sukses!
+            <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
+                style="top: 50%; transform: translateY(-50%);">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
+
+    <section id="users-section" style="margin-top: 1%;">
+        <div class="card shadow border-0 rounded">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Aktoreve</h5>
+                <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add.php'"
+                    style="padding: 7px 20px;">
+                    Shto Aktor</button>
             </div>
-        <?php endif; ?>
-
-
-        <section id="users-section" style="margin-top: 1%;">
-            <div class="card shadow border-0 rounded">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Aktoreve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add.php'" style="padding: 7px 20px;">
-                        Shto Aktor</button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
-                            <thead class="thead-light">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Emri</th>
+                                <th>Email</th>
+                                <th>Datëlindja</th>
+                                <th>Biografia</th>
+                                <th>Portreti</th>
+                                <th class="text-end">Veprime</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-dark">
+                            <?php
+                            $i = 1;
+                            while ($row = $actors_result->fetch_assoc()) {
+                                $posterUrl = "../../../includes/get_image.php?actor_id=" . $row['id'];
+                                ?>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Emri</th>
-                                    <th>Email</th>
-                                    <th>Datëlindja</th>
-                                    <th>Biografia</th>
-                                    <th>Portreti</th>
-                                    <th class="text-end">Veprime</th>
+                                    <td class="text-muted"><?php echo $i; ?></td>
+                                    <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                    <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
+                                    <td>
+                                        <div class="desc-col">
+                                            <?php echo $row['description'] ?>
+                                        </div>
+                                    </td>
+                                    <td><img src="<?php echo $posterUrl ?>" alt="Poster"
+                                            style="width: 150px; height: auto; border-radius: 5px;"></td>
+                                    <td class="text-end">
+                                        <div
+                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
+                                            <button class="btn btn-sm btn-outline-secondary editUserBtn"
+                                                style="width: 100%;" data-id="<?php echo $row['id'] ?>"
+                                                data-name="<?php echo $row['name'] ?>"
+                                                data-email="<?php echo $row['email'] ?>"
+                                                data-birthday="<?php echo $row['birthday'] ?>"
+                                                data-biography="<?php echo $row['description'] ?>"
+                                                data-poster="<?php echo $posterUrl ?>">
+                                                Edito</button>
+                                            <button class="btn btn-sm btn-outline-danger deleteUserBtn" style="width: 100%;"
+                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody class="text-dark">
                                 <?php
-                                $i = 1;
-                                while ($row = $actors_result->fetch_assoc()) {
-                                    $posterUrl = "../../../includes/get_image.php?actor_id=" . $row['id'];
-                                    ?>
-                                    <tr>
-                                        <td class="text-muted"><?php echo $i; ?></td>
-                                        <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
-                                        <td>
-                                            <div class="desc-col">
-                                                <?php echo $row['description'] ?>
-                                            </div>
-                                        </td>
-                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster"
-                                                 style="width: 150px; height: auto; border-radius: 5px;"></td>
-                                        <td class="text-end">
-                                            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
-                                                <button class="btn btn-sm btn-outline-secondary editUserBtn"
-                                                        style="width: 100%;"
-                                                        data-id="<?php echo $row['id'] ?>"
-                                                        data-name="<?php echo $row['name'] ?>"
-                                                        data-email="<?php echo $row['email'] ?>"
-                                                        data-birthday="<?php echo $row['birthday'] ?>"
-                                                        data-biography="<?php echo $row['description'] ?>"
-                                                        data-poster="<?php echo $posterUrl ?>">
-                                                    Edito</button>
-                                                <button class="btn btn-sm btn-outline-danger deleteUserBtn"
-                                                        style="width: 100%;"
-                                                        data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
-                                                        data-toggle="modal" data-target="#deleteUserModal">Fshij</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php
-                                    $i++;
-                                } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                $i++;
+                            } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
     <!-- Edit Modal -->
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
@@ -228,10 +232,10 @@ $pageStyles = [
                         <div class="form-group">
                             <label for="editPoster">Ndrysho portretin</label><br>
                             <img id="currentPoster" src="" alt="Portreti aktual"
-                                 style="width: 50%; height: auto; margin-bottom: 10px; border-radius: 5px;">
+                                style="width: 50%; height: auto; margin-bottom: 10px; border-radius: 5px;">
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="editPoster" name="file-input"
-                                       accept="image/*">
+                                    accept="image/*">
                                 <label class="custom-file-label" for="editPoster">Zgjidh një skedar</label>
                             </div>
                         </div>
@@ -276,6 +280,16 @@ $pageStyles = [
             </form>
         </div>
     </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 </body>
 
@@ -308,7 +322,7 @@ $pageStyles = [
             "initComplete": function () {
                 $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
                 $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
-                $('.dataTables_filter input').css({'padding-left': '40px'});
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
             }
         });
     });
@@ -412,4 +426,3 @@ $pageStyles = [
     }
 </script>
 
-<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>

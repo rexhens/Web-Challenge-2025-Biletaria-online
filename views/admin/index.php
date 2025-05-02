@@ -40,11 +40,16 @@ $pageStyles = [
 
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
-    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
     <style>
-        .bg-gold {
+        .card-body {
+            margin: 0 !important;
+
+        }
+
+        .bg-gold,
+        a.paginate_button:hover,
+        a.paginate_button:disabled {
             background-color: #8f793f !important;
         }
 
@@ -660,8 +665,21 @@ $pageStyles = [
         <i class="fas fa-angle-up"></i>
     </a>
 
-    <!-- Page level plugins -->
-    <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
+    <!-- 1. Load jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- 2. Then load any plugins that depend on jQuery -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- 3. Then load your main template JS file -->
+    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+
+    <!-- 4. Optional: Other JS libraries -->
+    <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+
+
+
     <!-- Page level custom scripts -->
     <script src="../../assets/js/demo/chart-area-demo.js"></script>
     <script src="../../assets/js/demo/chart-pie-demo.js?v=2"></script>
