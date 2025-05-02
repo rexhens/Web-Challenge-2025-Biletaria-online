@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php'; // Adjust this
 
-$email = 'rexhensb3@gmail.com';
+$email = 'pllumbiklevis1@gmail.com';
 $subject = 'Vleresimi i shfaqjes';
 
 $reviewPageUrl = 'https://localhost:8080/biletaria_online/views/client/reviews/review-form.php';
