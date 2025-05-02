@@ -1,8 +1,10 @@
 <?php
 /** @var mysqli $conn */
+/*
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+*/
 ?>
 
 <?php
@@ -25,36 +27,30 @@ $pageStyles = [
 
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
-		<div class="container py-lg-4" style="margin-top: 30px;">
-			<div class="row ab-grids-sec align-items-center">
-				
-				<div class="col-lg-12 ab-left pl-lg-4 mt-lg-1 mt-1">
-					<h3 class="hny-title">TEATRI METROPOL</h3>
-					<p class="mt-2"><div class="column ">
-            <div class="single-event-content">
-                <strong>Misioni i Teatrit të Metropolit</strong>&nbsp;është të realizojë vepra teatrore shqiptare dhe botërore me nivel të lartë artistik, të cilat promovojnë gjithëpërfshirjen, dialogun konstruktiv, dhe vlerat njerëzore universale.
-                <strong>Vizioni i Teatrit të Metropolit</strong>&nbsp;është që të krijojë një standart cilësor në realizimin e shfaqjeve teatrore dhe trajnimit profesional të stafit artistik. Teatri angazhohet të krijojë për nevojat e komunitetit të të gjithë brezave; fëmijë, të rinj, të rritur. Duke ngulmuar në cilësi, teatri synon të ofrojë një atmosferë intime ku këtij publiku të larmishëm t’i jepet mundësia të reflektojë, përgjigjet dhe angazhohet me teatër që i shërben edukimit, argëtimit dhe zgjerimit të botëkuptimit.
-                <strong>PLATFORMA ARTISTIKE E TEATRIT METROPOL</strong>
-            <div>
-<ul>
-<li><strong>Teatri i të Rriturve:</strong>&nbsp;Gjashtë premiera të reja në vit, tre produksione ekskluzive të teatrit dhe tre vepra në bashkëpunim të përzgjedhura nga propozime të artistëve të jashtëm gjatë thirrjeve të hapura. Dy nga këto gjashtë premiera janë të lëvizshme për t’u shfaqur jashtë teatrit. Çdo premierë shfaqet 13-15 herë.</li>
-<li><strong>Teatri i Fëmijëve:</strong>&nbsp;Katër premiera të reja në vit, dy produksione ekskluzive të teatrit, dy vepra në bashkëpunim të propozuara nga artistë të jashtëm. Dy nga këto katër premiera janë të lëvizshme për t’u dhënë dhe jashtë teatrit. Çdo premierë shfaqet 20&nbsp;herë.</li>
-<li><strong>Teatri i të Rinjve:</strong>&nbsp;Dy premiera në vit për grupmoshën 14-18 vjeç, një e lëvizshme. Çdo premierë shfaqet 13-15 herë.</li>
-</ul>
-&nbsp;
-</div>
- 
-            </div>
-        </div></p>
-					<div class="ready-more mt-4">
-						<a href="../../index.php" class="btn read-button">Lexo me shume <span class="fa fa-angle-double-right ml-2"
-                                                                                              aria-hidden="true"></span></a>
-					</div>
-				</div>
-			</div>
+<div class="container py-lg-4" style="margin-top: 30px;">
+    <div class="row ab-grids-sec align-items-center">
+        <div class="col-lg-12 ab-left pl-lg-4 mt-lg-1 mt-1">
+            <h3 class="hny-title">Mirë se vini në Teatrin Metropol – Shtëpia e Artit dhe Dialogut</h3>
 
-		
-	</div>
+            <div class="column mt-2">
+                <div class="single-event-content">
+                    <p><strong>Teatri Metropol</strong> është një qendër dinamike kulturore që synon të sjellë për publikun shqiptar dhe ndërkombëtar vepra teatrore me nivel të lartë artistik. I udhëhequr nga vlerat e gjithëpërfshirjes, dialogut konstruktiv dhe humanizmit universal, Metropoli është një hapësirë ku arti takon komunitetin dhe frymëzon reflektim, bashkëbisedim dhe rritje.</p>
+
+                    <p><strong>Misioni ynë</strong> është të realizojmë shfaqje cilësore – shqiptare dhe botërore – që flasin me ndershmëri dhe forcë artistike për realitetin dhe shpirtin njerëzor. Vizioni ynë është të ndërtojmë një standard të ri në cilësinë e prodhimit artistik dhe trajnimit profesional të talenteve të reja, duke i shërbyer një audience të gjerë: fëmijë, të rinj dhe të rritur.</p>
+
+                    <h6 style="margin-top: 12px; margin-bottom: 2px;">Platforma jonë artistike është e ndarë në tre shtylla:</h6>
+                    <ul>
+                        <li><strong>Teatri i të Rriturve:</strong> 6 premiera çdo vit, me produksione origjinale dhe bashkëpunime me artistë të jashtëm. Dy prej tyre janë të lëvizshme dhe çdo shfaqje jepet deri në 15 herë.</li>
+                        <li><strong>Teatri i Fëmijëve:</strong> 4 premiera në vit, të krijuara me dashuri për publikun më të vogël, nga të cilat dy janë të lëvizshme dhe secila shfaqet deri në 20 herë.</li>
+                        <li><strong>Teatri i të Rinjve:</strong> 2 premiera në vit të dedikuara moshës 14-18 vjeç, me një fokus të veçantë tek temat bashkëkohore dhe përfshirja aktive e të rinjve në botën e teatrit.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
 	<section class="w3l-clients" id="clients">
 		<!-- /grids -->
