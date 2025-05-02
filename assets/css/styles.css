@@ -16,17 +16,17 @@
 }
 
 body {
-    background-color: #111 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
-    height: 100vh !important;
+    background-color: #111;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
     margin: 0;
     padding: 0;
-    gap: 10px !important;
-    font-family: var(--default-font) !important;
-    color: var(--text-color) !important;
+    gap: 10px;
+    font-family: var(--default-font);
+    color: var(--text-color);
 }
 
 .light {

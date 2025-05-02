@@ -7,6 +7,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 <?php
 $pageStyles = [
+    'assets/css/footer.css',
     'assets/css/style-starter.css',
     'assets/css/shows.css',
     'assets/css/navbar.css'
@@ -79,6 +80,8 @@ $pageStyles = [
                                         <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
                                         <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
+                                        <p style="margin-top: -20px; margin-bottom: 0;"><a href="views/client/shows/show_details.php?id=<?php echo $show['id']; ?>" style="color: white; text-decoration: underline;">Më shumë info</a></p>
+                                        <p style="margin-top: 0;"><a href="views/client/reserve.php?id=<?php echo $show['id']; ?>" style="color: white; text-decoration: underline">Rezervo</a></p>
                                         <a href="#<?php echo $popupId; ?>" class="popup-with-zoom-anim play-view1">
                                             <span class="video-play-icon">
                                                 <span class="fa fa-play"></span>
@@ -206,7 +209,8 @@ $pageStyles = [
                                         <h3><?php echo htmlspecialchars($event['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
                                         <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
-                                        <p><a href="views/client/events/event_details.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Më shumë info</a></p>
+                                        <p style="margin-top: -10px; margin-bottom: 0;"><a href="views/client/events/event_details.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Më shumë info</a></p>
+                                        <p style="margin-top: 0;"><a href="views/client/reserve.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Rezervo</a></p>
                                         <a class="watch popup-with-zoom-anim play-view1" href="#<?php echo $popupId; ?>"><span class="fa fa-play" aria-hidden="true"></span> Shiko Trailerin</a>
                                         <div id="<?php echo $popupId; ?>" class="zoom-anim-dialog mfp-hide small-dialog">
                                             <iframe src="https://www.youtube.com/embed/<?php echo $videoId; ?>" allow="autoplay; fullscreen" allowfullscreen=""></iframe>

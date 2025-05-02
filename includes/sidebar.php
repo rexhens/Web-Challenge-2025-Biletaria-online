@@ -12,8 +12,31 @@
         position: fixed;
         top: 0;
         left: 0;
+        height: 100vh !important;
         font-weight: 600;
+        overflow-y: auto;
+        overflow-x: hidden;
         z-index: 1000 !important;
+    }
+
+    .sidebar::-webkit-scrollbar {
+        width: 6px !important;
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+        background: rgba(200, 187, 179, 0.3) !important;
+        backdrop-filter: blur(40px) !important;
+        border-radius: 5px !important;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+        background: #C8BBB3FF !important;
+        border-radius: 5px !important;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb:hover {
+        background: #836E4FFF !important;
+        cursor: pointer !important;
     }
 
     .sidebar-brand-text {
@@ -158,7 +181,6 @@
         </div>
     </li>
 
-
     <hr class="sidebar-divider d-none d-md-block">
 
     <div style="   display: flex;
@@ -167,4 +189,5 @@
         <button class="rounded-circle border-0" id="sidebarToggle"
             style="background: rgba(255, 255, 255, .2); padding: revert;"></button>
     </div>
+
 </ul>

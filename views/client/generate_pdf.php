@@ -91,6 +91,8 @@ if (!empty($aktoret) && is_array($aktoret)) {
     }
 }
 
+$date = date("d.m.Y");
+
 $html = "
 <html>
 <head>
@@ -118,7 +120,7 @@ $imageTag
 <h2>BASHKIA TIRANË</h2>
 <h3>QENDRA KULTURORE “TIRANA”</h3>
 
-<p style='text-align:right;'>Tiranë, më___.___.2024</p>
+<p style='text-align:right;'>Tiranë, më: " . $date . "</p>
 
 <p><strong>Lënda:</strong> Formular aplikimi për ambient me qera</p>
 
@@ -151,6 +153,10 @@ $imageTag
   <li>Dera mbyllet në orarin përkatës.</li>
   <li>Pikat e mësipërme nuk negociohen.</li>
 </ul>
+<br>
+<br>
+<p style='text-align: right'>" . htmlspecialchars($emer) . " " . htmlspecialchars($mbiemer) . "</p>
+<p style='text-align: right'>___________________________</p>
 
 </body>
 </html>

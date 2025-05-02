@@ -139,7 +139,7 @@ $pageStyles = [
 
             <form id="showForm" method="POST" enctype="multipart/form-data" class="fcontainer">
                 <h1 style="font-size: 25px; width: 100%; margin-bottom: -10px;">Shtoni një <span>Event</span></h1>
-                <div class="form-container light" style="padding-top: 47px !important; padding-bottom: 60px !important;">
+                <div class="form-container light" style="padding-top: 47px !important; padding-bottom: 50px !important;">
                     <div class="form-group">
                         <input type="text" name="title" id="title" placeholder=" "
                             value="<?php echo htmlspecialchars($title); ?>" required>
