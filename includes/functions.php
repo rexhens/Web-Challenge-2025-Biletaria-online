@@ -133,7 +133,7 @@ function showError($error): void {
           body {
             background: url('/biletaria_online/assets/img/error.png') no-repeat center center fixed;
             background-size: cover;
-            justify-content: center;
+            justify-content: center !important;
           }
       </style>
       </head>

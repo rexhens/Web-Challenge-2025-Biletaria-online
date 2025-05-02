@@ -16,7 +16,7 @@ $pageStyles = [
 
 <?php
 if(isset($_SESSION['user_id'])) {
-    $sql = "SELECT * FROM users WHERE user_id = ?";
+    $sql = "SELECT * FROM users WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $_SESSION['user_id']);
     if($stmt->execute()) {

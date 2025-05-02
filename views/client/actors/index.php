@@ -80,6 +80,7 @@
             height: 120px;
             object-fit: cover;
             margin-bottom: 20px;
+            z-index: 200;
         }
 
         .team .member-content {
@@ -164,11 +165,11 @@
                         ?>
                         <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
                             <div class="member">
-                                <img src="get_image.php?id=<?php echo $row['id']; ?>" alt="">
+                                <img src="../../../includes/get_image.php?actor_id=<?php echo $row['id']; ?>" alt="">
                                 <div class="member-content">
                                     <h4><?php echo htmlspecialchars($row['name']); ?></h4>
-                                    <span><?php echo "I lindur me: " . htmlspecialchars($row['birthdate']); ?></span>
-                                    <p><?php echo "Pak biografi: " . htmlspecialchars($row['biography']); ?></p>
+                                    <span><?php echo "I lindur me: " . htmlspecialchars($row['birthday']); ?></span>
+                                    <p><?php echo "Pak biografi: " . htmlspecialchars($row['description']); ?></p>
                                     <div class="social">
                                         <a href=""><i class="bi bi-twitter-x"></i></a>
                                         <a href=""><i class="bi bi-facebook"></i></a>
