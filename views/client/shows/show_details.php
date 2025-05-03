@@ -61,6 +61,7 @@ $groupedDates = groupDates($dates);
 <?php
 $pageTitle = htmlspecialchars($show['title']);
 $pageStyles = [
+    '/biletaria_online/assets/css/footer.css',
     '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css'
 ];
@@ -74,6 +75,11 @@ $pageStyles = [
     <style>
         body {
             padding-top: 70px !important;
+            overflow-x: hidden !important;
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
         }
     </style>
 </head>
@@ -129,7 +135,7 @@ $pageStyles = [
             <?php endif; ?>
         </div>
     </div>
-
+<!--
     <h2>Aktorët:</h2>
     <div class="actors-list">
         <?php if ($actorsResult && $actorsResult->num_rows > 0): ?>
@@ -145,8 +151,9 @@ $pageStyles = [
         <?php else: ?>
             <p>Nuk ka aktorë të listuar për këtë shfaqje.</p>
         <?php endif; ?>
-
     </div>
+-->
+
 <!--
     <div class="info-container">
         <div class='errors' id="message" style='background-color: rgb(130, 152, 145, 0.5)'>
@@ -154,6 +161,9 @@ $pageStyles = [
         </div>
     </div>
 -->
+
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
     <script src="/biletaria_online/assets/js/functions.js"></script>
     <script>
         var player;

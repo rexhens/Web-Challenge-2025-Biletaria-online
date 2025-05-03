@@ -10,7 +10,8 @@ $pageTitle = "Aplikim për salla me qira";
 $pageStyles = [
     "/biletaria_online/assets/css/flatpickr.min.css",
     "/biletaria_online/assets/css/styles.css",
-    '/biletaria_online/assets/css/navbar.css'
+    '/biletaria_online/assets/css/navbar.css',
+    '/biletaria_online/assets/css/footer.css'
 ];
 ?>
 
@@ -37,6 +38,15 @@ unset($_SESSION['old']);
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
+        body {
+            padding-top: 70px !important;
+            overflow-x: hidden !important;
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
+        }
+
         .form-container {
             max-width: 1000px;
             margin: 20px 10px 0 10px !important;
@@ -243,6 +253,9 @@ unset($_SESSION['old']);
     }
     ?>
 </div>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         flatpickr("#data", {

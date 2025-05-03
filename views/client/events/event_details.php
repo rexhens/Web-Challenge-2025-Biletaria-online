@@ -46,6 +46,7 @@ $groupedDates = groupDates($dates);
 <?php
 $pageTitle = htmlspecialchars($event['title']);
 $pageStyles = [
+    '/biletaria_online/assets/css/footer.css',
     '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css'
 ];
@@ -56,6 +57,16 @@ $pageStyles = [
 
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+    <style>
+        body {
+            padding-top: 70px !important;
+            overflow-x: hidden !important;
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -107,6 +118,8 @@ $pageStyles = [
         <?php endif; ?>
     </div>
 </div>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <!--
     <div class="info-container">

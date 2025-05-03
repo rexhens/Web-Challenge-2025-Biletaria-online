@@ -181,13 +181,4 @@
         </div>
     </li>
 
-    <hr class="sidebar-divider d-none d-md-block">
-
-    <div style="   display: flex;
-                            align-items: center;
-                            justify-content: center;">
-        <button class="rounded-circle border-0" id="sidebarToggle"
-            style="background: rgba(255, 255, 255, .2); padding: revert;"></button>
-    </div>
-
 </ul>

@@ -3,7 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
-
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
