@@ -38,7 +38,7 @@
     </div>
 
     <div class="footer-bottom">
-        &copy; <?php echo date('Y'); ?> Teatri Metropol, #teatrijuaj.
+        &copy; 2025 Teatri Metropol, #teatrijuaj.
     </div>
 
 </footer>

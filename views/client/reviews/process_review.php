@@ -1,6 +1,8 @@
 <?php
-session_start();
+/** @var mysqli $conn */
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $user_id = $_SESSION['user_id'] ?? null;
@@ -21,10 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
 
         $stmt->close();
-    } else {
-        echo "Të gjitha fushat janë të detyrueshme.";
     }
 
     $conn->close();
+} else {
+    showError("Nuk ka të dhëna të mjaftueshme!");
 }
-?>

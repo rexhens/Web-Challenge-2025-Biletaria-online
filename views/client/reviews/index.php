@@ -1,12 +1,28 @@
 <?php
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
-session_start();
-$show_id = $_GET['show_id'] ?? null;
+if(!isset($_GET['show_id'])) {
+    showError("Nuk ka të dhëna të mjaftueshme!");
+}
 
-$pageTitle = 'Shfaqjet';
+$show_id = $_GET['show_id'];
+
+$sql = 'SELECT title FROM shows WHERE id = ?';
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('i', $show_id);
+if(!$stmt->execute()) {
+    showError("Një problem ndodhi! Provoni më vonë!");
+}
+$title = $stmt->get_result()->fetch_assoc()['title'];
+
+$pageTitle = 'Vlerëso Shfaqjen';
 $pageStyles = [
     '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css',
+    '/biletaria_online/assets/css/footer.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 ];
 ?>
@@ -16,17 +32,20 @@ $pageStyles = [
 <html lang="sq">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vlerëso Shfaqjen</title>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
+            overflow-x: hidden !important;
+            margin-top: 20px;
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
         }
 
         .review-form {
-            width: 100%;
+            width: 95%;
             max-width: 400px;
             margin: auto;
             padding: 20px;
@@ -67,14 +86,14 @@ $pageStyles = [
         .rating>input:checked~label,
         .rating:not(:checked)>label:hover,
         .rating:not(:checked)>label:hover~label {
-            color: #f7d106;
+            color: var(--heading2-color);
         }
 
         .rating>input:checked+label:hover,
         .rating>input:checked~label:hover,
         .rating>label:hover~input:checked~label,
         .rating>input:checked~label:hover~label {
-            color: #f7b406;
+            color: var(--accent-color);
         }
 
         .comment-section label {
@@ -104,20 +123,6 @@ $pageStyles = [
             margin-top: 15px;
             transition: background-color 0.2s;
         }
-
-        .submit-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-
-
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
-
-    <style>
-        body {
-            padding: 0 30px;
-            align-items: flex-start;
-        }
     </style>
 </head>
 
@@ -125,26 +130,29 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
     <div class="review-form">
-        <h2>Vlerësoni <span>Shfaqjen</span></h2>
-       <form action="process_review.php" method="post">
-    <input type="hidden" name="show_id" value="<?php echo htmlspecialchars($show_id); ?>">
-    
-        <div class="rating">
-            <!-- yjet me radiobuton -->
-            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 yje"></label>
-            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 yje"></label>
-            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 yje"></label>
-            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 yje"></label>
-            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 yll"></label>
-        </div>
-    
-        <div class="comment-section">
-            <label for="comment">Komenti juaj:</label>
-            <textarea id="comment" name="comment" rows="5" placeholder="Shkruani komentin tuaj këtu..." required></textarea>
-        </div>
-    
-        <button type="submit">Dërgo Vlerësimin</button>
-    </form>
-</body>
+        <h2>Vlerësoni Shfaqjen<br>
+        <span>"<?php echo htmlspecialchars($title) ?>"</span></h2>
+        <form action="process_review.php" method="post">
+            <input type="hidden" name="show_id" value="<?php echo htmlspecialchars($show_id); ?>">
 
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 yje"></label>
+                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 yje"></label>
+                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 yje"></label>
+                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 yje"></label>
+                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 yll"></label>
+            </div>
+
+            <div class="comment-section">
+                <label for="comment">Komenti juaj:</label>
+                <textarea id="comment" name="comment" rows="5" placeholder="Shkruani komentin tuaj këtu..." required></textarea>
+            </div>
+
+            <button type="submit">Dërgo Vlerësimin</button>
+        </form>
+    </div>
+
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
+</body>
 </html>
