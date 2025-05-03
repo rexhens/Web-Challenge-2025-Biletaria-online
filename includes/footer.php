@@ -40,7 +40,12 @@
     <div class="footer-bottom">
         &copy; <?php echo date('Y'); ?> Teatri Metropol, #teatrijuaj.
     </div>
+
 </footer>
+
+<button onclick="topFunction()" id="movetop" title="Go to top">
+    <i class="fa fa-arrow-up" aria-hidden="true"></i>
+</button>
 
 <script>
     // Scroll-fade IntersectionObserver
@@ -57,21 +62,23 @@
         observer.observe(footer);
     });
 </script>
+
 <script>
     window.onscroll = function () {
         scrollFunction()
     };
 
     function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
             document.getElementById("movetop").style.display = "block";
         } else {
             document.getElementById("movetop").style.display = "none";
         }
     }
-
     function topFunction() {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     }
 </script>

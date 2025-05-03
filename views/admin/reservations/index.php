@@ -4,7 +4,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
-
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 $query = "SELECT * FROM reservations";
 $reservations_result = $conn->query($query);

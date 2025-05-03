@@ -78,7 +78,7 @@ if ($result->num_rows > 0) {
                     <div class="actor-card p-4 rounded-lg text-center cursor-pointer transition duration-300 hover:bg-gold-500"
                         style="background-color: rgba(228, 228, 228, 0.04);" data-id="<?php echo $actor['id']; ?>">
                         <img class="w-24 h-24 mx-auto rounded-full object-cover"
-                            src="data:image/jpeg;base64,<?php echo base64_encode($actor['photo']); ?>"
+                            src="/biletaria_online/includes/get_image.php?actor_id=<?php echo ($actor['id']); ?>"
                             alt="<?php echo $actor['name']; ?>">
                         <p class="mt-2 font-semibold"><?php echo $actor['name']; ?></p>
                         <input type="checkbox" name="actor_ids[]" value="<?php echo $actor['id']; ?>" class="hidden">

@@ -8,6 +8,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 <?php
 $pageTitle = 'Evente';
 $pageStyles = [
+    '/biletaria_online/assets/css/footer.css',
     '/biletaria_online/assets/css/navbar.css',
     '/biletaria_online/assets/css/styles.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
@@ -23,6 +24,15 @@ $pageStyles = [
         body {
             padding: 0 30px;
             align-items: flex-start;
+        }
+
+        .footer-glass {
+            margin-left: -30px;
+            width: calc(100% + 28px);
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
         }
     </style>
 </head>
@@ -50,6 +60,8 @@ $pageStyles = [
 </div>
 
 <div class="shows-container" id="shows-container"></div>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <script>
     const dateFilter = document.getElementById("dateFilter");

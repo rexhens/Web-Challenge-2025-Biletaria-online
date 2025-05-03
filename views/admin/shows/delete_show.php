@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-show'])) {
     $conn->begin_transaction();
 
     try {
-        $sql = "DELETE FROM show_dates WHERE event_id = ?";
+        $sql = "DELETE FROM show_dates WHERE show_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $id);
         if (!$stmt->execute()) {
