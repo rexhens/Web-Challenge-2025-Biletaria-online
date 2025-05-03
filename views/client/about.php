@@ -20,6 +20,31 @@ $pageStyles = [
 
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+
+	<style>
+    /* Theatre Carousel Image */
+    .carousel-img {
+      width: 640px;
+      height: 480px;
+      max-width: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    /* Fullscreen Lightbox Overlay */
+    #lightbox-overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.9);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity .4s ease, visibility .4s ease;
+      z-index: 10000;
+    }
+    #lightbox-overlay.show { opacity:1; visibility:visible; }
+    #lightbox-overlay img { max-width:90vw; max-height:90vh; object-fit:contain; }
+    #lightbox-close { position:absolute; top:20px; right:30px; font-size:2rem; color:#fff; cursor:pointer; z-index:10001; }
+  </style>
+
 </head>
 
 	<!-- /about-->
@@ -51,127 +76,22 @@ $pageStyles = [
     </div>
 </div>
 
-
-	<section class="w3l-clients" id="clients">
-		<!-- /grids -->
-		<!-- <div class="cusrtomer-layout py-5"> -->
-		<div class="container py-lg-4">
-			<!-- <div class="headerhny-title">
-				<h3 class="hny-title">Our Testimonials</h3>
-			</div> -->
-			<!-- /grids -->
-			<div class="testimonial-width">
-				<div class="owl-clients owl-carousel owl-theme mb-lg-5">
-					<div class="item">
-						<div class="testimonial-content">
-							<div class="testimonial">
-								<blockquote>
-									<q>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit beatae laudantium
-										voluptate rem ullam dolore!.</q>
-								</blockquote>
-								<div class="testi-des">
-									<div class="test-img"><img src="../assets/images/team1.jpg" class="img-fluid" alt="/">
-									</div>
-									<div class="peopl align-self">
-										<h3>Johnson smith</h3>
-										<p class="indentity">Washington</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimonial-content">
-							<div class="testimonial">
-								<blockquote>
-									<q>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit beatae laudantium
-										voluptate rem ullam dolore!.</q>
-								</blockquote>
-								<div class="testi-des">
-									<div class="test-img"><img src="../assets/images/team2.jpg" class="img-fluid" alt="/">
-									</div>
-									<div class="peopl align-self">
-										<h3>Alexander leo</h3>
-										<p class="indentity">Washington</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimonial-content">
-							<div class="testimonial">
-								<blockquote>
-									<q>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit beatae laudantium
-										voluptate rem ullam dolore!.</q>
-								</blockquote>
-								<div class="testi-des">
-									<div class="test-img"><img src="../assets/images/team3.jpg" class="img-fluid" alt="/">
-									</div>
-									<div class="peopl align-self">
-										<h3>Roy Linderson</h3>
-										<p class="indentity">Washington</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimonial-content">
-							<div class="testimonial">
-								<blockquote>
-									<q>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit beatae laudantium
-										voluptate rem ullam dolore!.</q>
-								</blockquote>
-								<div class="testi-des">
-									<div class="test-img"><img src="../assets/images/team4.jpg" class="img-fluid" alt="/">
-									</div>
-									<div class="peopl align-self">
-										<h3>Mike Thyson</h3>
-										<p class="indentity">Washington</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimonial-content">
-							<div class="testimonial">
-								<blockquote>
-									<q>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit beatae laudantium
-										voluptate rem ullam dolore!.</q>
-								</blockquote>
-								<div class="testi-des">
-									<div class="test-img"><img src="../assets/images/team2.jpg" class="img-fluid" alt="/">
-									</div>
-									<div class="peopl align-self">
-										<h3>Laura gill</h3>
-										<p class="indentity">Washington</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<div class="testimonial-content">
-							<div class="testimonial">
-							
-								<div class="testi-des">
-									<div class="test-img"><img src="../assets/images/team3.jpg" class="img-fluid" alt="/">
-									</div>
-									<div class="peopl align-self">
-										<h3>Smith Johnson</h3>
-										<p class="indentity">Washington</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- /grids -->
-		</div>
-	</section>
+<!-- Theatre Image Carousel Section -->
+<section class="w3l-theatre" id="theatre">
+    <div class="container py-lg-4">
+      <div class="text-center mb-4"><h2>Pamje nga Teatri</h2></div>
+      <div class="carousel-width">
+        <div class="owl-theatre owl-carousel owl-theme mb-lg-5">
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/1.jpg" alt="Theatre Image 1"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/2.jpg" alt="Theatre Image 2"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/3.jpg" alt="Theatre Image 3"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/4.jpg" alt="Theatre Image 4"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/5.jpg" alt="Theatre Image 5"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/6.jpg" alt="Theatre Image 6"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
@@ -335,6 +255,50 @@ $pageStyles = [
 	});
 </script>
 <script src="../../assets/js/bootstrap.min.js"></script>
+
+<script>
+  $(function() {
+    // Initialize Owl Carousel
+    $('.owl-theatre').owlCarousel({
+      loop: true,
+      margin: 20,
+      responsiveClass: true,
+      autoplay: true,
+      autoplayTimeout: 5000,
+      autoplaySpeed: 1000,
+      autoplayHoverPause: false,
+      responsive: {
+        0: { items: 1, nav: true },
+        480: { items: 1, nav: true },
+        667: { items: 2, nav: false },
+        1000: { items: 3, nav: true, loop: false }
+      }
+    });
+
+    // Lightbox open
+    $('.carousel-img').on('click', function() {
+      var src = this.src;
+      $('#lightbox-img').attr('src', src);
+      $('#lightbox-overlay').fadeIn(400);
+    });
+
+    // Lightbox close
+    $('#lightbox-close').on('click', function() {
+      $('#lightbox-overlay').fadeOut(400);
+    });
+    $('#lightbox-overlay').on('click', function(e) {
+      if (e.target.id === 'lightbox-overlay') {
+        $('#lightbox-overlay').fadeOut(400);
+      }
+    });
+  });
+</script>
+
+<!-- Lightbox Overlay -->
+<div id="lightbox-overlay">
+  <span id="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="Full Screen Image">
+</div>
 
 </body>
 </html>
