@@ -36,6 +36,7 @@ function sendEmail(string $email, string $subject, string $body): bool {
         $mail->send();
         return true;
     } catch (Exception $e) {
+        echo $e->getMessage();
         return false;
     }
 }
@@ -64,14 +65,14 @@ function checkAdmin($conn): bool {
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/login.php');
+        header("Location: " . '/biletaria_online/auth/login.php');
         exit;
     }
 }
 
 function redirectIfNotAdmin($conn): void {
     if(!checkAdmin($conn)) {
-        header("Location: " . $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/no-access.php');
+        header("Location: " . '/biletaria_online/auth/no-access.php');
         exit;
     }
 }
@@ -133,7 +134,7 @@ function showError($error): void {
           body {
             background: url('/biletaria_online/assets/img/error.png') no-repeat center center fixed;
             background-size: cover;
-            justify-content: center;
+            justify-content: center !important;
           }
       </style>
       </head>
@@ -309,4 +310,30 @@ function getPosterPath($conn, $table, $id): string {
     }
 
     return "File nuk u gjet!";
+}
+
+function pageDoesNotExist($error): void
+{
+    echo "<!DOCTYPE html>
+      <html lang='sq'>
+      <head>";
+    require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
+    echo "<title>Teatri Metropol | Mesazh</title>
+      <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
+      <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
+      <style>
+          body {
+            background: url('/biletaria_online/assets/img/error.png') no-repeat center center fixed;
+            background-size: cover;
+            justify-content: center !important;
+          }
+      </style>
+      </head>
+      <body>
+      <div class='errors show'>
+            <p>$error</p>
+      </div>
+      </body>
+      </html>";
+    exit;
 }

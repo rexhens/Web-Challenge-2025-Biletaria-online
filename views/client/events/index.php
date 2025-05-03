@@ -5,25 +5,42 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 ?>
 
+<?php
+$pageTitle = 'Evente';
+$pageStyles = [
+    '/biletaria_online/assets/css/footer.css',
+    '/biletaria_online/assets/css/navbar.css',
+    '/biletaria_online/assets/css/styles.css',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Teatri Metropol | Evente</title>
-    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
         body {
             padding: 0 30px;
             align-items: flex-start;
         }
+
+        .footer-glass {
+            margin-left: -30px;
+            width: calc(100% + 28px);
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
+        }
     </style>
 </head>
 
 <body>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
+
 <header>
     <h1>Eventet në <span>Teatrin Metropol</span></h1>
 </header>
@@ -35,7 +52,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 
 <div class="filter-container">
-    <select id="dateFilter" style="width: 100%;">
+    <select id="dateFilter" style="width: 100% !important;">
         <option value="available">Në vazhdim</option>
         <option value="past">Të kaluarat</option>
         <option value="all">Të gjitha</option>
@@ -44,11 +61,20 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 <div class="shows-container" id="shows-container"></div>
 
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
 <script>
     const dateFilter = document.getElementById("dateFilter");
 
     async function fetchFilteredShows() {
         const dateFilterValue = dateFilter.value;
+        const showsContainer = document.getElementById("shows-container");
+
+        showsContainer.innerHTML = `
+                                            <div class="loading-spinner-wrapper">
+                                                <div class="loading-spinner"></div>
+                                            </div>
+                                        `;
 
         try {
             const response = await fetch('filter_events.php', {
@@ -56,11 +82,10 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `event_time_filter=${encodeURIComponent(dateFilterValue)}}`,
+                body: `event_time_filter=${encodeURIComponent(dateFilterValue)}`,
             });
 
             const html = await response.text();
-            const showsContainer = document.getElementById("shows-container");
             showsContainer.innerHTML = html;
 
             document.querySelectorAll('.show-card').forEach(card => {

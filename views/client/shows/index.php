@@ -15,7 +15,8 @@ $pageTitle = 'Shfaqjet';
 $pageStyles = [
     '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+    '/biletaria_online/assets/css/footer.css'
 ];
 ?>
 
@@ -29,6 +30,15 @@ $pageStyles = [
         body {
             padding: 0 30px;
             align-items: flex-start;
+        }
+
+        .footer-glass {
+            margin-left: -30px;
+            width: calc(100% + 28px);
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
         }
     </style>
 </head>
@@ -65,6 +75,8 @@ $pageStyles = [
 
     <div class="shows-container" id="shows-container"></div>
 
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
     <script>
         const genreFilter = document.getElementById("genreFilter");
         const dateFilter = document.getElementById("dateFilter");
@@ -72,6 +84,13 @@ $pageStyles = [
         async function fetchFilteredShows() {
             const genre = genreFilter.value;
             const dateFilterValue = dateFilter.value;
+            const showsContainer = document.getElementById("shows-container");
+
+            showsContainer.innerHTML = `
+                                            <div class="loading-spinner-wrapper">
+                                                <div class="loading-spinner"></div>
+                                            </div>
+                                        `;
 
             try {
                 const response = await fetch('filter_shows.php', {
@@ -83,7 +102,6 @@ $pageStyles = [
                 });
 
                 const html = await response.text();
-                const showsContainer = document.getElementById("shows-container");
                 showsContainer.innerHTML = html;
 
                 document.querySelectorAll('.show-card').forEach(card => {

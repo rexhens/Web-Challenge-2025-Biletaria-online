@@ -43,18 +43,35 @@ $groupedDates = groupDates($dates);
 
 ?>
 
+<?php
+$pageTitle = htmlspecialchars($event['title']);
+$pageStyles = [
+    '/biletaria_online/assets/css/footer.css',
+    '/biletaria_online/assets/css/styles.css',
+    '/biletaria_online/assets/css/navbar.css'
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | <?php echo htmlspecialchars($event['title']); ?></title>
-    <link rel="stylesheet" href="/biletaria_online/assets/css/styles.css">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+    <style>
+        body {
+            padding-top: 70px !important;
+            overflow-x: hidden !important;
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
+        }
+    </style>
 </head>
 
 <body>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
 <div class="video-container">
     <?php
@@ -101,6 +118,8 @@ $groupedDates = groupDates($dates);
         <?php endif; ?>
     </div>
 </div>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <!--
     <div class="info-container">

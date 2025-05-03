@@ -4,47 +4,40 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
-// Fetch users from the database
 $query = "SELECT * FROM users";
 $users_result = $conn->query($query);
 ?>
 
-
+<?php
+$pageTitle = 'Përdoruesit';
+$pageStyles = [
+    '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
+    '/biletaria_online/assets/css/sb-admin-2.min.css',
+    "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i",
+    "https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css",
+];
+?>
 
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require '../../../includes/links.php'; ?>
-    <meta property="og:image" content="../../../assets/img/metropol_icon.png">
-    <link rel="icon" href="../../../assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Shto Përdorues</title>
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-    <link href="../../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-    <link href="../../../assets/css/sb-admin-2.min.css" rel="stylesheet">
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-
-
-
-   
-    <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <!-- sb-admin-2 (your custom template) -->
-    <script src="../../../assets/js/sb-admin-2.min.js"></script>
-
-    <!-- jQuery Easing (if used in sb-admin-2) -->
-    <script src="../../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
+  
     <style>
+          a.paginate_button:hover,
+        a.paginate_button:disabled {
+            background-color: #8f793f !important;
+        }
+        table.dataTable td,
+        table.dataTable th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
         .dataTables_filter {
             width: 100%;
             margin-bottom: 1rem;
@@ -100,7 +93,6 @@ $users_result = $conn->query($query);
 
 <body id="page-top">
 
-    <div style="display: flex; justify-content: flex-start; width: 100%; gap: 3%;" id="wrapper">
       <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
         <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
@@ -153,27 +145,29 @@ $users_result = $conn->query($query);
                                             <td><span class="badge badge-danger">Jo Aktiv</span></td>
                                         <?php } ?>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-secondary editUserBtn"
-                                                    style="width: 48%;"
-                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
-                                                data-surname="<?php echo $row['surname'] ?>"
-                                                data-email="<?php echo $row['email'] ?>"
-                                                data-phone="<?php echo $row['phone'] ?>"
-                                                data-role="<?php echo $row['role'] ?>"
-                                                data-status="<?php echo $row['status'] ?>">Edito</button>
-                                            <?php if ($row['status'] == 'active') { ?>
-                                                <button class="btn btn-sm btn-outline-danger deleteUserBtn"
-                                                        style="width: 48%;"
-                                                    data-id="<?php echo $row['id'] ?>"
-                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
-                                                    data-toggle="modal" data-target="#deleteUserModal">Caktivizo</button>
-                                            <?php } else { ?>
-                                                <button class="btn btn-sm btn-outline-success activateUserBtn"
-                                                        style="width: 48%;"
-                                                    data-id="<?php echo $row['id'] ?>"
-                                                    data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
-                                                    data-toggle="modal" data-target="#activateUserModal">Aktivizo</button>
-                                            <?php } ?>
+                                            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
+                                                <button class="btn btn-sm btn-outline-secondary editUserBtn"
+                                                        style="width: 100%;"
+                                                        data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['name'] ?>"
+                                                        data-surname="<?php echo $row['surname'] ?>"
+                                                        data-email="<?php echo $row['email'] ?>"
+                                                        data-phone="<?php echo $row['phone'] ?>"
+                                                        data-role="<?php echo $row['role'] ?>"
+                                                        data-status="<?php echo $row['status'] ?>">Edito</button>
+                                                <?php if ($row['status'] == 'active') { ?>
+                                                    <button class="btn btn-sm btn-outline-danger deleteUserBtn"
+                                                            style="width: 100%;"
+                                                            data-id="<?php echo $row['id'] ?>"
+                                                            data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                            data-toggle="modal" data-target="#deleteUserModal">Caktivizo</button>
+                                                <?php } else { ?>
+                                                    <button class="btn btn-sm btn-outline-success activateUserBtn"
+                                                            style="width: 100%;"
+                                                            data-id="<?php echo $row['id'] ?>"
+                                                            data-name="<?php echo $row['name'] . ' ' . $row['surname'] ?>"
+                                                            data-toggle="modal" data-target="#activateUserModal">Aktivizo</button>
+                                                <?php } ?>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php
@@ -185,9 +179,6 @@ $users_result = $conn->query($query);
                 </div>
             </div>
         </section>
-
-
-    </div>
     <!-- Edit Modal -->
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -297,6 +288,18 @@ $users_result = $conn->query($query);
             </form>
         </div>
     </div>
+<!-- 1. Load jQuery first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- 2. Then load any plugins that depend on jQuery -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- 3. Then load your main template JS file -->
+<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+
+<!-- 4. Optional: Other JS libraries -->
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 
 
 </body>

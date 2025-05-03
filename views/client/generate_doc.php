@@ -22,7 +22,7 @@ $imagePath = $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/img/doc-heade
 if (file_exists($imagePath)) {
   $imageData = base64_encode(file_get_contents($imagePath));
 
-  $imageTag = '<img src="../../../assets/img/doc-header.png" alt="Header Logo" style="width:120px; margin-bottom:20px;">';
+  $imageTag = '<img src="../../assets/img/doc-header.png" alt="Header Logo" style="width:120px; margin-bottom:20px;">';
 } else {
   
   $imageTag = '<p>[Image file not found]</p>';

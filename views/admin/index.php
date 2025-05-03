@@ -3,6 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -23,32 +25,32 @@ $events_query = "
 $events_result = $conn->query($events_query);
 ?>
 
+<?php
+$pageTitle = 'Paneli i Menaxhimit';
+$pageStyles = [
+    "/biletaria_online/assets/css/style-starter.css",
+    "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i",
+    "/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css",
+    "/biletaria_online/assets/css/sb-admin-2.min.css",
+    "https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
+];
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sq">
 
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Teatri Metropol | Paneli i Menaxhimit</title>
-
-
-    <link rel="stylesheet" href="/biletaria_online/assets/css/style-starter.css">
-
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <!-- Custom fonts for this template-->
-    <link href="../../assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
     <style>
-        .bg-gold {
+        .card-body {
+            margin: 0 !important;
+
+        }
+
+        .bg-gold,
+        a.paginate_button:hover,
+        a.paginate_button:disabled {
             background-color: #8f793f !important;
         }
 
@@ -58,20 +60,6 @@ $events_result = $conn->query($events_query);
 
         .text-gold {
             color: #8f793f !important;
-        }
-
-        #accordionSidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            height: 100vh;
-            z-index: 1030;
-            /* make sure it stays on top */
-            overflow-y: auto;
-            background-color: #8f793f !important;
-            background-image: none !important;
-            /* removes gradient */
         }
 
         .btn-primary-report {
@@ -111,7 +99,6 @@ $events_result = $conn->query($events_query);
             color: #8f793f !important;
         }
 
-
         .show-overlay h3 {
             font-family: "Russo One", sans-serif !important;
             margin: 0 0 10px !important;
@@ -119,7 +106,6 @@ $events_result = $conn->query($events_query);
             color: white !important;
             font-weight: 900 !important;
         }
-
 
         .show-overlay h3 span {
             color: #836e4f;
@@ -200,9 +186,6 @@ $events_result = $conn->query($events_query);
             transform: translateY(-5px);
         }
 
-
-
-
         .show-overlay p.show-description {
             display: none !important;
         }
@@ -281,12 +264,6 @@ $events_result = $conn->query($events_query);
             transition: margin-left 0.3s ease;
         }
 
-        /* Kur sidebar është i toggled = i vogël */
-        body.sidebar-toggled #content-wrapper {
-            margin-left: 100px;
-            /* ose 0px nëse sidebar fshihet totalisht */
-        }
-
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             padding: 0% !important;
             margin: 0% !important;
@@ -311,393 +288,377 @@ $events_result = $conn->query($events_query);
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
-    <div id="wrapper">
 
-        <!-- Sidebar -->
-        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
-        <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
-
-            <!-- Main Content -->
-            <div id="content">
-
-                <!-- Topbar -->
-
-                <!-- End of Topbar -->
-
-                <!-- Begin Page Content -->
-                <div class="container-fluid" style="background-color: white;">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
-                        <a href="generate_report.php"
-                            class="d-none d-sm-inline-block btn btn-sm btn-primary-report shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row">
-
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-gold shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
-                                                Te ardhurat Mujore
-                                            </div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Sidebar -->
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
 
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-gold shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
-                                                Te ardhurat Vjetore</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Main Content -->
+    <div id="content" style="padding-top: 30px !important;">
 
-                        <!-- Earnings (Monthly) Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-gold shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">Karrige
-                                                te zena
-                                            </div>
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-gold" role="progressbar"
-                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Begin Page Content -->
+        <div class="container-fluid" style="background-color: white;">
 
-                        <!-- Pending Requests Card Example -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <div class="card border-left-gold shadow h-100 py-2">
-                                <div class="card-body">
-                                    <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
-                                                Review te shfaqjeve</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                        </div>
-                                        <div class="col-auto">
-                                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Content Row -->
-
-                    <div class="row">
-
-                        <!-- Graphs -->
-                        <div class="col-xl-8 col-lg-7" id="graphs-section">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary-1">Te ardhurat e gjeneruara kete vit
-                                    </h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Gjenerimi i shitjeve:</div>
-                                            <a class="dropdown-item" href="#">Online</a>
-                                            <a class="dropdown-item" href="#">Ne biletari</a>
-                                            <div class="dropdown-divider"></div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pie Chart -->
-                        <div class="col-xl-4 col-lg-5">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary-1">Prenotimi i biletave </h6>
-                                    <div class="dropdown no-arrow">
-                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                            aria-labelledby="dropdownMenuLink">
-                                            <div class="dropdown-header">Dropdown Header:</div>
-                                            <a class="dropdown-item" href="#">Online</a>
-                                            <a class="dropdown-item" href="#">ne biletari</a>
-                                            <div class="dropdown-divider"></div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-pie pt-4 pb-2">
-                                        <canvas id="myPieChart"></canvas>
-                                    </div>
-                                    <div class="mt-4 text-center small">
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-primary-1"></i> Online
-                                        </span>
-                                        <span class="mr-2">
-                                            <i class="fas fa-circle text-success"
-                                                style="color: #716a69 !important"></i> Ne biletari
-                                        </span>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabela e userave -->
-                    <section id="users-section">
-                        <div class="card shadow border-0 rounded">
-                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
-                                <button class="btn btn-sm btn-primary-report"
-                                    onclick="window.location.href = 'users/add-user.php'" style="padding: 7px 20px;">+ Shto Përdorues</button>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table id="userTable" class="table table-hover mb-0 w-100">
-                                        <thead class="thead-light">
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Emri</th>
-                                                <th>Email</th>
-                                                <th>Numri i cel</th>
-                                                <th>Roli</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $i = 1;
-                                            while ($row = $users_result->fetch_assoc()) { ?>
-                                                <tr>
-                                                    <td><?php echo $i ?></td>
-                                                    <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
-                                                    <td><?php echo $row['email'] ?></td>
-                                                    <td><?php echo $row['phone'] ?></td>
-                                                    <td><?php echo $row['role'] ?></td>
-
-                                                </tr>
-                                            <?php
-                                                $i++;
-                                            } ?>
-
-                                            <!-- Add more rows here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                    <!-- Menaxhimi i Shfaqjeve -->
-                    <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
-                        <div
-                            class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
-                            <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = 'shows/add-show.php'" style="padding: 7px 20px;">+ Shto Shfaqje</button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="showsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Titulli</th>
-                                            <th>Salla</th>
-                                            <th>Zhanri</th>
-                                            <th>Çmimi</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-dark">
-                                        <?php
-                                        $i = 1;
-                                        while ($row = $shows_result->fetch_assoc()) { ?>
-                                            <tr>
-                                                <td class="text-muted"><?php echo $i; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['hall']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
-                                                <td><?php echo number_format($row['price'], 2); ?> Leke</td>
-
-                                            </tr>
-                                        <?php
-                                            $i++;
-                                        } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <!-- Menaxhimi i aktoreve -->
-                    <div class="card shadow border-0 rounded-4 mt-5" id="actors-section">
-                        <div
-                            class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 text-primary-1">Lista e Aktorëve</h5>
-                            <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = 'actors/add.php'" style="padding: 7px 20px;">+ Shto Aktor</button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Emri</th>
-                                            <th>Email</th>
-                                            <th>Datëlindja</th>
-                                            <th>Biografia</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-dark">
-                                        <?php
-                                        $i = 1;
-                                        while ($row = $actors_result->fetch_assoc()) { ?>
-                                            <tr>
-                                                <td class="text-muted"><?php echo $i; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                                <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
-                                                <td class="text-truncate" style="max-width: 200px;">
-                                                    <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
-                                                </td>
-
-                                            </tr>
-                                        <?php
-                                            $i++;
-                                        } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <!-- Menaxhimi i Eventeve -->
-                    <div class="card shadow border-0 rounded-4 mt-5" id="events-section"
-                        style="margin-bottom: 100px;">
-                        <div
-                            class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                            <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
-                            <button class="btn btn-sm btn-primary-report"
-                                onclick="window.location.href = 'events/add-event.php'" style="padding: 7px 20px;">+ Shto Event </button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Titulli</th>
-                                            <th>Salla</th>
-                                            <th>Orari</th>
-                                            <th>Çmimi</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-dark">
-                                        <?php
-                                        $i = 1;
-                                        while ($row = $events_result->fetch_assoc()) { ?>
-                                            <tr>
-                                                <td class="text-muted"><?php echo $i; ?></td>
-                                                <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['hall']); ?></td>
-                                                <td><?php echo htmlspecialchars($row['time']); ?></td>
-                                                <td><?php echo number_format($row['price'], 2); ?> Leke</td>
-
-                                            </tr>
-                                        <?php
-                                            $i++;
-                                        } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-                </div>
-                <!-- /.container-fluid -->
-
+            <!-- Page Heading -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
+                <a href="generate_report.php"
+                    class="d-none d-sm-inline-block btn btn-sm btn-primary-report shadow-sm"><i
+                        class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
             </div>
-            <!-- End of Main Content -->
 
-            <!-- Footer -->
+            <!-- Content Row -->
+            <div class="row">
 
-            <!-- End of Footer -->
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-gold shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
+                                        Te ardhurat Mujore
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="monthlyRevenue">LEK 0</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Earnings (Yearly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-gold shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
+                                        Te ardhurat Vjetore</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800" id="yearlyRevenue">LEK 0</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-gold shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">Karrige
+                                        te zena
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="progress progress-sm mr-2">
+                                                <div class="progress-bar bg-gold" role="progressbar" style="width: 50%"
+                                                    aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests Card Example -->
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-gold shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
+                                        Review te shfaqjeve</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Row -->
+
+            <div class="row">
+
+                <!-- Graphs -->
+                <div class="col-xl-8 col-lg-7" id="graphs-section">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary-1">Te ardhurat e gjeneruara kete vit
+                            </h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                    aria-labelledby="dropdownMenuLink">
+                                    <div class="dropdown-header">Gjenerimi i shitjeve:</div>
+                                    <a class="dropdown-item" href="#">Online</a>
+                                    <a class="dropdown-item" href="#">Ne biletari</a>
+                                    <div class="dropdown-divider"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="chart-area">
+                                <canvas id="myAreaChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pie Chart -->
+                <div class="col-xl-4 col-lg-5">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary-1">Prenotimi i biletave </h6>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                    aria-labelledby="dropdownMenuLink">
+                                    <div class="dropdown-header">Dropdown Header:</div>
+                                    <a class="dropdown-item" href="#">Online</a>
+                                    <a class="dropdown-item" href="#">ne biletari</a>
+                                    <div class="dropdown-divider"></div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body">
+                            <div class="chart-pie pt-4 pb-2">
+                                <canvas id="myPieChart"></canvas>
+                            </div>
+                            <div class="mt-4 text-center small">
+                                <span class="mr-2">
+                                    <i class="fas fa-circle text-primary-1"></i> Online
+                                </span>
+                                <span class="mr-2">
+                                    <i class="fas fa-circle text-success" style="color: #716a69 !important"></i> Ne
+                                    biletari
+                                </span>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabela e userave -->
+            <section id="users-section">
+                <div class="card shadow border-0 rounded">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
+                        <button class="btn btn-sm btn-primary-report"
+                            onclick="window.location.href = 'users/add-user.php'" style="padding: 7px 20px;">+ Shto
+                            Përdorues</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="userTable" class="table table-hover mb-0 w-100">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Emri</th>
+                                        <th>Email</th>
+                                        <th>Numri i cel</th>
+                                        <th>Roli</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $i = 1;
+                                    while ($row = $users_result->fetch_assoc()) { ?>
+                                        <tr>
+                                            <td><?php echo $i ?></td>
+                                            <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
+                                            <td><?php echo $row['email'] ?></td>
+                                            <td><?php echo $row['phone'] ?></td>
+                                            <td><?php echo $row['role'] ?></td>
+
+                                        </tr>
+                                        <?php
+                                        $i++;
+                                    } ?>
+
+                                    <!-- Add more rows here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Menaxhimi i Shfaqjeve -->
+            <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                    <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'shows/add-show.php'"
+                        style="padding: 7px 20px;">+ Shto Shfaqje</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="showsTable" class="table table-hover align-middle mb-0 w-100">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titulli</th>
+                                    <th>Salla</th>
+                                    <th>Zhanri</th>
+                                    <th>Çmimi</th>
+
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark">
+                                <?php
+                                $i = 1;
+                                while ($row = $shows_result->fetch_assoc()) { ?>
+                                    <tr>
+                                        <td class="text-muted"><?php echo $i; ?></td>
+                                        <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['hall']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
+                                        <td><?php echo number_format($row['price'], 2); ?> Leke</td>
+
+                                    </tr>
+                                    <?php
+                                    $i++;
+                                } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Menaxhimi i aktoreve -->
+            <div class="card shadow border-0 rounded-4 mt-5" id="actors-section">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                    <h5 class="mb-0 text-primary-1">Lista e Aktorëve</h5>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'actors/add.php'"
+                        style="padding: 7px 20px;">+ Shto Aktor</button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Emri</th>
+                                    <th>Email</th>
+                                    <th>Datëlindja</th>
+                                    <th>Biografia</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark">
+                                <?php
+                                $i = 1;
+                                while ($row = $actors_result->fetch_assoc()) { ?>
+                                    <tr>
+                                        <td class="text-muted"><?php echo $i; ?></td>
+                                        <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                        <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
+                                        <td class="text-truncate" style="max-width: 200px;">
+                                            <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
+                                        </td>
+
+                                    </tr>
+                                    <?php
+                                    $i++;
+                                } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Menaxhimi i Eventeve -->
+            <div class="card shadow border-0 rounded-4 mt-5" id="events-section" style="margin-bottom: 100px;">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                    <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
+                    <button class="btn btn-sm btn-primary-report"
+                        onclick="window.location.href = 'events/add-event.php'" style="padding: 7px 20px;">+ Shto Event
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titulli</th>
+                                    <th>Salla</th>
+                                    <th>Orari</th>
+                                    <th>Çmimi</th>
+
+                                </tr>
+                            </thead>
+                            <tbody class="text-dark">
+                                <?php
+                                $i = 1;
+                                while ($row = $events_result->fetch_assoc()) { ?>
+                                    <tr>
+                                        <td class="text-muted"><?php echo $i; ?></td>
+                                        <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['hall']); ?></td>
+                                        <td><?php echo htmlspecialchars($row['time']); ?></td>
+                                        <td><?php echo number_format($row['price'], 2); ?> Leke</td>
+
+                                    </tr>
+                                    <?php
+                                    $i++;
+                                } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- /.container-fluid -->
 
     </div>
+    <!-- End of Main Content -->
+
+    <!-- Footer -->
+
+    <!-- End of Footer -->
+
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->
@@ -706,28 +667,28 @@ $events_result = $conn->query($events_query);
     </a>
 
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="../../assets/vendor/jquery/jquery.min.js"></script>
-    <script src="../../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery (must be first) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="../../assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="../../assets/js/sb-admin-2.min.js"></script>
+    <!-- jQuery Plugins that depend on jQuery -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
     <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
-
     <!-- Page level custom scripts -->
     <script src="../../assets/js/demo/chart-area-demo.js"></script>
     <script src="../../assets/js/demo/chart-pie-demo.js?v=2"></script>
-    <!-- DataTables CSS and JS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css">
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
 
     <script>
+        $(document).ready(function () {
+            $("#sidebarToggle").on('click', function (e) {
+                e.preventDefault();
+                $("body").toggleClass("sidebar-toggled");
+                $(".sidebar").toggleClass("toggled");
+            });
+        });
         $(document).ready(function () {
             $('#userTable').DataTable({
                 "pageLength": 5,
@@ -747,7 +708,7 @@ $events_result = $conn->query($events_query);
                 "initComplete": function () {
                     $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
                     $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
-                    $('.dataTables_filter input').css({'padding-left': '40px'});
+                    $('.dataTables_filter input').css({ 'padding-left': '40px' });
                 }
             });
         });
@@ -769,7 +730,7 @@ $events_result = $conn->query($events_query);
             "initComplete": function () {
                 $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
                 $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
-                $('.dataTables_filter input').css({'padding-left': '40px'});
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
             }
         });
         $('#showsTable').DataTable({
@@ -790,7 +751,7 @@ $events_result = $conn->query($events_query);
             "initComplete": function () {
                 $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
                 $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
-                $('.dataTables_filter input').css({'padding-left': '40px'});
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
             }
         });
         $('#eventsTable').DataTable({
@@ -811,13 +772,33 @@ $events_result = $conn->query($events_query);
             "initComplete": function () {
                 $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
                 $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
-                $('.dataTables_filter input').css({'padding-left': '40px'});
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
             }
         });
-
     </script>
 
-    <!-- Scripts for the sidebar movement -->
+    <script>
+        // Format numbers with thousands separator
+        function formatCurrency(value) {
+            return 'LEK ' + value.toLocaleString('en-US', { minimumFractionDigits: 0 });
+        }
+
+        // Load and inject monthly revenue
+        fetch('../../includes/revenues.php?action=monthly')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('monthlyRevenue').textContent = formatCurrency(data);
+            })
+            .catch(error => console.error('Monthly revenue error:', error));
+
+        // Load and inject yearly revenue
+        fetch('../../includes/revenues.php?action=yearly')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('yearlyRevenue').textContent = formatCurrency(data);
+            })
+            .catch(error => console.error('Yearly revenue error:', error));
+    </script>
     <script>
         $(document).ready(function () {
             // Scroll to utilities section when Utilities nav link is clicked
@@ -878,7 +859,6 @@ $events_result = $conn->query($events_query);
             });
         });
     </script>
-
 
 
 </body>

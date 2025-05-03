@@ -3,32 +3,36 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 
 $query = "SELECT * FROM shows";
 $users_result = $conn->query($query);
 ?>
 
+<?php
+$pageTitle = 'Shfaqjet';
+$pageStyles = [
+    '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
+    '/biletaria_online/assets/css/sb-admin-2.min.css',
+    "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i",
+    "https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css",
+    "/biletaria_online/assets/css/flatpickr.min.css"
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php'; ?>
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png">
-    <title>Teatri Metropol | Menaxho Shfaqje</title>
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-
-    <link rel="stylesheet" href="/biletaria_online/assets/css/flatpickr.min.css">
-
-    <!-- jQuery Easing (if used in sb-admin-2) -->
-    <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-    <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
     <style>
+          a.paginate_button:hover,
+        a.paginate_button:disabled {
+            background-color: #8f793f !important;
+        }
         table.dataTable td,
         table.dataTable th {
             text-align: center;
@@ -49,8 +53,6 @@ $users_result = $conn->query($query);
             white-space: normal;
             /* important: avoid nowrap */
         }
-
-
 
         .dataTables_filter {
             width: 100%;
@@ -99,10 +101,12 @@ $users_result = $conn->query($query);
         input {
             box-shadow: none !important;
         }
+
+        a.paginate_button:hover,
+        a.paginate_button:disabled {
+            background-color: #8f793f !important;
+        }
     </style>
-
-
-
 </head>
 
 <body id="page-top">
@@ -118,130 +122,124 @@ $users_result = $conn->query($query);
         </div>
     <?php endif; ?>
 
-    <div style="display: flex; justify-content: flex-start; width: 100%;" id="wrapper">
-        <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
 
-        <section id="users-section">
-            <div class="card shadow border-0 rounded">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Shfaqjeve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-show.php'"
-                        style="padding: 7px 20px;">Shto Shaqje</button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
-                            <thead class="thead-light">
+    <section id="users-section">
+        <div class="card shadow border-0 rounded">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Shfaqjeve</h5>
+                <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-show.php'"
+                    style="padding: 7px 20px;">Shto Shaqje</button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="userTable" class="table table-hover mb-0 w-100" width="100%">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Titulli</th>
+                                <th>Salla</th>
+                                <th>Zhaneri</th>
+                                <th>Datat</th>
+                                <th>Ora</th>
+                                <th>Bileta</th>
+                                <th>Përshkrimi</th>
+                                <th>Poster</th>
+                                <th>Veprime</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $i = 1;
+
+                            while ($row = $users_result->fetch_assoc()) {
+
+                                $genre_id = $row['genre_id'];
+                                $genre = $conn->prepare("SELECT * FROM genres WHERE id = ?");
+                                $genre->bind_param("i", $genre_id);
+                                $genre->execute();
+                                $result = $genre->get_result();
+                                $genreData = $result->fetch_assoc();
+
+                                $datesQuery = $conn->prepare("SELECT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
+                                $datesQuery->bind_param("i", $row['id']);
+                                $datesQuery->execute();
+                                $datesResult = $datesQuery->get_result();
+                                $dates = [];
+                                while ($date = $datesResult->fetch_assoc()) {
+                                    $dates[] = $date['show_date'];
+                                }
+
+                                $groupedDates = groupDates($dates);
+                                $dataDates = implode(',', $dates);
+
+                                $posterUrl = "../../../includes/get_image.php?show_id=" . $row['id'];
+                                ?>
+
                                 <tr>
-                                    <th>#</th>
-                                    <th>Titulli</th>
-                                    <th>Salla</th>
-                                    <th>Zhaneri</th>
-                                    <th>Datat</th>
-                                    <th>Ora</th>
-                                    <th>Bileta</th>
-                                    <th>Përshkrimi</th>
-                                    <th>Poster</th>
-                                    <th>Veprime</th>
+                                    <td><?php echo $i ?></td>
+                                    <td><?php echo $row['title'] ?></td>
+                                    <td><?php echo $row['hall'] ?></td>
+                                    <td><?php echo $genreData['genre_name'] ?></td>
+                                    <td><?php echo implode(', ', $groupedDates) ?></td>
+                                    <td><?php echo $row['time'] ?></td>
+                                    <td><?php echo $row['price'] ?> Lekë</td>
+                                    <td>
+                                        <div class="desc-col">
+                                            <?php echo $row['description'] ?>
+                                        </div>
+                                    </td>
+                                    <td><img src="<?php echo $posterUrl ?>" alt="Poster"
+                                            style="width: 150px; height: auto; border-radius: 5px;"></td>
+                                    <td style="text-align: center; vertical-align: middle;">
+                                        <div
+                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
+                                            <button class="btn btn-sm btn-outline-secondary editShowBtn"
+                                                style="width: 100%;" data-id="<?php echo $row['id'] ?>"
+                                                data-title="<?php echo $row['title'] ?>"
+                                                data-hall="<?php echo $row['hall'] ?>"
+                                                data-genre="<?php echo $row['genre_id'] ?>"
+                                                data-dates="<?php echo $dataDates ?>" data-time="<?php echo $row['time'] ?>"
+                                                data-description="<?php echo $row['description'] ?>"
+                                                data-trailer="<?php echo $row['trailer'] ?>"
+                                                data-price="<?php echo $row['price'] ?>"
+                                                data-poster="<?php echo $posterUrl ?>">
+                                                Edito
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger delete-btn" style="width: 100%;"
+                                                data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['title'] ?>"
+                                                data-toggle="modal" data-target="#deleteUserModal">Fshi</button>
+                                            <button class="btn btn-sm btn-outline-success"
+                                                onclick="window.location.href = '/biletaria_online/views/client/shows/show_details.php?id=<?php echo $row['id'] ?>'"
+                                                style="width: 100%;">Më shumë info</button>
+                                            <button class="btn btn-sm btn-outline-warning"
+                                                style="width: 100%;">Rezervo</button>
+                                            <button class="btn btn-sm btn-outline-secondary"
+                                                style="width: 100%;">Rezervimet</button>
+                                        </div>
+                                    </td>
+
                                 </tr>
-                            </thead>
-                            <tbody>
                                 <?php
-                                $i = 1;
-
-                                while ($row = $users_result->fetch_assoc()) {
-
-                                    $genre_id = $row['genre_id'];
-                                    $genre = $conn->prepare("SELECT * FROM genres WHERE id = ?");
-                                    $genre->bind_param("i", $genre_id);
-                                    $genre->execute();
-                                    $result = $genre->get_result();
-                                    $genreData = $result->fetch_assoc();
-
-                                    $datesQuery = $conn->prepare("SELECT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
-                                    $datesQuery->bind_param("i", $row['id']);
-                                    $datesQuery->execute();
-                                    $datesResult = $datesQuery->get_result();
-                                    $dates = [];
-                                    while ($date = $datesResult->fetch_assoc()) {
-                                        $dates[] = $date['show_date'];
-                                    }
-
-                                    $groupedDates = groupDates($dates);
-                                    $dataDates = implode(',', $dates);
-
-                                    $posterUrl = "../../../includes/get_image.php?show_id=" . $row['id'];
-                                    ?>
-
-                                    <tr>
-                                        <td><?php echo $i ?></td>
-                                        <td><?php echo $row['title'] ?></td>
-                                        <td><?php echo $row['hall'] ?></td>
-                                        <td><?php echo $genreData['genre_name'] ?></td>
-                                        <td><?php echo implode(', ', $groupedDates) ?></td>
-                                        <td><?php echo $row['time'] ?></td>
-                                        <td><?php echo $row['price'] ?> Lekë</td>
-                                        <td>
-                                            <div class="desc-col">
-                                                <?php echo $row['description'] ?>
-                                            </div>
-                                        </td>
-                                        <td><img src="<?php echo $posterUrl ?>" alt="Poster"
-                                                style="width: 150px; height: auto; border-radius: 5px;"></td>
-                                        <td style="text-align: center; vertical-align: middle;">
-                                            <div
-                                                style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
-                                                <button class="btn btn-sm btn-outline-secondary editShowBtn"
-                                                    style="width: 100%;"
-                                                    data-id="<?php echo $row['id'] ?>"
-                                                    data-title="<?php echo $row['title'] ?>"
-                                                    data-hall="<?php echo $row['hall'] ?>"
-                                                    data-genre="<?php echo $row['genre_id'] ?>"
-                                                    data-dates="<?php echo $dataDates ?>"
-                                                    data-time="<?php echo $row['time'] ?>"
-                                                    data-description="<?php echo $row['description'] ?>"
-                                                    data-trailer="<?php echo $row['trailer'] ?>"
-                                                    data-price="<?php echo $row['price'] ?>"
-                                                    data-poster="<?php echo $posterUrl ?>">
-                                                    Edito
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger delete-btn"
-                                                    style="width: 100%;" data-id="<?php echo $row['id'] ?>"
-                                                    data-name="<?php echo $row['title'] ?>" data-toggle="modal"
-                                                    data-target="#deleteUserModal">Fshi</button>
-                                                <button class="btn btn-sm btn-outline-success"
-                                                    onclick="window.location.href = '/biletaria_online/views/client/shows/show_details.php?id=<?php echo $row['id'] ?>'"
-                                                    style="width: 100%;">Më shumë info</button>
-                                                <button class="btn btn-sm btn-outline-warning"
-                                                    style="width: 100%;">Rezervo</button>
-                                                <button class="btn btn-sm btn-outline-secondary"
-                                                    style="width: 100%;">Rezervimet</button>
-                                            </div>
-                                        </td>
-
-                                    </tr>
-                                    <?php
-                                    $i++;
-                                } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                $i++;
+                            } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
 
-        <?php
-        $genresQuery = "SELECT * FROM genres";
-        $genresResult = mysqli_query($conn, $genresQuery);
-        $genres = [];
-        while ($row = mysqli_fetch_assoc($genresResult)) {
-            $genres[] = $row;
-        }
-        ?>
-
-    </div>
+    <?php
+    $genresQuery = "SELECT * FROM genres";
+    $genresResult = mysqli_query($conn, $genresQuery);
+    $genres = [];
+    while ($row = mysqli_fetch_assoc($genresResult)) {
+        $genres[] = $row;
+    }
+    ?>
 
     <!-- Edit Show Modal -->
     <div class="modal fade" id="editShowModal" tabindex="-1" aria-labelledby="editShowModalLabel" aria-hidden="true">
@@ -355,6 +353,16 @@ $users_result = $conn->query($query);
     </div>
 
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
+
+<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 </html>
 
@@ -386,7 +394,7 @@ $users_result = $conn->query($query);
             "initComplete": function () {
                 $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
                 $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
-                $('.dataTables_filter input').css({'padding-left': '40px'});
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
             }
         });
     });

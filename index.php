@@ -7,6 +7,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 <?php
 $pageStyles = [
+    'assets/css/footer.css',
     'assets/css/style-starter.css',
     'assets/css/shows.css',
     'assets/css/navbar.css'
@@ -79,6 +80,8 @@ $pageStyles = [
                                         <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
                                         <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
+                                        <p style="margin-top: -20px; margin-bottom: 0;"><a href="views/client/shows/show_details.php?id=<?php echo $show['id']; ?>" style="color: white; text-decoration: underline;">Më shumë info</a></p>
+                                        <p style="margin-top: 0;"><a href="views/client/reserve.php?id=<?php echo $show['id']; ?>" style="color: white; text-decoration: underline">Rezervo</a></p>
                                         <a href="#<?php echo $popupId; ?>" class="popup-with-zoom-anim play-view1">
                                             <span class="video-play-icon">
                                                 <span class="fa fa-play"></span>
@@ -123,6 +126,9 @@ $pageStyles = [
 						</div>
 					</div>
 				</div>
+                <div class="loading-spinner-wrapper" id="shows-loader">
+                    <div class="loading-spinner"></div>
+                </div>
 				<div class="owl-three owl-carousel owl-theme shows-container" id="shows-container"></div>
 			</div>
 		</div>
@@ -131,7 +137,7 @@ $pageStyles = [
 	<!--mid-slider -->
     <section class="w3l-mid-slider position-relative">
         <div class="companies20-content">
-            <div class="grids-main py-5" style="margin-bottom: -110px; margin-top: -40px;">
+            <div class="grids-main py-5" style="margin-bottom: -110px; margin-top: -60px;">
                 <div class="container py-lg-3">
                     <div class="headerhny-title">
                         <div class="w3l-title-grids">
@@ -203,7 +209,8 @@ $pageStyles = [
                                         <h3><?php echo htmlspecialchars($event['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
                                         <p class='show-description' style="margin-top: -20px;"><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
-                                        <p><a href="views/client/events/event_details.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Më shumë info</a></p>
+                                        <p style="margin-top: -10px; margin-bottom: 0;"><a href="views/client/events/event_details.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Më shumë info</a></p>
+                                        <p style="margin-top: 0;"><a href="views/client/reserve.php?id=<?php echo $event['id']; ?>" style="color: white; text-decoration: underline">Rezervo</a></p>
                                         <a class="watch popup-with-zoom-anim play-view1" href="#<?php echo $popupId; ?>"><span class="fa fa-play" aria-hidden="true"></span> Shiko Trailerin</a>
                                         <div id="<?php echo $popupId; ?>" class="zoom-anim-dialog mfp-hide small-dialog">
                                             <iframe src="https://www.youtube.com/embed/<?php echo $videoId; ?>" allow="autoplay; fullscreen" allowfullscreen=""></iframe>
@@ -393,9 +400,9 @@ $pageStyles = [
     async function fetchFilteredShows() {
         const genre = "";
         const dateFilterValue = "available";
+        const showsContainer = document.getElementById("shows-container");
 
         try {
-            // Fetch new shows
             const response = await fetch('views/client/shows/filter_shows.php', {
                 method: 'POST',
                 headers: {
@@ -405,19 +412,15 @@ $pageStyles = [
             });
 
             const html = await response.text();
-            const showsContainer = document.getElementById("shows-container");
+            document.getElementById('shows-loader').style.display = 'none';
 
-            // Insert the new content into the container
             showsContainer.innerHTML = html;
 
-            // Re-initialize the Owl Carousel after content is inserted
             setTimeout(() => {
-                // Destroy any previous carousel instances before re-initializing
                 if ($('.owl-three').hasClass('owl-loaded')) {
                     $('.owl-three').trigger('destroy.owl.carousel');
                 }
 
-                // Re-initialize the Owl Carousel with the new content
                 $('.owl-three').owlCarousel({
                     stagePadding: 0,
                     loop: true,
@@ -481,7 +484,7 @@ $pageStyles = [
                         }
                     }
                 });
-            }, 100); // Timeout for DOM update
+            }, 100);
         } catch (error) {
             document.getElementById("shows-container").innerHTML = "<div class='errors show'><p>Gabim gjatë filtrimit!</p></div>";
         }

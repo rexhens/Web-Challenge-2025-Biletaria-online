@@ -3,6 +3,8 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdmin($conn);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-show'])) {
     $id = $_POST['showId'];
@@ -10,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-show'])) {
     $conn->begin_transaction();
 
     try {
-        $sql = "DELETE FROM show_dates WHERE event_id = ?";
+        $sql = "DELETE FROM show_dates WHERE show_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $id);
         if (!$stmt->execute()) {

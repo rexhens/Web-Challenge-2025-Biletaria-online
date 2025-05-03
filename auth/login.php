@@ -1,6 +1,7 @@
 <?php
 /** @var mysqli $conn */
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 session_start();
 ?>
 <!DOCTYPE html>
@@ -160,6 +161,8 @@ session_start();
                                 $redirect = $_SESSION['redirect_after_login'];
                                 unset($_SESSION['redirect_after_login']);
                                 header("Location: $redirect");
+                            } else if(checkAdmin($conn)) {
+                                header("Location: ../views/admin/index.php");
                             } else {
                                 header("Location: ../index.php");
                             }
