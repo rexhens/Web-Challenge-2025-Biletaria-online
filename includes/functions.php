@@ -127,7 +127,7 @@ function showError($error): void {
       <html lang='sq'>
       <head>";
     require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
-    echo "<title>Teatri Metropol | Mesazh</title>
+    echo "<title>Teatri Metropol | Error</title>
       <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
       <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
       <style>
@@ -140,7 +140,7 @@ function showError($error): void {
       </head>
       <body>
       <div class='errors show'>
-            <p>$error</p>
+            $error
       </div>
       </body>
       </html>";
@@ -312,13 +312,12 @@ function getPosterPath($conn, $table, $id): string {
     return "File nuk u gjet!";
 }
 
-function pageDoesNotExist($error): void
-{
+function customError($error): void {
     echo "<!DOCTYPE html>
       <html lang='sq'>
       <head>";
     require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
-    echo "<title>Teatri Metropol | Mesazh</title>
+    echo "<title>Teatri Metropol | Error</title>
       <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
       <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
       <style>
@@ -330,8 +329,8 @@ function pageDoesNotExist($error): void
       </style>
       </head>
       <body>
-      <div class='errors show'>
-            <p>$error</p>
+      <div class='errors show' style='width: 90% !important; background-color: transparent !important; display: flex !important; flex-direction: column; align-items: center; justify-content: center; box-shadow: revert !important;'>
+            $error
       </div>
       </body>
       </html>";
