@@ -1,16 +1,17 @@
 <?php
 /** @var mysqli $conn */
+/*
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+*/
 ?>
 
 <?php
 $pageTitle = "Rreth nesh";
 $pageStyles = [
     '/biletaria_online/assets/css/style-starter.css',
-    '/biletaria_online/assets/css/navbar.css',
-    '/biletaria_online/assets/css/footer.css'
+    '/biletaria_online/assets/css/navbar.css'
 ];
 ?>
 
@@ -19,11 +20,6 @@ $pageStyles = [
 
 <head>
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
-    <style>
-        body {
-            margin-bottom: 0 !important;
-        }
-    </style>
 </head>
 
 	<!-- /about-->
