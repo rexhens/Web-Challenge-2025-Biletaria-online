@@ -156,7 +156,7 @@ $pageStyles = [
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/1.jpg" alt="Theatre Image 1"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/2.jpg" alt="Theatre Image 2"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/3.jpg" alt="Theatre Image 3"></div>
-          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/4.jpeg" alt="Theatre Image 4"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/4.jpg" alt="Theatre Image 4"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/5.jpg" alt="Theatre Image 5"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/6.jpg" alt="Theatre Image 6"></div>
         </div>
