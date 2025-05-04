@@ -61,7 +61,28 @@ function checkAdmin($conn): bool {
 
     return true;
 }
+/*
+function checkTicketOffice($conn): bool {
 
+    if (!isset($_SESSION['user_id'])) {
+        return false;
+    }
+
+    $user_id = $_SESSION['user_id'];
+
+    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($role);
+    $stmt->fetch();
+
+    if ($role !== 'admin') {
+        return false;
+    }
+
+    return true;
+}
+*/
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
