@@ -22,6 +22,37 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
 	<style>
+    :root {
+        --default-font: "Quicksand", sans-serif;
+        --heading-font: "Russo One", sans-serif;
+        --nav-font: "Afacad Flux", sans-serif;
+
+        --background-color: #1B1B1B;
+        --default-color: #785E5B;
+        --heading2-color: #836e4f;
+        --heading-color: #7C8598;
+        --accent2-color: rgb(130, 152, 145);
+        --accent-color: #8f793f;
+        --surface-color: #c8bbb3;
+        --text-color: #E4E4E4;
+        --error-color: #f44336;
+        --success-color: rgba(131, 173, 68);
+    }
+
+    body {
+        background-color: #111;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        gap: 10px;
+        font-family: var(--default-font);
+        color: var(--text-color);
+    }
+
     /* Theatre Carousel Image */
     .carousel-img {
       width: 640px;
@@ -30,6 +61,7 @@ $pageStyles = [
       object-fit: cover;
       cursor: pointer;
     }
+
     /* Fullscreen Lightbox Overlay */
     #lightbox-overlay {
       position: fixed; top: 0; left: 0;
@@ -43,11 +75,50 @@ $pageStyles = [
     #lightbox-overlay.show { opacity:1; visibility:visible; }
     #lightbox-overlay img { max-width:90vw; max-height:90vh; object-fit:contain; }
     #lightbox-close { position:absolute; top:20px; right:30px; font-size:2rem; color:#fff; cursor:pointer; z-index:10001; }
-  </style>
+
+    .hny-title {
+        color: var(--text-color);
+        font-family: var(--heading-font);
+        margin-bottom: 20px;
+    }
+
+    .single-event-content p {
+        color: var(--text-color);
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .single-event-content strong {
+        color: var(--heading2-color);
+    }
+
+    .single-event-content ul {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+    .single-event-content li {
+        color: var(--text-color);
+        line-height: 1.6;
+        margin-bottom: 8px;
+    }
+
+    .single-event-content li strong {
+        color: var(--heading2-color);
+    }
+
+    /* Specific heading color changes */
+    h3.hny-title, h6 {
+        color: var(--text-color) !important;
+    }
+
+    h2 {
+        color: var(--heading2-color) !important;
+    }
+</style>
 
 </head>
 
-	<!-- /about-->
 <body class="w3l-ab-grids py-5">
 
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
@@ -85,7 +156,7 @@ $pageStyles = [
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/1.jpg" alt="Theatre Image 1"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/2.jpg" alt="Theatre Image 2"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/3.jpg" alt="Theatre Image 3"></div>
-          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/4.jpg" alt="Theatre Image 4"></div>
+          <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/4.jpeg" alt="Theatre Image 4"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/5.jpg" alt="Theatre Image 5"></div>
           <div class="item"><img class="carousel-img" src="/biletaria_online/assets/img/about/6.jpg" alt="Theatre Image 6"></div>
         </div>
@@ -275,20 +346,17 @@ $pageStyles = [
       }
     });
 
-    // Lightbox open
-    $('.carousel-img').on('click', function() {
-      var src = this.src;
+    // Lightbox functionality
+    $(document).delegate('.carousel-img', 'click', function() {
+      var src = $(this).attr('src');
       $('#lightbox-img').attr('src', src);
-      $('#lightbox-overlay').fadeIn(400);
+      $('#lightbox-overlay').addClass('show');
     });
 
-    // Lightbox close
-    $('#lightbox-close').on('click', function() {
-      $('#lightbox-overlay').fadeOut(400);
-    });
-    $('#lightbox-overlay').on('click', function(e) {
-      if (e.target.id === 'lightbox-overlay') {
-        $('#lightbox-overlay').fadeOut(400);
+    // Close lightbox
+    $('#lightbox-close, #lightbox-overlay').on('click', function(e) {
+      if (e.target.id === 'lightbox-overlay' || e.target.id === 'lightbox-close') {
+        $('#lightbox-overlay').removeClass('show');
       }
     });
   });
