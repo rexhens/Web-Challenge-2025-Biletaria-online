@@ -288,23 +288,18 @@ $pageStyles = [
             </form>
         </div>
     </div>
-<!-- 1. Load jQuery first -->
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- 2. Then load any plugins that depend on jQuery -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<!-- 3. Then load your main template JS file -->
 <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
-<!-- 4. Optional: Other JS libraries -->
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
-
-
-</body>
-
-</html>
 
 <script>
     $(document).ready(function () {
@@ -327,7 +322,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -419,3 +414,7 @@ $pageStyles = [
         window.history.replaceState({}, document.title, url.pathname + url.search);
     }
 </script>
+
+</body>
+
+</html>

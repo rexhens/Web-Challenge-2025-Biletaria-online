@@ -210,8 +210,10 @@ $pageStyles = [
                                                 onclick="window.location.href = '/biletaria_online/views/client/events/event_details.php?id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Më shumë info</button>
                                             <button class="btn btn-sm btn-outline-warning"
+                                                    onclick="window.location.href = '/biletaria_online/views/client/reserve.php?id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Rezervo</button>
                                             <button class="btn btn-sm btn-outline-secondary"
+                                                    onclick="window.location.href = '/biletaria_online/views/admin/reservations/index.php?event_id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Rezervimet</button>
                                         </div>
                                     </td>
@@ -291,8 +293,6 @@ $pageStyles = [
                             <label class="custom-file-label" for="editPoster">Zgjidh një skedar</label>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
@@ -330,8 +330,9 @@ $pageStyles = [
         </div>
     </div>
 
-</body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
@@ -340,9 +341,8 @@ $pageStyles = [
 <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
-<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-</html>
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -366,7 +366,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -473,3 +473,6 @@ $pageStyles = [
         window.history.replaceState({}, document.title, url.pathname + url.search);
     }
 </script>
+
+</body>
+</html>

@@ -282,6 +282,8 @@ $pageStyles = [
     </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -289,11 +291,6 @@ $pageStyles = [
 <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
-<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-
-</body>
-
-</html>
 
 <script>
     $(document).ready(function () {
@@ -316,7 +313,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -426,3 +423,5 @@ $pageStyles = [
     }
 </script>
 
+</body>
+</html>

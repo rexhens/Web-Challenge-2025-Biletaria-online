@@ -1,31 +1,29 @@
 <?php
-// Include DB configuration
+/** @var mysqli $conn */
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
+redirectIfNotLoggedIn();
+redirectIfNotAdminOrTicketOffice($conn);
 
-// Validate and get the ID
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['id'])) {
     $id = $_GET['id'];
 
     if (is_numeric($id)) {
-        // Prepare delete statement
         $stmt = $conn->prepare("DELETE FROM reviews WHERE id = ?");
         $stmt->bind_param("i", $id);
 
         if ($stmt->execute()) {
-            // Optional: redirect with success
-            header("Location: index.php?status=deleted");
+            header("Location: index.php?update=success");
             exit();
         } else {
-            echo "Error deleting review: " . $stmt->error;
+            showError("Një problem ndodhi me fshirjen e komentit");
         }
 
         $stmt->close();
     } else {
-        echo "Invalid ID.";
+        showError("Id e pavlefshme");
     }
 } else {
-    echo "No ID received.";
+    showError("Të dhëna të pamjaftueshme për të fshirë!");
 }
-
-$conn->close();
-?>

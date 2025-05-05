@@ -202,7 +202,7 @@ $pageStyles = [
     <div class='btn-group'>
         <button onclick="redirectTo('../reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
         <?php if (checkAdmin($conn)): ?>
-            <button onclick="redirectTo('reservations?id=<?= $event['id'] ?>')">Rezervime</button>
+            <button onclick="window.location.href = '/biletaria_online/views/admin/reservations/index.php?event_id=<?php echo $event['id'] ?>'">Rezervime</button>
         <?php endif; ?>
     </div>
 </div>

@@ -4,9 +4,12 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
-$query = "SELECT * FROM reservations";
+$filter = isset($_GET['show_id']) ? ' WHERE show_id = ' . $_GET['show_id'] : '';
+$filter = isset($_GET['event_id']) ? ' WHERE event_id = ' . $_GET['event_id'] : $filter;
+
+$query = "SELECT * FROM reservations" . $filter;
 $reservations_result = $conn->query($query);
 ?>
 
@@ -290,7 +293,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {

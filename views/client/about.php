@@ -50,6 +50,7 @@ $pageStyles = [
         gap: 10px;
         font-family: var(--default-font);
         color: var(--text-color);
+        overflow-x: hidden;
     }
 
     /* Theatre Carousel Image */
@@ -114,6 +115,20 @@ $pageStyles = [
     h2 {
         color: var(--heading2-color) !important;
     }
+
+    .map-section {
+        padding: 40px 0;
+    }
+
+    .map-container {
+        width: 100vw;
+        max-width: 100vw;
+        overflow: hidden;
+    }
+
+    .map-container iframe {
+        filter: invert(90%) hue-rotate(180deg);
+    }
 </style>
 
 </head>
@@ -122,7 +137,7 @@ $pageStyles = [
 
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
-<div class="container py-lg-4" style="margin-top: 30px;">
+<div class="container py-lg-4" style="margin-top: 60px;">
     <div class="row ab-grids-sec align-items-center">
         <div class="col-lg-12 ab-left pl-lg-4 mt-lg-1 mt-1">
             <h3 class="hny-title">Mirë se vini në Teatrin Metropol – Shtëpia e Artit dhe Dialogut</h3>
@@ -163,129 +178,43 @@ $pageStyles = [
     </div>
   </section>
 
+<div id="lightbox-overlay">
+    <span id="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="" alt="Full Screen Image">
+</div>
+
+<div class="map-section">
+    <div class="grids-main py-5" style="margin-bottom: -70px; margin-top: -100px;">
+        <div class="container py-lg-3">
+            <div class="headerhny-title">
+                <div class="w3l-title-grids">
+                    <div class="headerhny-left">
+                        <h3 class="hny-title">Vendodhja</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="map-container">
+        <iframe style="border:0; width: 100%;"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2996.015758069152!2d19.81454687450071!3d41.33027069953852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1350310e4a33be71%3A0x41ea934fda84bd6d!2sMetropol%20Theater!5e0!3m2!1sen!2s!4v1746394063143!5m2!1sen!2s"
+                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+</div>
+
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <script src="../../assets/js/jquery-3.3.1.min.js"></script>
 <!-- stats -->
 <script src="../../assets/js/jquery.waypoints.min.js"></script>
-<script src="../../assets/js/jquery.countup.js"></script>
 <script type="text/javascript" src='../../assets/js/swiper.min.js'></script>
-<script>
-	$('.counter').countUp();
-</script>
 <!--/theme-change-->
 <script src="../../assets/js/theme-change.js"></script>
 <script src="../../assets/js/owl.carousel.js"></script>
 <!-- script for banner slider-->
-<script>
-	$(document).ready(function () {
-		$('.owl-team').owlCarousel({
-			loop: true,
-			margin: 20,
-			nav: false,
-			responsiveClass: true,
-			autoplay: false,
-			autoplayTimeout: 5000,
-			autoplaySpeed: 1000,
-			autoplayHoverPause: false,
-			responsive: {
-				0: {
-					items: 2,
-					nav: false
-				},
-				480: {
-					items: 2,
-					nav: true
-				},
-				667: {
-					items: 3,
-					nav: true
-				},
-				1000: {
-					items: 4,
-					nav: true
-				}
-			}
-		})
-	})
-</script>
 
 
-<script>
-	var swiper = new Swiper('.swiper-container', {
-		effect: 'coverflow',
-		grabCursor: true,
-		centeredSlides: true,
-		slidesPerView: 'auto',
-		coverflowEffect: {
-			rotate: 50,
-			stretch: 0,
-			depth: 100,
-			modifier: 1,
-			slideShadows: true,
-		},
-		pagination: {
-			el: '.swiper-pagination',
-		},
-	});
-</script>
-<script>
-	$(document).ready(function () {
-		$('.owl-three').owlCarousel({
-			loop: true,
-			margin: 20,
-			nav: false,
-			responsiveClass: true,
-			autoplay: true,
-			autoplayTimeout: 5000,
-			autoplaySpeed: 1000,
-			autoplayHoverPause: false,
-			responsive: {
-				0: {
-					items: 2,
-					nav: false
-				},
-				480: {
-					items: 2,
-					nav: true
-				},
-				667: {
-					items: 3,
-					nav: true
-				},
-				1000: {
-					items: 6,
-					nav: true
-				}
-			}
-		})
-	})
-</script>
-<!-- for tesimonials carousel slider -->
-<script>
-	$(document).ready(function () {
-		$(".owl-clients").owlCarousel({
-			loop: true,
-			margin: 40,
-			responsiveClass: true,
-			responsive: {
-				0: {
-					items: 1,
-					nav: true
-				},
-				736: {
-					items: 2,
-					nav: false
-				},
-				1000: {
-					items: 3,
-					nav: true,
-					loop: false
-				}
-			}
-		})
-	})
-</script>
 <!-- script for owlcarousel -->
 <!-- disable body scroll which navbar is in active -->
 <script>
@@ -295,8 +224,6 @@ $pageStyles = [
 		})
 	});
 </script>
-<!-- disable body scroll which navbar is in active -->
-
 <!--/MENU-JS-->
 <script>
 	$(window).on("scroll", function () {
@@ -329,21 +256,69 @@ $pageStyles = [
 <script>
   $(function() {
     // Initialize Owl Carousel
-    $('.owl-theatre').owlCarousel({
-      loop: true,
-      margin: 20,
-      responsiveClass: true,
-      autoplay: true,
-      autoplayTimeout: 5000,
-      autoplaySpeed: 1000,
-      autoplayHoverPause: false,
-      responsive: {
-        0: { items: 1, nav: true },
-        480: { items: 1, nav: true },
-        667: { items: 2, nav: false },
-        1000: { items: 3, nav: true, loop: false }
-      }
-    });
+      $('.owl-theatre').owlCarousel({
+          stagePadding: 0,
+          loop: true,
+          margin: 20,
+          nav: true,
+          responsiveClass: true,
+          autoplay: true,
+          autoplayTimeout: 5000,
+          autoplaySpeed: 1000,
+          autoplayHoverPause: false,
+          responsive: {
+              0: {
+                  items: 1,
+                  nav: false,
+                  stagePadding: 0,
+              },
+              390: {
+                  items: 1,
+                  nav: false,
+                  stagePadding: 30,
+              },
+              450: {
+                  items: 1,
+                  nav: false,
+                  stagePadding: 40,
+              },
+              490: {
+                  items: 1,
+                  nav: true,
+                  stagePadding: 75
+              },
+              550: {
+                  items: 1,
+                  nav: true,
+                  stagePadding: 90
+              },
+              650: {
+                  items: 1,
+                  nav: true,
+                  stagePadding: 140
+              },
+              750: {
+                  items: 2,
+                  nav: true,
+                  stagePadding: 30
+              },
+              800: {
+                  items: 2,
+                  nav: true,
+                  stagePadding: 40
+              },
+              940: {
+                  items: 2,
+                  nav: true,
+                  stagePadding: 120
+              },
+              1080: {
+                  items: 3,
+                  nav: true,
+                  stagePadding: 40
+              }
+          }
+      });
 
     // Lightbox functionality
     $(document).delegate('.carousel-img', 'click', function() {
@@ -360,12 +335,6 @@ $pageStyles = [
     });
   });
 </script>
-
-<!-- Lightbox Overlay -->
-<div id="lightbox-overlay">
-  <span id="lightbox-close">&times;</span>
-  <img id="lightbox-img" src="" alt="Full Screen Image">
-</div>
 
 </body>
 </html>
