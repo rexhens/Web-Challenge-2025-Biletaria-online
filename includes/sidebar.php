@@ -183,7 +183,6 @@
                 <h6 class="collapse-header">Veprime</h6>
                 <a class="collapse-item" href="/biletaria_online/views/admin/reservations/index.php">Të gjitha
                     rezervimet</a>
-                <a class="collapse-item" href="/biletaria_online/views/admin/reserve.php">Bej rezervim</a>
             </div>
         </div>
     </li>
