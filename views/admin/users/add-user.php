@@ -191,7 +191,7 @@ $pageStyles = [
         }
 
         if ($success) {
-            echo "<div class='errors show' style='background-color: rgba(131, 173, 68)'>
+            echo "<div class='errors show' style='background-color: rgba(131, 173, 68) !important'>
         <p style='color: #E4E4E4;'>Përdoruesi u shtua me sukses!</p>
       </div>";
         }

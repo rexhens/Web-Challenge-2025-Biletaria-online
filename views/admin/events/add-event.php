@@ -211,7 +211,7 @@ $pageStyles = [
                 }
                 ?>
                 <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
-                    <div class='errors show' style='background-color: rgba(131, 173, 68)'>
+                    <div class='errors show' style='background-color: rgba(131, 173, 68) !important'>
                         <p style='color: #E4E4E4;'>Eventi u shtua me sukses!</p>
                     </div>
                 <?php endif; ?>
