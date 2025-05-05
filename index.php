@@ -153,7 +153,7 @@ $pageStyles = [
                 <!-- About Teatri Metropol Section -->
                 <div class="about-section mt-2" style="padding-top: 50px;">
                     <div class="about-container"
-                        style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+                        style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center;">
 
                         <!-- Text Content -->
                         <div class="about-text" style="flex: 1 1 50%; min-width: 300px;">
@@ -165,6 +165,7 @@ $pageStyles = [
                                     me nivel të lartë artistik. I udhëhequr nga vlerat e gjithëpërfshirjes, dialogut
                                     konstruktiv dhe humanizmit universal, Metropoli është një hapësirë ku arti takon
                                     komunitetin dhe frymëzon reflektim, bashkëbisedim dhe rritje.</p>
+                                <br>
                                 <p><strong style="color: #8f793f;">Misioni ynë</strong> është të realizojmë shfaqje
                                     cilësore – shqiptare dhe botërore – që flasin me ndershmëri dhe forcë artistike për
                                     realitetin dhe shpirtin njerëzor. Vizioni ynë është të ndërtojmë një standard të ri
@@ -174,7 +175,7 @@ $pageStyles = [
                         </div>
 
                         <!-- Image -->
-                        <div class="about-image" style="flex: 1 1 40%; min-width: 300px;">
+                        <div class="about-image" style="flex: 1 1 30%; min-width: 300px;">
                             <img src="/biletaria_online/assets/img/about/1.jpg" alt="Teatri Metropol Tirane"
                                 style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                         </div>
