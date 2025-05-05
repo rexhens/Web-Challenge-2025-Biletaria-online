@@ -109,7 +109,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
             if(!sendEmail($email, $subject, $body)) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
             } else {
-                echo "<div class='errors show' style='background-color: rgba(131, 173, 68)'>
+                echo "<div class='errors show' style='background-color: rgba(131, 173, 68) !important'>
                          <p style='color: #E4E4E4;'>Kontrolloni email-in tuaj për një link që ne ju kemi dërguar.</p>
                       </div>";
             }

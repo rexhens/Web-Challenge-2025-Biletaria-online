@@ -21,13 +21,17 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
         .map-section {
-            padding: 40px 20px;
+            padding: 40px 0;
         }
 
         .map-container {
             width: 100%;
             max-width: 100%;
             overflow: hidden;
+        }
+
+        .map-container iframe {
+            filter: invert(90%) hue-rotate(180deg);
         }
     </style>
 </head>
@@ -279,8 +283,16 @@ $pageStyles = [
     </section>
     <!-- Map Section -->
     <div class="map-section">
-        <div class="headerhny-left" style="margin-bottom: 3%;">
-            <h3 class="hny-title">Lokacioni i Teatrit Metropol</h3>
+        <div class="grids-main py-5" style="margin-bottom: -70px; margin-top: -60px;">
+            <div class="container py-lg-3">
+                <div class="headerhny-title">
+                    <div class="w3l-title-grids">
+                        <div class="headerhny-left">
+                            <h3 class="hny-title">Vendodhja</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="map-container">
             <iframe style="border:0; width: 100%;"
