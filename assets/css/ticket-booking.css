@@ -231,3 +231,7 @@ h2 {
 	color: #555;          /* subtle text colour */
   }
   
+
+  .logo-dark{display:none;}
+[data-theme='dark'] .logo-light{display:none;}
+[data-theme='dark'] .logo-dark{display:inline;}

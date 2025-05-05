@@ -10,8 +10,8 @@ img {
 }
 
 .ticket {
-  width: 400px;
-  height: 775px;
+  width: auto;
+  height: auto;
   background-color: rgb(243, 235, 235);
   margin: 25px auto;
   position: relative;
