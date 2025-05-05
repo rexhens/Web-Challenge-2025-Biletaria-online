@@ -28,6 +28,9 @@ $reservations_query = "SELECT COUNT(*) as total FROM reservations";
 $reservations_result = $conn->query($reservations_query);
 $reservation_count = $reservations_result->fetch_assoc()['total'];
 
+$query = "SELECT * FROM reservations";
+$reservations_result = $conn->query($query);
+
 ?>
 
 
@@ -621,7 +624,7 @@ $pageStyles = [
 
 
         <!-- Menaxhimi i Eventeve -->
-        <div class="card shadow border-0 rounded-4 mt-5" id="events-section" style="margin-bottom: 100px;">
+        <div class="card shadow border-0 rounded-4 mt-5" id="events-section">
             <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                 <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
                 <?php if(checkAdmin($conn)){ ?>
@@ -665,22 +668,82 @@ $pageStyles = [
         </div>
 
 
+        <div class="card shadow border-0 rounded-4 mt-5" id="reservation-section" style="margin-bottom: 80px;">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="mb-0 text-primary-1">Lista e Rezervimeve</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="reservationsTable" class="table table-hover mb-0 w-100" width="100%">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Klienti</th>
+                            <th>Shfaqja/Eventi</th>
+                            <th>Data</th>
+                            <th>Statusi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $i = 1;
+                        while ($row = $reservations_result->fetch_assoc()) {
+                            if(!empty($row['show_id'])) {
+                                $sql = 'SELECT title FROM shows WHERE id = ?';
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('i', $row['show_id']);
+                                if (!$stmt->execute()) {
+                                    showError("Një problem ndodhi! Provoni më vonë!");
+                                }
+                                $result = $stmt->get_result()->fetch_assoc();
+                                if (!$result) {
+                                    showError("Shfaqja nuk u gjet!");
+                                }
+                                $title = $result['title'];
+                            } else if(!empty($row['event_id'])) {
+                                $sql = 'SELECT title FROM events WHERE id = ?';
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('i', $row['event_id']);
+                                if (!$stmt->execute()) {
+                                    showError("Një problem ndodhi! Provoni më vonë!");
+                                }
+                                $result = $stmt->get_result()->fetch_assoc();
+                                if (!$result) {
+                                    showError("Eventi nuk u gjet!");
+                                }
+                                $title = $result['title'];
+                            }
+                            ?>
+                            <tr>
+                                <td><?php echo $i ?></td>
+                                <td><?php echo htmlspecialchars($row['full_name']) ?></td>
+                                <td><?php echo $title ?? 'Error' ?></td>
+                                <td><?php echo htmlspecialchars($row['show_date']) . " " . htmlspecialchars($row['show_time']) ?></td>
+
+                                <?php if ($row['paid']) { ?>
+                                    <td><span class="badge badge-success">Paguar</span></td>
+                                <?php } else if (htmlspecialchars($row['expires_at']) < new DateTime()) { ?>
+                                    <td><span class="badge badge-danger">Kaluar afati</span></td>
+                                <?php } else { ?>
+                                    <td><span class="badge badge-danger">Pa Pguar</span></td>
+                                <?php }?>
+                            </tr>
+                            <?php
+                            $i++;
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
 
 
 
     </div>
-    <!-- /.container-fluid -->
 
     </div>
-    <!-- End of Main Content -->
-
-    <!-- Footer -->
-
-    <!-- End of Footer -->
-
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
@@ -721,7 +784,7 @@ $pageStyles = [
                         "next": "›"
                     },
                     "zeroRecords": "Asnjë rezultat i gjetur",
-                    "info": "Duke shfaqur _END_ nga _TOTAL_",
+                    "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                     "infoEmpty": "Nuk ka të dhëna"
                 },
                 "initComplete": function () {
@@ -743,7 +806,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -764,7 +827,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -785,7 +848,28 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
+            }
+        });
+        $('#reservationsTable').DataTable({
+            "pageLength": 10,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko rezervim...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -869,6 +953,21 @@ $pageStyles = [
                 // Small delay to ensure collapse opens first
                 setTimeout(function () {
                     const target = $('#events-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseEvents"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#reservation-section');
                     if (target.length) {
                         $('html, body').animate({
                             scrollTop: target.offset().top

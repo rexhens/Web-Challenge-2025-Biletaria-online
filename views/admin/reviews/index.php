@@ -5,14 +5,14 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
 $query = "SELECT * FROM reviews";
 $users_result = $conn->query($query);
 ?>
 
 <?php
-$pageTitle = 'Përdoruesit';
+$pageTitle = 'Vlerësime & Komente';
 $pageStyles = [
     '/biletaria_online/assets/vendor/fontawesome-free/css/all.min.css',
     '/biletaria_online/assets/css/sb-admin-2.min.css',
@@ -134,7 +134,7 @@ $pageStyles = [
                             <?php
                             $i = 1;
                             while ($row = $users_result->fetch_assoc()) {
-                                $show = $conn->query("SELECT * FROM shows WHERE id = " . $row['show_id'])->fetch_assoc();
+                                $show = $conn->query("SELECT title FROM shows WHERE id = " . $row['show_id'])->fetch_assoc();
                                 ?>
                                 <tr>
                                     <td><?php echo $i ?></td>
@@ -146,13 +146,14 @@ $pageStyles = [
                                         <div
                                             style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
 
-
-                                            <a href="delete.php?id=<?php echo $row['id']; ?>"
-                                                class="btn btn-sm btn-outline-danger" style="width: 100%;">
-                                                Fshij
-                                            </a>
-
-
+                                            <button class="btn btn-sm btn-outline-danger delete-btn"
+                                                    style="width: 100%;"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['email']?>"
+                                                    data-title="<?php echo $show['title']?>"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteUserModal">Fshij
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -165,6 +166,31 @@ $pageStyles = [
             </div>
         </div>
     </section>
+
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST" action="delete.php">
+                <div class="modal-content">
+                    <div class="modal-header text-red">
+                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Fshirjen</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Jeni i sigurt që doni të fshini vlerësimin dhe komentin e <strong id="userToDeleteName"></strong> për shfaqjen/eventin <strong id="showToDeleteName">?
+                        </p>
+                        <input type="hidden" name="id" id="deleteUserId">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anullo</button>
+                        <button type="submit" name="delete" class="btn btn-danger">Fshij</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- 1. Load jQuery first -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -205,7 +231,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -216,75 +242,18 @@ $pageStyles = [
         });
     });
 
-    let initialFormData;
-
-    $(document).ready(function () {
-        $('.editUserBtn').on('click', function () {
-            const userId = $(this).data('id');
-            const name = $(this).data('name');
-            const surname = $(this).data('surname');
-            const email = $(this).data('email');
-            const phone = $(this).data('phone');
-            const role = $(this).data('role');
-
-            // Populate modal fields
-            $('#editUserId').val(userId);
-            $('#editName').val(name);
-            $('#editSurname').val(surname);
-            $('#editEmail').val(email);
-            $('#editPhone').val(phone);
-            $('#editRole').val(role);
-
-            initialFormData = $('#editUserForm').serializeArray();
-
-            // Show the modal
-            $('#editUserModal').modal('show');
-        });
-    });
-
-    function isFormChanged() {
-        let currentFormData = $('#editUserForm').serializeArray();
-
-        for (let i = 0; i < initialFormData.length; i++) {
-            if (initialFormData[i].value !== currentFormData[i].value) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    $('#editUserForm').submit(function (e) {
-        if (!isFormChanged()) {
-            e.preventDefault();
-            alert('Nuk ka asnjë ndryshim për të ruajtur.');
-        }
-    });
-
     document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".deleteUserBtn");
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", () => {
                 const userId = button.getAttribute("data-id");
                 const userName = button.getAttribute("data-name");
+                const title = button.getAttribute("data-title");
 
                 document.getElementById("deleteUserId").value = userId;
                 document.getElementById("userToDeleteName").textContent = userName;
-            });
-        });
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".activateUserBtn");
-
-        deleteButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const userId = button.getAttribute("data-id");
-                const userName = button.getAttribute("data-name");
-
-                document.getElementById("activateUserId").value = userId;
-                document.getElementById("userToActivateName").textContent = userName;
+                document.getElementById("showToDeleteName").textContent = title;
             });
         });
     });
