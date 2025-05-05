@@ -6,10 +6,10 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 
 // Database connection
-$host = 'metropolticketing.marketingelite.eu';
+$host = 'localhost';
 $db = 'theater_db';
-$user = 'marketingelite';
-$pass = 'ndgcFAGTtnqW3Uz';
+$user = 'root';
+$pass = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);

@@ -1,5 +1,5 @@
 <?php
-$pdo = new PDO('mysql:host=metropolticketing.marketingelite.eu;dbname=theater_db;charset=utf8', 'marketingelite', 'ndgcFAGTtnqW3Uz');
+$pdo = new PDO('mysql:host=localhost;dbname=theater_db;charset=utf8', 'root', '');
 
 $sql = "
 SELECT 
@@ -14,7 +14,7 @@ ORDER BY month
 
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
-$rows = $stmt->fetchAll(PDO::FETCH_KEY_PAIR); // [month => revenue]
+$rows = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
 // Fill all months with 0 revenue if missing
 $revenues = array_fill(1, 12, 0);

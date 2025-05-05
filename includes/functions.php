@@ -61,7 +61,7 @@ function checkAdmin($conn): bool {
 
     return true;
 }
-/*
+
 function checkTicketOffice($conn): bool {
 
     if (!isset($_SESSION['user_id'])) {
@@ -76,13 +76,13 @@ function checkTicketOffice($conn): bool {
     $stmt->bind_result($role);
     $stmt->fetch();
 
-    if ($role !== 'admin') {
+    if ($role !== 'ticketOffice') {
         return false;
     }
 
     return true;
 }
-*/
+
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
@@ -93,6 +93,13 @@ function redirectIfNotLoggedIn(): void {
 
 function redirectIfNotAdmin($conn): void {
     if(!checkAdmin($conn)) {
+        header("Location: " . '/biletaria_online/auth/no-access.php');
+        exit;
+    }
+}
+
+function redirectIfNotAdminOrTicketOffice($conn): void {
+    if(!checkAdmin($conn) && !checkTicketOffice($conn)) {
         header("Location: " . '/biletaria_online/auth/no-access.php');
         exit;
     }

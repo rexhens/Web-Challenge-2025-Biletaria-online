@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -308,9 +308,11 @@ $pageStyles = [
             <!-- Page Heading -->
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
+                <?php if(checkAdmin($conn)){ ?>
                 <a href="generate_report.php"
                     class="d-none d-sm-inline-block btn btn-sm btn-primary-report shadow-sm"><i
                         class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
+                <?php } ?>
             </div>
 
             <!-- Content Row -->
@@ -486,9 +488,11 @@ $pageStyles = [
             <div class="card shadow border-0 rounded">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
+                    <?php if(checkAdmin($conn)){ ?>
                     <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'users/add-user.php'"
                         style="padding: 7px 20px;">+ Shto
                         Përdorues</button>
+                    <?php } ?>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -530,8 +534,10 @@ $pageStyles = [
         <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
             <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                 <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
+                <?php if(checkAdmin($conn)){ ?>
                 <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'shows/add-show.php'"
                     style="padding: 7px 20px;">+ Shto Shfaqje</button>
+                <?php } ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -616,9 +622,11 @@ $pageStyles = [
         <div class="card shadow border-0 rounded-4 mt-5" id="events-section" style="margin-bottom: 100px;">
             <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
                 <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
+                <?php if(checkAdmin($conn)){ ?>
                 <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'events/add-event.php'"
                     style="padding: 7px 20px;">+ Shto Event
                 </button>
+                <?php } ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
