@@ -9,12 +9,11 @@ use Dompdf\Dompdf;
 require_once('../../config/db_connect.php');
 $revenueStmt = $conn->prepare("
     SELECT 
-        MONTH(t.created_at) AS month, 
-        SUM(s.price) AS revenue
-    FROM tickets t
-    JOIN reservations r ON t.reservation_id = r.id
-    JOIN shows s ON r.show_id = s.id
-    GROUP BY MONTH(t.created_at)
+        MONTH(created_at) AS month, 
+        SUM(total_price) AS revenue
+    FROM reservations
+    WHERE paid = 1 AND YEAR(created_at) = YEAR(CURRENT_DATE())
+    GROUP BY MONTH(created_at)
     ORDER BY month
 ");
 
