@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
 $query = "SELECT * FROM events";
 $events_result = $conn->query($query);
@@ -129,8 +129,10 @@ $pageStyles = [
         <div class="card shadow border-0 rounded">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Eventeve</h5>
+                <?php if(checkAdmin($conn)){ ?>
                 <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-event.php'"
                     style="padding: 7px 20px;">Shto Event</button>
+                <?php } ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -186,6 +188,7 @@ $pageStyles = [
                                     <td style="text-align: center; vertical-align: middle;">
                                         <div
                                             style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
+                                            <?php if(checkAdmin($conn)){ ?>
                                             <button class="btn btn-sm btn-outline-secondary editShowBtn"
                                                 style="width: 100%;" data-id="<?php echo $row['id'] ?>"
                                                 data-title="<?php echo $row['title'] ?>"
@@ -197,9 +200,12 @@ $pageStyles = [
                                                 data-poster="<?php echo $posterUrl ?>">
                                                 Edito
                                             </button>
+                                            <?php } ?>
+                                            <?php if(checkAdmin($conn)){ ?>
                                             <button class="btn btn-sm btn-outline-danger delete-btn" style="width: 100%;"
                                                 data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['title'] ?>"
                                                 data-toggle="modal" data-target="#deleteUserModal">Fshi</button>
+                                            <?php } ?>
                                             <button class="btn btn-sm btn-outline-success"
                                                 onclick="window.location.href = '/biletaria_online/views/client/events/event_details.php?id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Më shumë info</button>

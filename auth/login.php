@@ -161,7 +161,7 @@ session_start();
                                 $redirect = $_SESSION['redirect_after_login'];
                                 unset($_SESSION['redirect_after_login']);
                                 header("Location: $redirect");
-                            } else if(checkAdmin($conn)) {
+                            } else if(checkAdmin($conn) || checkTicketOffice($conn)) {
                                 header("Location: ../views/admin/index.php");
                             } else {
                                 header("Location: ../index.php");
