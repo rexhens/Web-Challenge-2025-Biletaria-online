@@ -79,7 +79,7 @@ if ($result->num_rows > 0) {
             "<p class='show-description'>" . htmlspecialchars($show['description']) . "</p>" .
             "<div class='btn-group'>
                 <button onclick=\"redirectTo('/biletaria_online/views/client/shows/show_details.php?id=" . $show['id'] . "')\">Më shumë info</button>
-                <button onclick=\"redirectTo('/biletaria_online/views/client/reserve.php?id=" . $show['id'] . "')\" class='black-btn'>Rezervo</button>
+                <button onclick=\"redirectTo('/biletaria_online/views/client/reserve.php?show_id=" . $show['id'] . "')\" class='black-btn'>Rezervo</button>
             </div>
         </div>
     </div>";
