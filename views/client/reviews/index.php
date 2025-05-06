@@ -1,32 +1,92 @@
 <?php
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
-session_start();
-$show_id = $_GET['show_id'] ?? null;
+$show_id = filter_input(INPUT_GET, 'show_id', FILTER_VALIDATE_INT);
+$event_id = filter_input(INPUT_GET, 'event_id', FILTER_VALIDATE_INT);
+$res_id = filter_input(INPUT_GET, 'res', FILTER_VALIDATE_INT);
 
-$pageTitle = 'Shfaqjet';
+if (($show_id === null && $event_id === null) || $res_id === null) {
+    showError("Parametra të pavlefshëm ose të munguar!");
+}
+
+$sql = "SELECT email, show_id, event_id FROM reservations WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $res_id);
+$stmt->execute();
+$result = $stmt->get_result()->fetch_assoc();
+
+if (!$result) {
+    showError("Rezervimi nuk u gjet!");
+}
+
+$email = $result['email'];
+
+$title = null;
+
+if ($show_id !== null) {
+    if($show_id != $result['show_id']) {
+        showError("Një problem ndodhi!");
+    }
+    $id = $show_id;
+    $sql = 'SELECT title FROM shows WHERE id = ?';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $show_id);
+    if (!$stmt->execute()) {
+        showError("Një problem ndodhi! Provoni më vonë!");
+    }
+    $result = $stmt->get_result()->fetch_assoc();
+    if (!$result) {
+        showError("Shfaqja nuk u gjet!");
+    }
+    $title = $result['title'];
+} elseif ($event_id !== null) {
+    if($event_id != $result['event_id']) {
+        showError("Një problem ndodhi!");
+    }
+    $id = $event_id;
+    $sql = 'SELECT title FROM events WHERE id = ?';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $event_id);
+    if (!$stmt->execute()) {
+        showError("Një problem ndodhi! Provoni më vonë!");
+    }
+    $result = $stmt->get_result()->fetch_assoc();
+    if (!$result) {
+        showError("Eventi nuk u gjet!");
+    }
+    $title = $result['title'];
+}
+
+$pageTitle = 'Vlerëso ' . isset($_GET['show_id']) ? 'Shfaqjen' : 'Eventin';
 $pageStyles = [
     '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css',
+    '/biletaria_online/assets/css/footer.css',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
 ];
 ?>
-
 
 <!DOCTYPE html>
 <html lang="sq">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vlerëso Shfaqjen</title>
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
+            overflow-x: hidden !important;
+            margin-top: 20px;
+        }
+
+        .footer-bottom {
+            margin-left: -20px;
         }
 
         .review-form {
-            width: 100%;
+            width: 95%;
             max-width: 400px;
             margin: auto;
             padding: 20px;
@@ -67,14 +127,14 @@ $pageStyles = [
         .rating>input:checked~label,
         .rating:not(:checked)>label:hover,
         .rating:not(:checked)>label:hover~label {
-            color: #f7d106;
+            color: var(--heading2-color);
         }
 
         .rating>input:checked+label:hover,
         .rating>input:checked~label:hover,
         .rating>label:hover~input:checked~label,
         .rating>input:checked~label:hover~label {
-            color: #f7b406;
+            color: var(--accent-color);
         }
 
         .comment-section label {
@@ -104,20 +164,6 @@ $pageStyles = [
             margin-top: 15px;
             transition: background-color 0.2s;
         }
-
-        .submit-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
-
-
-    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
-
-    <style>
-        body {
-            padding: 0 30px;
-            align-items: flex-start;
-        }
     </style>
 </head>
 
@@ -125,26 +171,78 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
     <div class="review-form">
-        <h2>Vlerësoni <span>Shfaqjen</span></h2>
-       <form action="process_review.php" method="post">
-    <input type="hidden" name="show_id" value="<?php echo htmlspecialchars($show_id); ?>">
-    
-        <div class="rating">
-            <!-- yjet me radiobuton -->
-            <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 yje"></label>
-            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 yje"></label>
-            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 yje"></label>
-            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 yje"></label>
-            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 yll"></label>
-        </div>
-    
-        <div class="comment-section">
-            <label for="comment">Komenti juaj:</label>
-            <textarea id="comment" name="comment" rows="5" placeholder="Shkruani komentin tuaj këtu..." required></textarea>
-        </div>
-    
-        <button type="submit">Dërgo Vlerësimin</button>
-    </form>
-</body>
+        <h2>Vlerësoni <?= isset($_GET['show_id']) ? 'Shfaqjen' : 'Eventin' ?><br>
+        <span>"<?php echo htmlspecialchars($title) ?>"</span></h2>
+        <form action="" method="post">
+            <input type="hidden" name="<?php echo isset($_GET['show_id']) ? 'show_id' : 'event_id'?>" value="<?php echo htmlspecialchars($id); ?>">
+            <input type="hidden" name="reservation_id" value="<?php echo $_GET['res']; ?>">
 
+            <div class="rating">
+                <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 yje"></label>
+                <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 yje"></label>
+                <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 yje"></label>
+                <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 yje"></label>
+                <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 yll"></label>
+            </div>
+
+            <div class="comment-section">
+                <label for="comment">Komenti juaj:</label>
+                <textarea id="comment" name="comment" rows="5" placeholder="Shkruani komentin tuaj këtu..."><?php echo htmlspecialchars($_POST['comment'] ?? '') ?></textarea>
+            </div>
+
+            <button type="submit">Dërgo Vlerësimin</button>
+        </form>
+    </div>
+
+    <div class="info-container">
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+            $reservation_id = $_POST['reservation_id'];
+            $show_id = $_POST['show_id'] ?? null;
+            $event_id = $_POST['event_id'] ?? null;
+            $rating = $_POST['rating'];
+            $comment = trim($_POST['comment']) ?? null;
+            $date = date('Y-m-d H:i:s');
+
+            $errors = [];
+
+            if ($reservation_id || ($show_id && $event_id) || $rating) {
+                $stmt = $conn->prepare("INSERT INTO reviews (email, show_id, event_id, rating, comment, date) VALUES (?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("siiiss", $email, $show_id, $event_id, $rating, $comment, $date);
+                $stmt->execute();
+
+                if (!$stmt->affected_rows > 0) {
+                    $errors[] = "Dështoi ruajtja e vlerësimit.";
+                }
+
+                $stmt->close();
+            } else {
+                $errors[] = "Të dhënat mungojnë! Ju duhet të vendosni një vlerësim me yje!";
+            }
+
+            $conn->close();
+
+            if(!empty($errors)) {
+                foreach ($errors as $error) {
+                    echo "<div class='errors show'><p>$error</p></div>";
+                }
+            } else {
+                echo "<div class='errors show' style='background-color: rgba(131, 173, 68) !important;'>
+                         <p style='color: #E4E4E4;'>Vlerësimi juaj u dërgua me sukses!</p>
+                      </div>";
+            }
+        }
+        ?>
+    </div>
+
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
+    <script>
+        const elementsToHide = document.getElementsByClassName("show");
+        setTimeout(() => {
+            Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
+        }, 4500);
+    </script>
+
+</body>
 </html>

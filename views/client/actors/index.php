@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="./index.css">
 
     <link rel="stylesheet" href='../../../assets/css/actors.css'>
-    <title>Actors Page</title>
+    <title>Faqja e aktoreve</title>
 
     <style>
         /* Styling */
@@ -145,14 +145,12 @@
     <section id="team" class="team section">
         <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
-            <h2>Actors Page</h2>
-            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            <h2>Faqja e aktoreve</h2>
         </div><!-- End Section Title -->
 
         <!-- Search Bar -->
         <div class="container">
-            <input type="text" id="search" class="form-control" placeholder="Search actors..."
-                onkeyup="searchActors()" />
+            <input type="text" id="search" class="form-control" placeholder="Kerko aktor..." onkeyup="searchActors()" />
         </div>
 
         <div class="container">

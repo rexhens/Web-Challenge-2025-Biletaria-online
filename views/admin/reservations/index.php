@@ -1,16 +1,16 @@
 <?php
-// Include database connection
 /** @var mysqli $conn */
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
-$query = "SELECT * FROM reservations";
+$filter = isset($_GET['show_id']) ? ' WHERE show_id = ' . $_GET['show_id'] : '';
+$filter = isset($_GET['event_id']) ? ' WHERE event_id = ' . $_GET['event_id'] : $filter;
+
+$query = "SELECT * FROM reservations" . $filter;
 $reservations_result = $conn->query($query);
-$query = "SELECT * FROM tickets";
-$tickets_result = $conn->query($query);
 ?>
 
 <?php
@@ -112,8 +112,6 @@ $pageStyles = [
         <div class="card shadow border-0 rounded">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Rezervimeve</h5>
-                <button class="btn btn-sm btn-primary-report" onclick="window.location.href = '../reserve.php'"
-                    style="padding: 7px 20px;">Bej Rezervim</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -124,7 +122,7 @@ $pageStyles = [
                                 <th>Klienti</th>
                                 <th>Email</th>
                                 <th>Numri i cel</th>
-                                <th>Shfaqja</th>
+                                <th>Shfaqja/Eventi</th>
                                 <th>Salla</th>
                                 <th>Data</th>
                                 <th>Statusi</th>
@@ -134,32 +132,66 @@ $pageStyles = [
                         <tbody>
                             <?php
                             $i = 1;
-                            while ($row = $reservations_result->fetch_assoc()) { ?>
-                                <?php
-                                $clientDetails = $conn->query("SELECT * FROM users WHERE id = " . $row['user_id'])->fetch_assoc();
-                                $showDetails = $conn->query("SELECT * FROM shows WHERE id = " . $row['show_id'])->fetch_assoc();
-                                $ticketDetails = $conn->query("SELECT * FROM tickets WHERE reservation_id = " . $row['id'])->fetch_assoc();
+                            while ($row = $reservations_result->fetch_assoc()) {
+                                if(!empty($row['show_id'])) {
+                                    $sql = 'SELECT title FROM shows WHERE id = ?';
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param('i', $row['show_id']);
+                                    if (!$stmt->execute()) {
+                                        showError("Një problem ndodhi! Provoni më vonë!");
+                                    }
+                                    $result = $stmt->get_result()->fetch_assoc();
+                                    if (!$result) {
+                                        showError("Shfaqja nuk u gjet!");
+                                    }
+                                    $title = $result['title'];
+                                } else if(!empty($row['event_id'])) {
+                                    $sql = 'SELECT title FROM events WHERE id = ?';
+                                    $stmt = $conn->prepare($sql);
+                                    $stmt->bind_param('i', $row['event_id']);
+                                    if (!$stmt->execute()) {
+                                        showError("Një problem ndodhi! Provoni më vonë!");
+                                    }
+                                    $result = $stmt->get_result()->fetch_assoc();
+                                    if (!$result) {
+                                        showError("Eventi nuk u gjet!");
+                                    }
+                                    $title = $result['title'];
+                                }
                                 ?>
                                 <tr>
                                     <td><?php echo $i ?></td>
-                                    <td><?php echo $clientDetails['name'] . ' ' . $clientDetails['surname'] ?></td>
-                                    <td><?php echo $clientDetails['email'] ?></td>
-                                    <td><?php echo $clientDetails['phone'] ?></td>
-                                    <td><?php echo $showDetails['title'] ?></td>
-                                    <td><?php echo $row['hall'] ?></td>
-                                    <td><?php echo $row['date'] ?></td>
+                                    <td><?php echo htmlspecialchars($row['full_name']) ?></td>
+                                    <td><?php echo htmlspecialchars($row['email']) ?></td>
+                                    <td><?php echo htmlspecialchars($row['phone']) ?></td>
+                                    <td><?php echo $title ?? 'Error' ?></td>
+                                    <td><?php echo htmlspecialchars($row['hall']) ?></td>
+                                    <td><?php echo htmlspecialchars($row['show_date']) . " " . htmlspecialchars($row['show_time']) ?></td>
 
-                                    <?php if (!$ticketDetails == null) { ?>
+                                    <?php if ($row['paid']) { ?>
                                         <td><span class="badge badge-success">Paguar</span></td>
-                                    <?php } else if ($ticketDetails['expires_at'] < new DateTime()) { ?>
-                                            <td><span class="badge badge-danger">Kaluar afati</span></td>
-                                    <?php } ?>
+                                    <?php } else if (htmlspecialchars($row['expires_at']) < new DateTime()) { ?>
+                                        <td><span class="badge badge-danger">Kaluar afati</span></td>
+                                    <?php } else { ?>
+                                        <td><span class="badge badge-danger">Pa Pguar</span></td>
+                                    <?php }?>
                                     <td>
                                         <div
-                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
-                                            <a href="#" class="btn btn-outline-secondary" style="width: 100%;">Edito</a>
-                                            <a href="#" class="btn btn-outline-danger" style="width: 100%;">Anullo</a>
-
+                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 150px;">
+                                            <button class="btn btn-outline-success pay-btn"
+                                                    style="width: 100%; font-size: smaller"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['full_name']?>"
+                                                    data-title="<?php echo $title?>"
+                                                    data-toggle="modal"
+                                                    data-target="#activateUserModal">Shëno 'Paguar'</button>
+                                            <button class="btn btn-outline-danger delete-btn"
+                                                    style="width: 100%; font-size: smaller"
+                                                    data-id="<?php echo $row['id'] ?>"
+                                                    data-name="<?php echo $row['full_name']?>"
+                                                    data-title="<?php echo $title?>"
+                                                    data-toggle="modal"
+                                                    data-target="#deleteUserModal">Anullo Rezervimin</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -177,24 +209,24 @@ $pageStyles = [
     <!-- Delete Modal -->
 
     <!-- Delete Confirmation Modal -->
-    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+    <div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="activateUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" action="delete.php">
+            <form method="POST" action="pay.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Caktivizimin</h5>
+                        <h5 class="modal-title" id="deleteUserModalLabel">Konfirmo Pagesën</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të caktivizoni perdoruesin <strong id="userToDeleteName"></strong>?</p>
-                        <input type="hidden" name="userId" id="deleteUserId">
+                        <p>Jeni i sigurt që doni të shënoni paguar rezervimin e <strong id="userToPayName"></strong> për shfaqjen/eventin <strong id="showToPayName"></strong>?</p>
+                        <input type="hidden" name="id" id="activateUserId">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="deleteUserSubmit" class="btn btn-danger">Caktivizo</button>
+                        <button type="submit" name="pay" class="btn btn-success">Shëno 'Paguar'</button>
                     </div>
                 </div>
             </form>
@@ -202,25 +234,25 @@ $pageStyles = [
     </div>
 
     <!-- Activate Confirmation Modal -->
-    <div class="modal fade" id="activateUserModal" tabindex="-1" role="dialog" aria-labelledby="activateUserModalLabel"
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <form method="POST" action="activate.php">
+            <form method="POST" action="delete.php">
                 <div class="modal-content">
                     <div class="modal-header text-red">
-                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Aktivizimin</h5>
+                        <h5 class="modal-title" id="activateUserModalLabel">Konfirmo Anullimin e Rezervimit</h5>
                         <button type="button" class="close text-white" data-dismiss="modal" aria-label="Mbyll">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>Jeni i sigurt që doni të aktivizoni perdoruesin <strong id="userToActivateName"></strong>?
+                        <p>Jeni i sigurt që doni të anulloni rezervimin e <strong id="userToDeleteName"></strong> për shfaqjen/eventin <strong id="showToDeleteName">?
                         </p>
-                        <input type="hidden" name="userId" id="activateUserId">
+                        <input type="hidden" name="id" id="deleteUserId">
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
-                        <button type="submit" name="activateUserSubmit" class="btn btn-success">Aktivizo</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Kthehu</button>
+                        <button type="submit" name="delete" class="btn btn-danger">Anullo Rezervimin</button>
                     </div>
                 </div>
             </form>
@@ -235,7 +267,6 @@ $pageStyles = [
 
 <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
-<script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 </body>
 
@@ -262,7 +293,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -273,75 +304,34 @@ $pageStyles = [
         });
     });
 
-    let initialFormData;
-
-    $(document).ready(function () {
-        $('.editUserBtn').on('click', function () {
-            const userId = $(this).data('id');
-            const name = $(this).data('name');
-            const surname = $(this).data('surname');
-            const email = $(this).data('email');
-            const phone = $(this).data('phone');
-            const role = $(this).data('role');
-
-            // Populate modal fields
-            $('#editUserId').val(userId);
-            $('#editName').val(name);
-            $('#editSurname').val(surname);
-            $('#editEmail').val(email);
-            $('#editPhone').val(phone);
-            $('#editRole').val(role);
-
-            initialFormData = $('#editUserForm').serializeArray();
-
-            // Show the modal
-            $('#editUserModal').modal('show');
-        });
-    });
-
-    function isFormChanged() {
-        let currentFormData = $('#editUserForm').serializeArray();
-
-        for (let i = 0; i < initialFormData.length; i++) {
-            if (initialFormData[i].value !== currentFormData[i].value) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    $('#editUserForm').submit(function (e) {
-        if (!isFormChanged()) {
-            e.preventDefault();
-            alert('Nuk ka asnjë ndryshim për të ruajtur.');
-        }
-    });
-
     document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".deleteUserBtn");
+        const deleteButtons = document.querySelectorAll(".delete-btn");
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", () => {
                 const userId = button.getAttribute("data-id");
                 const userName = button.getAttribute("data-name");
+                const title = button.getAttribute("data-title");
 
                 document.getElementById("deleteUserId").value = userId;
                 document.getElementById("userToDeleteName").textContent = userName;
+                document.getElementById("showToDeleteName").textContent = title;
             });
         });
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-        const deleteButtons = document.querySelectorAll(".activateUserBtn");
+        const deleteButtons = document.querySelectorAll(".pay-btn");
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", () => {
                 const userId = button.getAttribute("data-id");
                 const userName = button.getAttribute("data-name");
+                const title = button.getAttribute("data-title");
 
                 document.getElementById("activateUserId").value = userId;
-                document.getElementById("userToActivateName").textContent = userName;
+                document.getElementById("userToPayName").textContent = userName;
+                document.getElementById("showToPayName").textContent = title;
             });
         });
     });

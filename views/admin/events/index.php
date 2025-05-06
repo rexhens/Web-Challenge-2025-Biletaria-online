@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
 $query = "SELECT * FROM events";
 $events_result = $conn->query($query);
@@ -129,8 +129,10 @@ $pageStyles = [
         <div class="card shadow border-0 rounded">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Eventeve</h5>
+                <?php if(checkAdmin($conn)){ ?>
                 <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'add-event.php'"
                     style="padding: 7px 20px;">Shto Event</button>
+                <?php } ?>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -186,6 +188,7 @@ $pageStyles = [
                                     <td style="text-align: center; vertical-align: middle;">
                                         <div
                                             style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 110px;">
+                                            <?php if(checkAdmin($conn)){ ?>
                                             <button class="btn btn-sm btn-outline-secondary editShowBtn"
                                                 style="width: 100%;" data-id="<?php echo $row['id'] ?>"
                                                 data-title="<?php echo $row['title'] ?>"
@@ -197,15 +200,20 @@ $pageStyles = [
                                                 data-poster="<?php echo $posterUrl ?>">
                                                 Edito
                                             </button>
+                                            <?php } ?>
+                                            <?php if(checkAdmin($conn)){ ?>
                                             <button class="btn btn-sm btn-outline-danger delete-btn" style="width: 100%;"
                                                 data-id="<?php echo $row['id'] ?>" data-name="<?php echo $row['title'] ?>"
                                                 data-toggle="modal" data-target="#deleteUserModal">Fshi</button>
+                                            <?php } ?>
                                             <button class="btn btn-sm btn-outline-success"
                                                 onclick="window.location.href = '/biletaria_online/views/client/events/event_details.php?id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Më shumë info</button>
                                             <button class="btn btn-sm btn-outline-warning"
+                                                    onclick="window.location.href = '/biletaria_online/views/client/reserve.php?id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Rezervo</button>
                                             <button class="btn btn-sm btn-outline-secondary"
+                                                    onclick="window.location.href = '/biletaria_online/views/admin/reservations/index.php?event_id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Rezervimet</button>
                                         </div>
                                     </td>
@@ -285,8 +293,6 @@ $pageStyles = [
                             <label class="custom-file-label" for="editPoster">Zgjidh një skedar</label>
                         </div>
                     </div>
-
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anulo</button>
@@ -324,8 +330,9 @@ $pageStyles = [
         </div>
     </div>
 
-</body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
@@ -334,9 +341,8 @@ $pageStyles = [
 <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
-<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-</html>
+<script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -360,7 +366,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -467,3 +473,6 @@ $pageStyles = [
         window.history.replaceState({}, document.title, url.pathname + url.search);
     }
 </script>
+
+</body>
+</html>

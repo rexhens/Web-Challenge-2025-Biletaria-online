@@ -7,6 +7,38 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/dompdf/autoload.in
 use Dompdf\Dompdf;
 
 require_once('../../config/db_connect.php');
+$revenueStmt = $conn->prepare("
+    SELECT 
+        MONTH(created_at) AS month, 
+        SUM(total_price) AS revenue
+    FROM reservations
+    WHERE paid = 1 AND YEAR(created_at) = YEAR(CURRENT_DATE())
+    GROUP BY MONTH(created_at)
+    ORDER BY month
+");
+
+$revenueStmt->execute();
+$revenueResult = $revenueStmt->get_result();
+
+$monthlyRevenues = array_fill(1, 12, 0); // fill months with zero revenue
+
+while ($row = $revenueResult->fetch_assoc()) {
+    $monthlyRevenues[(int) $row['month']] = (float) $row['revenue'];
+}
+$months = [
+    1 => 'Janar',
+    2 => 'Shkurt',
+    3 => 'Mars',
+    4 => 'Prill',
+    5 => 'Maj',
+    6 => 'Qershor',
+    7 => 'Korrik',
+    8 => 'Gusht',
+    9 => 'Shtator',
+    10 => 'Tetor',
+    11 => 'Nëntor',
+    12 => 'Dhjetor'
+];
 
 // Get today's date
 $today = date('d-m-Y');
@@ -46,6 +78,20 @@ $html .= "<p>Data e gjenerimit: <strong>{$today}</strong></p>";
 $html .= "<p>Ky raport përmban informacion mbi aktorët, përdoruesit, shfaqjet dhe eventet aktuale.</p>";
 $html .= "</div>";
 
+
+
+$html .= "<div class='section'>";
+$html .= "<h2>Raporti i të Ardhurave Mujore</h2>";
+$html .= "<table>";
+$html .= "<tr><th>Muaji</th><th>Të Ardhurat (LEK)</th></tr>";
+
+foreach ($monthlyRevenues as $month => $revenue) {
+    $monthName = $months[$month];
+    $html .= "<tr><td>{$monthName}</td><td>" . number_format($revenue, 2) . "</td></tr>";
+}
+
+$html .= "</table>";
+$html .= "</div>";
 
 
 

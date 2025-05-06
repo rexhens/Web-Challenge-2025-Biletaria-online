@@ -6,10 +6,10 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 
 // Database connection
-$host = 'metropolticketing.marketingelite.eu';
+$host = 'localhost';
 $db = 'theater_db';
-$user = 'marketingelite';
-$pass = 'ndgcFAGTtnqW3Uz';
+$user = 'root';
+$pass = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
@@ -29,13 +29,12 @@ if ($action === 'yearly') {
 function getMonthlyRevenue($pdo): float
 {
     $sql = "
-        SELECT SUM(s.price) AS revenue
-        FROM tickets t
-        JOIN reservations r ON t.reservation_id = r.id
-        JOIN shows s ON r.show_id = s.id
-        WHERE MONTH(t.created_at) = MONTH(CURRENT_DATE())
-          AND YEAR(t.created_at) = YEAR(CURRENT_DATE())
-    ";
+    SELECT SUM(total_price) AS revenue
+    FROM reservations
+    WHERE paid = 1
+      AND MONTH(created_at) = MONTH(CURRENT_DATE())
+      AND YEAR(created_at) = YEAR(CURRENT_DATE())
+";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     return (float) $stmt->fetchColumn();
@@ -44,12 +43,11 @@ function getMonthlyRevenue($pdo): float
 function getYearlyRevenue($pdo): float
 {
     $sql = "
-        SELECT SUM(s.price) AS revenue
-        FROM tickets t
-        JOIN reservations r ON t.reservation_id = r.id
-        JOIN shows s ON r.show_id = s.id
-        WHERE YEAR(t.created_at) = YEAR(CURRENT_DATE())
-    ";
+    SELECT SUM(total_price) AS revenue
+    FROM reservations
+    WHERE paid = 1
+      AND YEAR(created_at) = YEAR(CURRENT_DATE())
+";
     $stmt = $pdo->prepare($sql);
     $stmt->execute();
     return (float) $stmt->fetchColumn();
