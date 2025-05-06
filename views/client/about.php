@@ -145,32 +145,44 @@ $pageStyles = [
     <div class="container py-lg-4" style="margin-top: 60px;">
         <div class="row ab-grids-sec align-items-center">
             <div class="col-lg-12 ab-left pl-lg-4 mt-lg-1 mt-1">
-                <h3 class="hny-title">Mirë se vini në Teatrin Metropol – Shtëpia e Artit dhe Dialogut</h3>
+                <h3 class="hny-title" style="color:#8f793f;">Mirë se vini në Teatrin Metropol – Shtëpia e Artit dhe
+                    Dialogut</h3>
 
                 <div class="column mt-2">
                     <div class="single-event-content">
-                        <p><strong>Teatri Metropol</strong> është një qendër dinamike kulturore që synon të sjellë për
+                        <p style="color: white;"><strong style="color:#8f793f;">Teatri Metropol</strong> është një
+                            qendër dinamike kulturore
+                            që synon të sjellë për
                             publikun shqiptar dhe ndërkombëtar vepra teatrore me nivel të lartë artistik. I udhëhequr
                             nga vlerat e gjithëpërfshirjes, dialogut konstruktiv dhe humanizmit universal, Metropoli
                             është një hapësirë ku arti takon komunitetin dhe frymëzon reflektim, bashkëbisedim dhe
                             rritje.</p>
 
-                        <p><strong>Misioni ynë</strong> është të realizojmë shfaqje cilësore – shqiptare dhe botërore –
+                        <p style="color: white;"><strong style="color:#8f793f;">Misioni ynë</strong> është të realizojmë
+                            shfaqje cilësore –
+                            shqiptare dhe botërore –
                             që flasin me ndershmëri dhe forcë artistike për realitetin dhe shpirtin njerëzor. Vizioni
                             ynë është të ndërtojmë një standard të ri në cilësinë e prodhimit artistik dhe trajnimit
                             profesional të talenteve të reja, duke i shërbyer një audience të gjerë: fëmijë, të rinj dhe
                             të rritur.</p>
 
-                        <h6 style="margin-top: 12px; margin-bottom: 2px;">Platforma jonë artistike është e ndarë në tre
+                        <h6 style="margin-top: 12px; margin-bottom: 2px; color:#8f793f;">Platforma jonë
+                            artistike është e ndarë në tre
                             shtylla:</h6>
                         <ul>
-                            <li><strong>Teatri i të Rriturve:</strong> 6 premiera çdo vit, me produksione origjinale dhe
+                            <li style="color: white;"><strong style="color:#8f793f;">Teatri i të Rriturve:</strong> 6
+                                premiera çdo vit, me
+                                produksione origjinale dhe
                                 bashkëpunime me artistë të jashtëm. Dy prej tyre janë të lëvizshme dhe çdo shfaqje jepet
                                 deri në 15 herë.</li>
-                            <li><strong>Teatri i Fëmijëve:</strong> 4 premiera në vit, të krijuara me dashuri për
+                            <li style="color: white;"><strong style="color:#8f793f;">Teatri i Fëmijëve:</strong> 4
+                                premiera në vit, të
+                                krijuara me dashuri për
                                 publikun më të vogël, nga të cilat dy janë të lëvizshme dhe secila shfaqet deri në 20
                                 herë.</li>
-                            <li><strong>Teatri i të Rinjve:</strong> 2 premiera në vit të dedikuara moshës 14-18 vjeç,
+                            <li style="color: white;"><strong style="color:#8f793f;">Teatri i të Rinjve:</strong> 2
+                                premiera në vit të
+                                dedikuara moshës 14-18 vjeç,
                                 me një fokus të veçantë tek temat bashkëkohore dhe përfshirja aktive e të rinjve në
                                 botën e teatrit.</li>
                         </ul>
@@ -185,7 +197,7 @@ $pageStyles = [
     <section class="w3l-theatre" id="theatre">
         <div class="container py-lg-4">
             <div class="text-center mb-4">
-                <h2>Pamje nga Teatri</h2>
+                <h2 style="color:#8f793f;">Pamje nga Teatri</h2>
             </div>
             <div class="carousel-width">
                 <div class="owl-theatre owl-carousel owl-theme mb-lg-5">
