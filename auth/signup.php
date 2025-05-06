@@ -167,12 +167,11 @@ session_start();
 
         if(empty($errors)) {
             $subject = "Verifikoni Email";
-            $body = "<h2>Regjistrimi juaj ishte i suksesshëm!</h2>
-                     <p>Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar regjistrimin tuaj.</p>
-                     <br>
-                     <a href='http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token'>Kliko këtu</a>";
+            $title = "Regjistrimi juaj ishte i suksesshëm!";
+            $body = "Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar regjistrimin tuaj.";
+            $link = "http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token";
 
-            if(!sendEmail($email, $subject, $body)) {
+            if(!sendEmail($email, $subject, $title, $body, $link)) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
             } else {
                 echo "<div class='errors show' style='background-color: rgba(131, 173, 68) !important'>

@@ -12,7 +12,7 @@ use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
-function sendEmail(string $email, string $subject, string $body): bool {
+function sendEmail(string $email, string $subject, string $title, string $body, string $link): bool {
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -29,9 +29,8 @@ function sendEmail(string $email, string $subject, string $body): bool {
 
         $mail->isHTML(true);
         $mail->Subject = $subject;
-        $template = $body;
 
-        $mail->Body = $template;
+        $mail->Body = emailTemplate($title, $body, $link);
 
         $mail->send();
         return true;
@@ -39,6 +38,62 @@ function sendEmail(string $email, string $subject, string $body): bool {
         echo $e->getMessage();
         return false;
     }
+}
+
+function emailTemplate(string $title, string $body, string $link): string {
+    $linkHtml = '';
+    if ($link) {
+        $linkHtml = <<<HTML
+<tr>
+    <td>
+        <p style="text-align: center; margin-bottom: 30px; margin-top: -30px;">
+            <a style="padding: 15px 30px; text-decoration: none; font-size: 16px; background-color: #836e4f; border-radius: 3px; color: #E4E4E4;" href="$link">Kliko këtu</a>
+        </p>
+    </td>
+</tr>
+HTML;
+    }
+
+    return <<<HTML
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 30px 0;">
+    <tr>
+        <td align="center">
+            <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; font-family: Arial, sans-serif;">
+                <tr>
+                    <td style="background-color: #222; padding: 20px; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; color: #ffffff; font-family: Arial, sans-serif; width: 600px; height: 100%;">
+                            <img src="http://teatrimetropol.al/wp-content/themes/metropol/img/logo-white.png" alt="Logo" style="width: 50px; height: auto; margin-right: 20px;">
+                            <h1 style="font-size: 24px;">
+                                Teatri <span style="color: #836e4f;">Metropol</span>
+                            </h1>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; height: 300px;">
+                        <h2 style="color: #836e4f; font-size: 25px">$title</h2>
+                        <p style="font-size: 19px; color: #333333;">$body</p>
+                    </td>
+                </tr>
+                $linkHtml
+                <tr>
+                    <td>
+                        <p style="font-size: 16px; margin-bottom: 20px; color: #777; text-align: center;">
+                            Ju mirëpresim në Teatrin Metropol – Shtëpinë e Artit dhe Dialogut!
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="background-color: #c8bbb3; text-align: center; padding: 20px; font-size: 13px; color: #555;">
+                        Teatri Metropol, Tirana<br>
+                        <a href="https://www.teatrimetropol.al" style="color: #8f793f; text-decoration: none;">www.teatrimetropol.al</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+HTML;
 }
 
 function checkAdmin($conn): bool {
