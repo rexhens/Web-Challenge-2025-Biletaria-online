@@ -66,7 +66,7 @@ $pageStyles = [
         }
 
         .footer-glass {
-            width: calc(100% - 20px);
+            width: calc(100% - 35px);
         }
 
         .footer-bottom {

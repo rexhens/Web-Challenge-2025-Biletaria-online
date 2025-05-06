@@ -71,8 +71,8 @@ HTML;
                 </tr>
                 <tr>
                     <td style="padding: 30px; height: 300px;">
-                        <h2 style="color: #836e4f; font-size: 25px">$title</h2>
-                        <p style="font-size: 19px; color: #333333;">$body</p>
+                        <h2 style="color: #836e4f; font-size: 30px">$title</h2>
+                        <p style="font-size: 20px; color: #333333;">$body</p>
                     </td>
                 </tr>
                 $linkHtml
