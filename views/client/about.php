@@ -8,6 +8,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 <?php
 $pageTitle = "Rreth nesh";
 $pageStyles = [
+    "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css",
+    "https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css",
     '/biletaria_online/assets/css/style-starter.css',
     '/biletaria_online/assets/css/navbar.css',
     '/biletaria_online/assets/css/footer.css'
@@ -53,13 +55,23 @@ $pageStyles = [
         overflow-x: hidden;
     }
 
+    .carousel-width,
+    .owl-carousel,
+    .owl-carousel .item {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
     /* Theatre Carousel Image */
     .carousel-img {
-      width: 640px;
-      height: 480px;
-      max-width: 100%;
-      object-fit: cover;
-      cursor: pointer;
+        width: 100% !important;
+        height: 450px;
+        max-width: 100% !important;
+        display: block;
+        object-fit: cover;
+        cursor: pointer;
     }
 
     /* Fullscreen Lightbox Overlay */
@@ -206,60 +218,16 @@ $pageStyles = [
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <script src="../../assets/js/jquery-3.3.1.min.js"></script>
-<!-- stats -->
-<script src="../../assets/js/jquery.waypoints.min.js"></script>
-<script type="text/javascript" src='../../assets/js/swiper.min.js'></script>
 <!--/theme-change-->
-<script src="../../assets/js/theme-change.js"></script>
 <script src="../../assets/js/owl.carousel.js"></script>
-<!-- script for banner slider-->
-
-
-<!-- script for owlcarousel -->
-<!-- disable body scroll which navbar is in active -->
-<script>
-	$(function () {
-		$('.navbar-toggler').click(function () {
-			$('body').toggleClass('noscroll');
-		})
-	});
-</script>
-<!--/MENU-JS-->
-<script>
-	$(window).on("scroll", function () {
-		var scroll = $(window).scrollTop();
-
-		if (scroll >= 80) {
-			$("#site-header").addClass("nav-fixed");
-		} else {
-			$("#site-header").removeClass("nav-fixed");
-		}
-	});
-
-	//Main navigation Active Class Add Remove
-	$(".navbar-toggler").on("click", function () {
-		$("header").toggleClass("active");
-	});
-	$(document).on("ready", function () {
-		if ($(window).width() > 991) {
-			$("header").removeClass("active");
-		}
-		$(window).on("resize", function () {
-			if ($(window).width() > 991) {
-				$("header").removeClass("active");
-			}
-		});
-	});
-</script>
-<script src="../../assets/js/bootstrap.min.js"></script>
 
 <script>
-  $(function() {
+  $(document).ready(function() {
     // Initialize Owl Carousel
       $('.owl-theatre').owlCarousel({
           stagePadding: 0,
           loop: true,
-          margin: 20,
+          margin: 10,
           nav: true,
           responsiveClass: true,
           autoplay: true,
@@ -269,17 +237,17 @@ $pageStyles = [
           responsive: {
               0: {
                   items: 1,
-                  nav: false,
+                  nav: true,
                   stagePadding: 0,
               },
               390: {
                   items: 1,
-                  nav: false,
+                  nav: true,
                   stagePadding: 30,
               },
               450: {
                   items: 1,
-                  nav: false,
+                  nav: true,
                   stagePadding: 40,
               },
               490: {
