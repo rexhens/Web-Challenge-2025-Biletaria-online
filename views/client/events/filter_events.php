@@ -71,7 +71,7 @@ if ($result->num_rows > 0) {
             "<p class='show-description'>" . htmlspecialchars($event['description']) . "</p>" .
             "<div class='btn-group'>
                 <button onclick=\"redirectTo('event_details.php?id=" . $event['id'] . "')\">Më shumë info</button>
-                <button onclick=\"redirectTo('../reserve.php?id=" . $event['id'] . "')\" class='black-btn'>Rezervo</button>
+                <button onclick=\"redirectTo('../reserve.php?event_id=" . $event['id'] . "')\" class='black-btn'>Rezervo</button>
             </div>
         </div>
     </div>";

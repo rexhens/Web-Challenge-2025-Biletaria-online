@@ -102,7 +102,7 @@ $pageStyles = [
                                                 href="views/client/shows/show_details.php?id=<?php echo $show['id']; ?>"
                                                 style="color: white; text-decoration: underline;">Më shumë info</a></p>
                                         <p style="margin-top: 0;"><a
-                                                href="views/client/reserve.php?id=<?php echo $show['id']; ?>"
+                                                href="views/client/reserve.php?show_id=<?php echo $show['id']; ?>"
                                                 style="color: white; text-decoration: underline">Rezervo</a></p>
                                         <a href="#<?php echo $popupId; ?>" class="popup-with-zoom-anim play-view1">
                                             <span class="video-play-icon">
@@ -291,7 +291,7 @@ $pageStyles = [
                                                         href="views/client/events/event_details.php?id=<?php echo $event['id']; ?>"
                                                         style="color: white; text-decoration: underline">Më shumë info</a></p>
                                                 <p style="margin-top: 0;"><a
-                                                        href="views/client/reserve.php?id=<?php echo $event['id']; ?>"
+                                                        href="views/client/reserve.php?event_id=<?php echo $event['id']; ?>"
                                                         style="color: white; text-decoration: underline">Rezervo</a></p>
                                                 <a class="watch popup-with-zoom-anim play-view1"
                                                     href="#<?php echo $popupId; ?>"><span class="fa fa-play"

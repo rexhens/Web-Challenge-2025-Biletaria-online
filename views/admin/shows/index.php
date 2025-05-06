@@ -219,7 +219,7 @@ $pageStyles = [
                                                 onclick="window.location.href = '/biletaria_online/views/client/shows/show_details.php?id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Më shumë info</button>
                                             <button class="btn btn-sm btn-outline-warning"
-                                                    onclick="window.location.href = '/biletaria_online/views/client/reserve.php?id=<?php echo $row['id'] ?>'"
+                                                    onclick="window.location.href = '/biletaria_online/views/client/reserve.php?show_id=<?php echo $row['id'] ?>'"
                                                 style="width: 100%;">Rezervo</button>
                                             <button class="btn btn-sm btn-outline-secondary"
                                                     onclick="window.location.href = '/biletaria_online/views/admin/reservations/index.php?show_id=<?php echo $row['id'] ?>'"
