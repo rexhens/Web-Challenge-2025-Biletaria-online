@@ -419,3 +419,21 @@ function customError($error): void {
       </html>";
     exit;
 }
+
+function countOnlineReservations(mysqli $conn): int {
+    $sql = "
+        SELECT COUNT(*) AS total
+        FROM reservations r
+        JOIN users u ON r.email = u.email
+        WHERE r.paid != 0
+        AND u.role NOT IN ('admin', 'ticketOffice')
+    ";
+
+    $result = $conn->query($sql);
+
+    if ($result && $row = $result->fetch_assoc()) {
+        return (int)$row['total'];
+    } else {
+        return 0;
+    }
+}
