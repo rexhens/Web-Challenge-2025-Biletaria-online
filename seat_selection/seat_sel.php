@@ -8,30 +8,77 @@ $show_id = isset($_GET['show_id']) ? (int)$_GET['show_id'] : 0;
 if (!$show_id) { die("Invalid show ID."); }
 
 /* ────────── detajet e shfaqjes ────────── */
-$stmt = $conn->prepare("SELECT s.title, s.time, s.price, sd.show_date, s.hall
-                          FROM shows AS s
-                          JOIN show_dates AS sd ON sd.show_id = s.id
-                         WHERE s.id = ?
-                         LIMIT 1");
+$stmt = $conn->prepare("
+    SELECT s.title, s.time, s.price, sd.show_date, s.hall
+      FROM shows AS s
+      JOIN show_dates AS sd ON sd.show_id = s.id
+     WHERE s.id = ?
+     LIMIT 1
+");
 $stmt->bind_param("i", $show_id);
 $stmt->execute();
-$stmt->bind_result($title,$time,$price,$show_date,$hall);
-if(!$stmt->fetch()){ die("Show not found."); }
+$stmt->bind_result($title, $time, $price, $show_date, $hall);
+if (!$stmt->fetch()) {
+    die("Show not found.");
+}
 $stmt->close();
 
-/* ────────── vendet e bllokuara ────────── */
-$seatJson = file_get_contents(__DIR__.'/seats.json');
-$seatData = json_decode($seatJson,true) ?: [];
-$reserved=[];
-foreach($seatData['seats']??[] as $s){
-  if($s['status']==='unavailable' && preg_match('/(\d+)/',$s['id'],$m)){
-    $reserved[]=(int)$m[1];
+/* ────────── vendet e bllokuara (nga DB) ────────── */
+// 1) load all seats for this hall
+$allSeats = [];
+$sq = $conn->prepare("
+    SELECT seat_number, seat_type
+      FROM seats
+     WHERE hall = ?
+");
+$sq->bind_param("s", $hall);
+$sq->execute();
+$resS = $sq->get_result();
+while ($row = $resS->fetch_assoc()) {
+    $allSeats[] = [
+        'number' => (int)$row['seat_number'],
+        'type'   => $row['seat_type'],
+        'status' => 'available'
+    ];
+}
+$sq->close();
+
+// 2) fetch reserved seats for this show+hall
+$reservedIds = [];
+$rq = $conn->prepare("
+    SELECT seat_id
+      FROM reservations
+     WHERE show_id = ? AND hall = ?
+");
+$rq->bind_param("is", $show_id, $hall);
+$rq->execute();
+$resR = $rq->get_result();
+while ($r = $resR->fetch_assoc()) {
+  $rawSeat = (int)$r['seat_id'];
+  // if hall is "cehov", map back by subtracting 212
+  if (strtolower($hall) === 'cehov') {
+      $reservedIds[] = $rawSeat - 212;
+  } else {
+      $reservedIds[] = $rawSeat;
   }
 }
+$rq->close();
+
+// 3) mark them unavailable
+foreach ($allSeats as &$s) {
+    if (in_array($s['number'], $reservedIds, true)) {
+        $s['status'] = 'unavailable';
+    }
+}
+unset($s);
+
+// 4) prepare reserved list for JS
+$reserved = $reservedIds;
+
 $conn->close();
 
 /* ────────── SVG i sallës ────────── */
-$svg_markup = file_get_contents(__DIR__.'/'.basename($hall).'.svg');
+$svg_markup = file_get_contents(__DIR__ . '/' . basename($hall) . '.svg');
 ?>
 <!DOCTYPE html>
 <html lang="sq">

@@ -4,7 +4,62 @@ require "../../config/db_connect.php";
 require "../../auth/auth.php";
 require "../../includes/functions.php";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
+    $data = json_decode($_POST['ticket_json'], true);
 
+    // ─── Override customer info when logged in ──────────────────
+    if (isset($_SESSION['user_id'])) {
+        $ui = $conn->prepare("
+            SELECT CONCAT(name,' ',surname), email, phone
+            FROM users
+            WHERE id = ?
+            LIMIT 1
+        ");
+        $ui->bind_param("i", $_SESSION['user_id']);
+        $ui->execute();
+        $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
+        if ($ui->fetch()) {
+            $data['customer']['fullname'] = $loggedName;
+            $data['customer']['email']    = $loggedEmail;
+            $data['customer']['phone']    = $loggedPhone;
+        }
+        $ui->close();
+    }
+    // ────────────────────────────────────────────────────────────
+
+    if (isset($data['show_id'], $data['seats'], $data['customer'], $data['hall'])) {
+        $stmt = $conn->prepare("
+            INSERT INTO reservations
+              (show_id, event_id, full_name, email, phone, hall, seat_id)
+            VALUES
+              (?, NULL, ?, ?, ?, ?, ?)
+        ");
+        foreach ($data['seats'] as $seat) {
+            if (strtolower($data['hall']) === 'cehov') {
+                $seat += 212;
+            }
+            $stmt->bind_param(
+                "issssi",
+                $data['show_id'],
+                $data['customer']['fullname'],
+                $data['customer']['email'],
+                $data['customer']['phone'],
+                $data['hall'],
+                $seat
+            );
+            $stmt->execute();
+        }
+        $stmt->close();
+
+        header('Content-Type: application/json');
+        echo json_encode(['status'=>'ok']);
+        exit;
+    }
+
+    header('HTTP/1.1 400 Bad Request');
+    exit;
+}
+// ─
 
 /* 1. merr ID‑në e shfaqjes ----------------------------------- */
 $show_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -80,7 +135,7 @@ html{scroll-behavior:smooth;}
 .carousel-cell .date-numeric{font-size:1.5rem;font-weight:700;line-height:1;}
 .carousel-cell .date-month{font-size:.9rem;text-transform:uppercase;}
 .carousel-cell .date-day{font-size:.8rem;}
-.seat-iframe{width:100%;max-width:770px;height:120vh;display:block;margin:auto;}
+.seat-iframe{width:100%;max-width:770px;height:140vh;display:block;margin:auto;}
 .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
@@ -105,7 +160,7 @@ html{scroll-behavior:smooth;}
       <div class="collapse navbar-collapse"></div>
 
       <div class="Login_SignUp">
-        <a class="nav-link" href="sign_in.html"><i class="fa fa-user-circle-o"></i></a>
+        <a class="nav-link" href="../../auth/login.php"><i class="fa fa-user-circle-o"></i></a>
       </div>
 
       <div class="mobile-position">
@@ -194,30 +249,50 @@ html{scroll-behavior:smooth;}
 <!-- ───── STEP 3 – Të dhënat tuaja ───── -->
 <fieldset>
   <h2 class="h4">Të dhënat tuaja</h2>
-  <div style="width:50%; align:center;">
-  <div class="form-group">
-  <label for="fullname">Emri i plotë</label>
-  <input id="fullname" name="fullname" type="text"
-         value="<?=htmlspecialchars($loggedName)?>" required>
-</div>
+  <div style="width:50%; margin:auto;">
+    <div class="form-group">
+      <label for="fullname">Emri i plotë</label>
+      <input
+        id="fullname"
+        name="fullname"
+        type="text"
+        value="<?= htmlspecialchars($loggedName) ?>"
+        <?= $loggedName ? 'readonly' : 'required' ?>
+      >
+    </div>
 
-<div class="form-group">
-  <label for="email">Email</label>
-  <input id="email" name="email" type="email"
-  value="<?=htmlspecialchars($loggedEmail)?>" <?= $loggedEmail ? 'readonly' : '' ?>>
-</div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        value="<?= htmlspecialchars($loggedEmail) ?>"
+        <?= $loggedEmail ? 'readonly' : 'required' ?>
+      >
+    </div>
 
-<div class="form-group">
-  <label for="phone">Telefon</label>
-  <input id="phone" name="phone" type="tel"
-         value="<?=htmlspecialchars($loggedPhone)?>" required>
-</div>
+    <div class="form-group">
+      <label for="phone">Telefon</label>
+      <input
+        id="phone"
+        name="phone"
+        type="tel"
+        value="<?= htmlspecialchars($loggedPhone) ?>"
+        <?= $loggedPhone ? 'readonly' : 'required' ?>
+      >
+    </div>
 
-  <div class="form-group"><label for="notes">Shënime (opsionale)</label><input id="notes" name="notes" type="text"></div>
-            </div>
+    <div class="form-group">
+      <label for="notes">Shënime (opsionale)</label>
+      <input id="notes" name="notes" type="text">
+    </div>
+  </div>
+
   <input type="button" class="next-step" value="Rishiko Biletën">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
+
 
 <!-- ───── STEP 4 – BILETA ───── -->
 <fieldset>
@@ -349,6 +424,20 @@ function gatherJSON(){
   };
   document.getElementById('ticket-json').value=JSON.stringify(data);
   console.log(JSON.stringify(data,null,2));
+
+  // ─── INSERT VIA AJAX ────────────────────────────
+  fetch(window.location.pathname + '?id=<?=$show_id?>', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ ticket_json: JSON.stringify(data) })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.status !== 'ok') console.error('Insert failed', res);
+  })
+  .catch(err => console.error('AJAX error', err));
+  // ────────────────────────────────────────────────
+
 
   /* ► MBUSH TABELËN E VENDEVE º */
   const tbody=document.querySelector('#seat-table');
