@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
     if (isset($_SESSION['user_id'])) {
         $ui = $conn->prepare("
             SELECT CONCAT(name,' ',surname), email, phone
-            FROM users
-            WHERE id = ?
-            LIMIT 1
+              FROM users
+             WHERE id = ?
+             LIMIT 1
         ");
         $ui->bind_param("i", $_SESSION['user_id']);
         $ui->execute();
@@ -27,37 +27,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
     }
     // ────────────────────────────────────────────────────────────
 
-    if (isset($data['show_id'], $data['seats'], $data['customer'], $data['hall'])) {
-        $stmt = $conn->prepare("
-            INSERT INTO reservations
-              (show_id, event_id, full_name, email, phone, hall, seat_id)
-            VALUES
-              (?, NULL, ?, ?, ?, ?, ?)
-        ");
-        foreach ($data['seats'] as $seat) {
-            if (strtolower($data['hall']) === 'cehov') {
-                $seat += 212;
-            }
-            $stmt->bind_param(
-                "issssi",
-                $data['show_id'],
-                $data['customer']['fullname'],
-                $data['customer']['email'],
-                $data['customer']['phone'],
-                $data['hall'],
-                $seat
-            );
-            $stmt->execute();
-        }
-        $stmt->close();
+    if (isset(
+        $data['show_id'],
+        $data['seats'],
+        $data['customer']['fullname'],
+        $data['customer']['email'],
+        $data['customer']['phone'],
+        $data['hall'],
+        $data['chosen_date'],
+        $data['chosen_time']
+    )) {
+       // …
+// prepare reservations insert
+$resStmt = $conn->prepare("
+INSERT INTO reservations
+  (show_id,event_id,full_name,email,phone,hall,seat_id,show_date,show_time)
+VALUES
+  (?, NULL, ?, ?, ?, ?, ?, ?, ?)
+");
+// prepare tickets insert
+$ticketStmt = $conn->prepare("
+INSERT INTO tickets
+  (reservation_id,ticket_code,expires_at,paid)
+VALUES
+  (?, ?, ?, 0)
+");
 
-        header('Content-Type: application/json');
-        echo json_encode(['status'=>'ok']);
-        exit;
-    }
+foreach ($data['seats'] as $seat) {
+// map cehov seats
+if (strtolower($data['hall'])==='cehov') {
+    $seat += 212;
+}
+$time_sql   = date("H:i:s", strtotime($data['chosen_time']));
+$date_sql   = $data['chosen_date'];
 
-    header('HTTP/1.1 400 Bad Request');
-    exit;
+// 1) insert reservation
+$resStmt->bind_param(
+    "issssiss",
+    $data['show_id'],
+    $data['customer']['fullname'],
+    $data['customer']['email'],
+    $data['customer']['phone'],
+    $data['hall'],
+    $seat,
+    $date_sql,
+    $time_sql
+);
+$resStmt->execute();
+// grab the new reservation id
+$reservation_id = $conn->insert_id;
+
+// 2) generate a random ticket code (32-byte hex = 64 chars)
+$ticket_code = bin2hex(random_bytes(32));
+
+// 3) compute expires_at as two days BEFORE the show date
+$expires_at = date(
+  "Y-m-d",
+  strtotime($date_sql . " -2 days")
+);
+
+// 4) insert ticket
+$ticketStmt->bind_param(
+    "iss",
+    $reservation_id,
+    $ticket_code,
+    $expires_at
+);
+$ticketStmt->execute();
+}
+
+$resStmt->close();
+$ticketStmt->close();
+
+header('Content-Type: application/json');
+echo json_encode(['status'=>'ok']);
+exit;
+}
+
+header('HTTP/1.1 400 Bad Request');
+echo json_encode(['error'=>'Bad request']);
+exit;
 }
 // ─
 
@@ -135,7 +184,7 @@ html{scroll-behavior:smooth;}
 .carousel-cell .date-numeric{font-size:1.5rem;font-weight:700;line-height:1;}
 .carousel-cell .date-month{font-size:.9rem;text-transform:uppercase;}
 .carousel-cell .date-day{font-size:.8rem;}
-.seat-iframe{width:100%;max-width:770px;height:140vh;display:block;margin:auto;}
+.seat-iframe{width:100%;max-width:770px;height:1100px;display:block;margin:auto;}
 .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
@@ -239,9 +288,17 @@ html{scroll-behavior:smooth;}
   <input id="screen-next-btn" type="button" class="next-step btn btn-primary mt-3" value="Vazhdo" disabled>
 </fieldset>
 
+
+
 <!-- ───── STEP 2 – zgjedhja e vendeve ───── -->
 <fieldset>
-  <iframe id="seat-sel-iframe" class="seat-iframe" src="../../seat_selection/seat_sel.php?show_id=<?=$show_id?>" loading="lazy"></iframe><br>
+<iframe
+  id="seat-sel-iframe"
+  class="seat-iframe"
+  src=""
+  loading="lazy"
+></iframe>
+<br>
   <input type="button" class="next-step" value="Vazhdo">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
@@ -336,6 +393,7 @@ html{scroll-behavior:smooth;}
 
       <div class="serial d-flex flex-column align-items-center pt-2">
         <div class="qrcode" id="qr-main" style="width:120px;height:120px;"></div>
+        <div id="expiration-date" class="mt-2" style="font-size:0.9rem; color:#555;"></div>
       </div>
     </div>
   </div>
@@ -359,12 +417,21 @@ function selectDate(id){
   prevId=id;
   selectedDate=document.getElementById(id).dataset.date;
 }
-function enableNext(e){
+function enableNext(e){ 
   e.preventDefault();
   document.getElementById('chosen_date').value=selectedDate;
   document.getElementById('chosen_time').value=e.target.dataset.time;
   document.getElementById('chosen_hall').value=e.target.dataset.hall;
   document.getElementById('screen-next-btn').disabled=false;
+  // point the iframe at the date/time
+  const iframe = document.getElementById('seat-sel-iframe');
+  iframe.src = `../../seat_selection/seat_sel.php?show_id=<?=$show_id?>`
+             + `&date=${encodeURIComponent(selectedDate)}`
+             + `&hall=${encodeURIComponent(e.target.dataset.hall)}`
+             + `&time=${encodeURIComponent(e.target.dataset.time)}`;
+
+  // now enable the Next button
+  document.getElementById('screen-next-btn').disabled = false;
 }
 </script>
 
@@ -450,10 +517,48 @@ function gatherJSON(){
   /* rifresko datën & orën në tabelën tjetër */
   document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
   document.getElementById('td-time').textContent=data.chosen_time;
+  const exp = new Date(data.chosen_date);
+exp.setDate(exp.getDate() - 2);
+const day   = String(exp.getDate()).padStart(2,'0');
+const month = String(exp.getMonth()+1).padStart(2,'0');
+const year  = exp.getFullYear();
+document.getElementById('expiration-date').textContent = `Data e skadimit: ${day}/${month}/${year}`;
 }
 
 document.querySelectorAll('.next-step')[2].addEventListener('click',gatherJSON);
 </script>
+<script>
+// find the “Rishiko Biletën” button on step 3:
+const reviewBtn = document.querySelectorAll('.next-step')[2];
+// the three inputs to watch:
+const fullEl  = document.getElementById('fullname');
+const emailEl = document.getElementById('email');
+const phoneEl = document.getElementById('phone');
+
+// validation function
+function validateStep3() {
+  const full  = fullEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
+  // simple email check
+  const emailOK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // require non‐empty full name, valid email, non‐empty phone
+  if (full && emailOK && phone) {
+    reviewBtn.disabled = false;
+  } else {
+    reviewBtn.disabled = true;
+  }
+}
+
+// wire up on input:
+[ fullEl, emailEl, phoneEl ].forEach(el => {
+  el.addEventListener('input', validateStep3);
+});
+
+// run once on load (in case fields are pre-filled)
+validateStep3();
+</script>
+
 
 </body>
 </html>

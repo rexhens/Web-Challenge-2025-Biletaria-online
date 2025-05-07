@@ -4,24 +4,45 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
-$show_id = isset($_GET['show_id']) ? (int)$_GET['show_id'] : 0;
-if (!$show_id) { die("Invalid show ID."); }
+$show_id = isset($_GET['show_id'])   ? (int)$_GET['show_id']   : 0;
+$date    = isset($_GET['date'])      ? $_GET['date']            : '';
+$time    = isset($_GET['time'])      ? $_GET['time']            : '';
+$hall_i    = isset($_GET['hall'])      ? $_GET['hall']            : '';
+
+if (!$show_id || !$date || !$time) {
+    die("Missing show, date or time.");
+}
+$time_sql = date('H:i:s', strtotime($time)); // converts '7:00 PM' → '19:00:00'
+$hall_sql = $hall_i;                 
 
 /* ────────── detajet e shfaqjes ────────── */
 $stmt = $conn->prepare("
     SELECT s.title, s.time, s.price, sd.show_date, s.hall
       FROM shows AS s
       JOIN show_dates AS sd ON sd.show_id = s.id
-     WHERE s.id = ?
+     WHERE s.id         = ?
+       AND sd.show_date = ?
+       AND s.time       = ?
+       AND s.hall       = ?
      LIMIT 1
 ");
-$stmt->bind_param("i", $show_id);
+
+// bind_param:  i = integer, s = string, s = string, s = string
+$stmt->bind_param(
+    "isss",
+    $show_id,
+    $date,    // e.g. '2025-05-24'
+    $time_sql,    // e.g. '19:00:00'
+    $hall_i   // e.g. 'shakespare'
+);
+
 $stmt->execute();
 $stmt->bind_result($title, $time, $price, $show_date, $hall);
 if (!$stmt->fetch()) {
     die("Show not found.");
 }
 $stmt->close();
+;
 
 /* ────────── vendet e bllokuara (nga DB) ────────── */
 // 1) load all seats for this hall
@@ -44,23 +65,31 @@ while ($row = $resS->fetch_assoc()) {
 $sq->close();
 
 // 2) fetch reserved seats for this show+hall
+
 $reservedIds = [];
 $rq = $conn->prepare("
-    SELECT seat_id
-      FROM reservations
-     WHERE show_id = ? AND hall = ?
+  SELECT seat_id
+    FROM reservations
+   WHERE show_id   = ?
+     AND hall      = ?
+     AND show_date = ?
+     AND show_time = ?
 ");
-$rq->bind_param("is", $show_id, $hall);
+$rq->bind_param("isss",
+  $show_id,
+  $hall,
+  $date,   // date passed into iframe URL
+  $time_sql
+);
+
 $rq->execute();
 $resR = $rq->get_result();
 while ($r = $resR->fetch_assoc()) {
-  $rawSeat = (int)$r['seat_id'];
-  // if hall is "cehov", map back by subtracting 212
-  if (strtolower($hall) === 'cehov') {
-      $reservedIds[] = $rawSeat - 212;
-  } else {
-      $reservedIds[] = $rawSeat;
-  }
+    $rawSeat = (int)$r['seat_id'];
+    if (strtolower($hall) === 'cehov') {
+        $rawSeat -= 212;
+    }
+    $reservedIds[] = $rawSeat;
 }
 $rq->close();
 
@@ -108,7 +137,7 @@ $svg_markup = file_get_contents(__DIR__ . '/' . basename($hall) . '.svg');
 }
 body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:1.5rem;
      display:flex;flex-direction:column;align-items:center;
-     background:var(--bg-body);color:var(--text-main);}
+     color:var(--text-main);}
 h2{margin:0 0 1rem;}
 /* karriget */
 .seat path,.seat polygon{cursor:pointer;transition:fill .15s;
