@@ -62,6 +62,27 @@ function checkAdmin($conn): bool {
     return true;
 }
 
+function checkTicketOffice($conn): bool {
+
+    if (!isset($_SESSION['user_id'])) {
+        return false;
+    }
+
+    $user_id = $_SESSION['user_id'];
+
+    $stmt = $conn->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($role);
+    $stmt->fetch();
+
+    if ($role !== 'ticketOffice') {
+        return false;
+    }
+
+    return true;
+}
+
 function redirectIfNotLoggedIn(): void {
     if (!isset($_SESSION['user_id'])) {
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
@@ -72,6 +93,13 @@ function redirectIfNotLoggedIn(): void {
 
 function redirectIfNotAdmin($conn): void {
     if(!checkAdmin($conn)) {
+        header("Location: " . '/biletaria_online/auth/no-access.php');
+        exit;
+    }
+}
+
+function redirectIfNotAdminOrTicketOffice($conn): void {
+    if(!checkAdmin($conn) && !checkTicketOffice($conn)) {
         header("Location: " . '/biletaria_online/auth/no-access.php');
         exit;
     }
@@ -127,7 +155,7 @@ function showError($error): void {
       <html lang='sq'>
       <head>";
     require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
-    echo "<title>Teatri Metropol | Mesazh</title>
+    echo "<title>Teatri Metropol | Error</title>
       <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
       <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
       <style>
@@ -140,7 +168,7 @@ function showError($error): void {
       </head>
       <body>
       <div class='errors show'>
-            <p>$error</p>
+            $error
       </div>
       </body>
       </html>";
@@ -312,13 +340,12 @@ function getPosterPath($conn, $table, $id): string {
     return "File nuk u gjet!";
 }
 
-function pageDoesNotExist($error): void
-{
+function customError($error): void {
     echo "<!DOCTYPE html>
       <html lang='sq'>
       <head>";
     require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/links.php';
-    echo "<title>Teatri Metropol | Mesazh</title>
+    echo "<title>Teatri Metropol | Error</title>
       <link rel='icon' type='image/x-icon' href='/biletaria_online/assets/img/metropol_icon.png'>
       <link rel='stylesheet' href='/biletaria_online/assets/css/styles.css'>
       <style>
@@ -330,8 +357,8 @@ function pageDoesNotExist($error): void
       </style>
       </head>
       <body>
-      <div class='errors show'>
-            <p>$error</p>
+      <div class='errors show' style='width: 90% !important; background-color: transparent !important; display: flex !important; flex-direction: column; align-items: center; justify-content: center; box-shadow: revert !important;'>
+            $error
       </div>
       </body>
       </html>";

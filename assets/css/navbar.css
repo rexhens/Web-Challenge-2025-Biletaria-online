@@ -44,13 +44,14 @@ h1 {
     font-weight: 700;
     height: 70px;
     width: 100%;
-    z-index: 40;
+    z-index: 2000;
 }
 
 .navbar-logo {
     display: flex;
     align-items: center;
     color: white;
+    cursor: pointer;
 }
 
 .logo-img {

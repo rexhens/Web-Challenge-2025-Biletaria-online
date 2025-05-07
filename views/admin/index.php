@@ -4,7 +4,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
-redirectIfNotAdmin($conn);
+redirectIfNotAdminOrTicketOffice($conn);
 
 $users_query = 'SELECT * FROM users';
 $users_result = $conn->query($users_query);
@@ -23,7 +23,16 @@ $events_query = "
     SELECT events.id, events.title, events.description, events.hall, events.time, events.price
     FROM events";
 $events_result = $conn->query($events_query);
+
+$reservations_query = "SELECT COUNT(*) as total FROM reservations";
+$reservations_result = $conn->query($reservations_query);
+$reservation_count = $reservations_result->fetch_assoc()['total'];
+
+$query = "SELECT * FROM reservations";
+$reservations_result = $conn->query($query);
+
 ?>
+
 
 <?php
 $pageTitle = 'Paneli i Menaxhimit';
@@ -302,9 +311,11 @@ $pageStyles = [
             <!-- Page Heading -->
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
                 <h1 class="h3 mb-0 text-gray-800">Konrolli i Panelit te Adminit</h1>
+                <?php if(checkAdmin($conn)){ ?>
                 <a href="generate_report.php"
                     class="d-none d-sm-inline-block btn btn-sm btn-primary-report shadow-sm"><i
                         class="fas fa-download fa-sm text-white-50"></i> Gjenero nje report</a>
+                <?php } ?>
             </div>
 
             <!-- Content Row -->
@@ -380,288 +391,359 @@ $pageStyles = [
                 <!-- Pending Requests Card Example -->
                 <div class="col-xl-3 col-md-6 mb-4">
                     <div class="card border-left-gold shadow h-100 py-2">
+                        <a href="reviews/index.php" style="text-decoration: none; color: #8f793f!important;">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-gold text-uppercase mb-1">
-                                        Review te shfaqjeve</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                                        Review te shfaqjeve
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                        <?php echo $reservation_count; ?>
+                                    </div>
                                 </div>
                                 <div class="col-auto">
                                     <i class="fas fa-comments fa-2x text-gray-300"></i>
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                 </div>
             </div>
 
-            <!-- Content Row -->
+        <!-- Content Row -->
 
-            <div class="row">
+        <div class="row">
 
-                <!-- Graphs -->
-                <div class="col-xl-8 col-lg-7" id="graphs-section">
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary-1">Te ardhurat e gjeneruara kete vit
-                            </h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                    aria-labelledby="dropdownMenuLink">
-                                    <div class="dropdown-header">Gjenerimi i shitjeve:</div>
-                                    <a class="dropdown-item" href="#">Online</a>
-                                    <a class="dropdown-item" href="#">Ne biletari</a>
-                                    <div class="dropdown-divider"></div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <div class="chart-area">
-                                <canvas id="myAreaChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pie Chart -->
-                <div class="col-xl-4 col-lg-5">
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary-1">Prenotimi i biletave </h6>
-                            <div class="dropdown no-arrow">
-                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                    aria-labelledby="dropdownMenuLink">
-                                    <div class="dropdown-header">Dropdown Header:</div>
-                                    <a class="dropdown-item" href="#">Online</a>
-                                    <a class="dropdown-item" href="#">ne biletari</a>
-                                    <div class="dropdown-divider"></div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <div class="chart-pie pt-4 pb-2">
-                                <canvas id="myPieChart"></canvas>
-                            </div>
-                            <div class="mt-4 text-center small">
-                                <span class="mr-2">
-                                    <i class="fas fa-circle text-primary-1"></i> Online
-                                </span>
-                                <span class="mr-2">
-                                    <i class="fas fa-circle text-success" style="color: #716a69 !important"></i> Ne
-                                    biletari
-                                </span>
+            <!-- Graphs -->
+            <div class="col-xl-8 col-lg-7" id="graphs-section">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary-1">Te ardhurat e gjeneruara kete vit
+                        </h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Gjenerimi i shitjeve:</div>
+                                <a class="dropdown-item" href="#">Online</a>
+                                <a class="dropdown-item" href="#">Ne biletari</a>
+                                <div class="dropdown-divider"></div>
 
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Tabela e userave -->
-            <section id="users-section">
-                <div class="card shadow border-0 rounded">
-                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
-                        <button class="btn btn-sm btn-primary-report"
-                            onclick="window.location.href = 'users/add-user.php'" style="padding: 7px 20px;">+ Shto
-                            Përdorues</button>
-                    </div>
+                    <!-- Card Body -->
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="userTable" class="table table-hover mb-0 w-100">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Emri</th>
-                                        <th>Email</th>
-                                        <th>Numri i cel</th>
-                                        <th>Roli</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $i = 1;
-                                    while ($row = $users_result->fetch_assoc()) { ?>
-                                        <tr>
-                                            <td><?php echo $i ?></td>
-                                            <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
-                                            <td><?php echo $row['email'] ?></td>
-                                            <td><?php echo $row['phone'] ?></td>
-                                            <td><?php echo $row['role'] ?></td>
-
-                                        </tr>
-                                        <?php
-                                        $i++;
-                                    } ?>
-
-                                    <!-- Add more rows here -->
-                                </tbody>
-                            </table>
+                        <div class="chart-area">
+                            <canvas id="myAreaChart"></canvas>
                         </div>
-                    </div>
-                </div>
-            </section>
-            <!-- Menaxhimi i Shfaqjeve -->
-            <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                    <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'shows/add-show.php'"
-                        style="padding: 7px 20px;">+ Shto Shfaqje</button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="showsTable" class="table table-hover align-middle mb-0 w-100">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Titulli</th>
-                                    <th>Salla</th>
-                                    <th>Zhanri</th>
-                                    <th>Çmimi</th>
-
-                                </tr>
-                            </thead>
-                            <tbody class="text-dark">
-                                <?php
-                                $i = 1;
-                                while ($row = $shows_result->fetch_assoc()) { ?>
-                                    <tr>
-                                        <td class="text-muted"><?php echo $i; ?></td>
-                                        <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['hall']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
-                                        <td><?php echo number_format($row['price'], 2); ?> Leke</td>
-
-                                    </tr>
-                                    <?php
-                                    $i++;
-                                } ?>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
 
+            <!-- Pie Chart -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary-1">Prenotimi i biletave </h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Dropdown Header:</div>
+                                <a class="dropdown-item" href="#">Online</a>
+                                <a class="dropdown-item" href="#">ne biletari</a>
+                                <div class="dropdown-divider"></div>
 
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-primary-1"></i> Online
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-success" style="color: #716a69 !important"></i> Ne
+                                biletari
+                            </span>
 
-            <!-- Menaxhimi i aktoreve -->
-            <div class="card shadow border-0 rounded-4 mt-5" id="actors-section">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                    <h5 class="mb-0 text-primary-1">Lista e Aktorëve</h5>
-                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'actors/add.php'"
-                        style="padding: 7px 20px;">+ Shto Aktor</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela e userave -->
+        <section id="users-section">
+            <div class="card shadow border-0 rounded">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-primary-1">Lista e Përdoruesve</h5>
+                    <?php if(checkAdmin($conn)){ ?>
+                    <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'users/add-user.php'"
+                        style="padding: 7px 20px;">+ Shto
+                        Përdorues</button>
+                    <?php } ?>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
+                        <table id="userTable" class="table table-hover mb-0 w-100">
                             <thead class="thead-light">
                                 <tr>
-                                    <th>ID</th>
+                                    <th>#</th>
                                     <th>Emri</th>
                                     <th>Email</th>
-                                    <th>Datëlindja</th>
-                                    <th>Biografia</th>
+                                    <th>Numri i cel</th>
+                                    <th>Roli</th>
+
                                 </tr>
                             </thead>
-                            <tbody class="text-dark">
+                            <tbody>
                                 <?php
                                 $i = 1;
-                                while ($row = $actors_result->fetch_assoc()) { ?>
+                                while ($row = $users_result->fetch_assoc()) { ?>
                                     <tr>
-                                        <td class="text-muted"><?php echo $i; ?></td>
-                                        <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                        <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
-                                        <td class="text-truncate" style="max-width: 200px;">
-                                            <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
-                                        </td>
+                                        <td><?php echo $i ?></td>
+                                        <td><?php echo $row['name'] . ' ' . $row['surname'] ?></td>
+                                        <td><?php echo $row['email'] ?></td>
+                                        <td><?php echo $row['phone'] ?></td>
+                                        <td><?php echo $row['role'] ?></td>
 
                                     </tr>
                                     <?php
                                     $i++;
                                 } ?>
+
+                                <!-- Add more rows here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+        </section>
+        <!-- Menaxhimi i Shfaqjeve -->
+        <div class="card shadow border-0 rounded-4 mt-5" id="shows-section">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="mb-0 text-primary-1">Lista e Shfaqjeve</h5>
+                <?php if(checkAdmin($conn)){ ?>
+                <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'shows/add-show.php'"
+                    style="padding: 7px 20px;">+ Shto Shfaqje</button>
+                <?php } ?>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="showsTable" class="table table-hover align-middle mb-0 w-100">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Titulli</th>
+                                <th>Salla</th>
+                                <th>Zhanri</th>
+                                <th>Çmimi</th>
 
-
-            <!-- Menaxhimi i Eventeve -->
-            <div class="card shadow border-0 rounded-4 mt-5" id="events-section" style="margin-bottom: 100px;">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
-                    <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
-                    <button class="btn btn-sm btn-primary-report"
-                        onclick="window.location.href = 'events/add-event.php'" style="padding: 7px 20px;">+ Shto Event
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
-                            <thead class="thead-light">
+                            </tr>
+                        </thead>
+                        <tbody class="text-dark">
+                            <?php
+                            $i = 1;
+                            while ($row = $shows_result->fetch_assoc()) { ?>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Titulli</th>
-                                    <th>Salla</th>
-                                    <th>Orari</th>
-                                    <th>Çmimi</th>
+                                    <td class="text-muted"><?php echo $i; ?></td>
+                                    <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['hall']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['genre_name']); ?></td>
+                                    <td><?php echo number_format($row['price'], 2); ?> Leke</td>
 
                                 </tr>
-                            </thead>
-                            <tbody class="text-dark">
                                 <?php
-                                $i = 1;
-                                while ($row = $events_result->fetch_assoc()) { ?>
-                                    <tr>
-                                        <td class="text-muted"><?php echo $i; ?></td>
-                                        <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['hall']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['time']); ?></td>
-                                        <td><?php echo number_format($row['price'], 2); ?> Leke</td>
-
-                                    </tr>
-                                    <?php
-                                    $i++;
-                                } ?>
-                            </tbody>
-                        </table>
-                    </div>
+                                $i++;
+                            } ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-
-
-
-
         </div>
-        <!-- /.container-fluid -->
+
+
+
+        <!-- Menaxhimi i aktoreve -->
+        <div class="card shadow border-0 rounded-4 mt-5" id="actors-section">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="mb-0 text-primary-1">Lista e Aktorëve</h5>
+                <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'actors/add.php'"
+                    style="padding: 7px 20px;">+ Shto Aktor</button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="actorsTable" class="table table-hover align-middle mb-0 w-100">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Emri</th>
+                                <th>Email</th>
+                                <th>Datëlindja</th>
+                                <th>Biografia</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-dark">
+                            <?php
+                            $i = 1;
+                            while ($row = $actors_result->fetch_assoc()) { ?>
+                                <tr>
+                                    <td class="text-muted"><?php echo $i; ?></td>
+                                    <td class="fw-medium"><?php echo htmlspecialchars($row['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['email']); ?></td>
+                                    <td><?php echo date("d M Y", strtotime($row['birthday'])); ?></td>
+                                    <td class="text-truncate" style="max-width: 200px;">
+                                        <?php echo mb_strimwidth(strip_tags($row['description']), 0, 80, "..."); ?>
+                                    </td>
+
+                                </tr>
+                                <?php
+                                $i++;
+                            } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Menaxhimi i Eventeve -->
+        <div class="card shadow border-0 rounded-4 mt-5" id="events-section">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="mb-0 text-primary-1">Lista e Eventeve</h5>
+                <?php if(checkAdmin($conn)){ ?>
+                <button class="btn btn-sm btn-primary-report" onclick="window.location.href = 'events/add-event.php'"
+                    style="padding: 7px 20px;">+ Shto Event
+                </button>
+                <?php } ?>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="eventsTable" class="table table-hover align-middle mb-0 w-100">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Titulli</th>
+                                <th>Salla</th>
+                                <th>Orari</th>
+                                <th>Çmimi</th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="text-dark">
+                            <?php
+                            $i = 1;
+                            while ($row = $events_result->fetch_assoc()) { ?>
+                                <tr>
+                                    <td class="text-muted"><?php echo $i; ?></td>
+                                    <td class="fw-medium"><?php echo htmlspecialchars($row['title']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['hall']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['time']); ?></td>
+                                    <td><?php echo number_format($row['price'], 2); ?> Leke</td>
+
+                                </tr>
+                                <?php
+                                $i++;
+                            } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card shadow border-0 rounded-4 mt-5" id="reservation-section" style="margin-bottom: 80px;">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+                <h5 class="mb-0 text-primary-1">Lista e Rezervimeve</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="reservationsTable" class="table table-hover mb-0 w-100" width="100%">
+                        <thead class="thead-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Klienti</th>
+                            <th>Shfaqja/Eventi</th>
+                            <th>Data</th>
+                            <th>Statusi</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $i = 1;
+                        while ($row = $reservations_result->fetch_assoc()) {
+                            if(!empty($row['show_id'])) {
+                                $sql = 'SELECT title FROM shows WHERE id = ?';
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('i', $row['show_id']);
+                                if (!$stmt->execute()) {
+                                    showError("Një problem ndodhi! Provoni më vonë!");
+                                }
+                                $result = $stmt->get_result()->fetch_assoc();
+                                if (!$result) {
+                                    showError("Shfaqja nuk u gjet!");
+                                }
+                                $title = $result['title'];
+                            } else if(!empty($row['event_id'])) {
+                                $sql = 'SELECT title FROM events WHERE id = ?';
+                                $stmt = $conn->prepare($sql);
+                                $stmt->bind_param('i', $row['event_id']);
+                                if (!$stmt->execute()) {
+                                    showError("Një problem ndodhi! Provoni më vonë!");
+                                }
+                                $result = $stmt->get_result()->fetch_assoc();
+                                if (!$result) {
+                                    showError("Eventi nuk u gjet!");
+                                }
+                                $title = $result['title'];
+                            }
+                            ?>
+                            <tr>
+                                <td><?php echo $i ?></td>
+                                <td><?php echo htmlspecialchars($row['full_name']) ?></td>
+                                <td><?php echo $title ?? 'Error' ?></td>
+                                <td><?php echo htmlspecialchars($row['show_date']) . " " . htmlspecialchars($row['show_time']) ?></td>
+
+                                <?php if ($row['paid']) { ?>
+                                    <td><span class="badge badge-success">Paguar</span></td>
+                                <?php } else if (htmlspecialchars($row['expires_at']) < new DateTime()) { ?>
+                                    <td><span class="badge badge-danger">Kaluar afati</span></td>
+                                <?php } else { ?>
+                                    <td><span class="badge badge-danger">Pa Pguar</span></td>
+                                <?php }?>
+                            </tr>
+                            <?php
+                            $i++;
+                        } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
 
     </div>
-    <!-- End of Main Content -->
 
-    <!-- Footer -->
-
-    <!-- End of Footer -->
-
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
+    </div>
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
@@ -702,7 +784,7 @@ $pageStyles = [
                         "next": "›"
                     },
                     "zeroRecords": "Asnjë rezultat i gjetur",
-                    "info": "Duke shfaqur _END_ nga _TOTAL_",
+                    "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                     "infoEmpty": "Nuk ka të dhëna"
                 },
                 "initComplete": function () {
@@ -724,7 +806,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -745,7 +827,7 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -766,7 +848,28 @@ $pageStyles = [
                     "next": "›"
                 },
                 "zeroRecords": "Asnjë rezultat i gjetur",
-                "info": "Duke shfaqur _END_ nga _TOTAL_",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
+                "infoEmpty": "Nuk ka të dhëna"
+            },
+            "initComplete": function () {
+                $('.dataTables_filter input').wrap('<div class="position-relative"></div>');
+                $('.dataTables_filter input').before('<span class="search-icon" style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%);"><i class="fas fa-search"></i></span>');
+                $('.dataTables_filter input').css({ 'padding-left': '40px' });
+            }
+        });
+        $('#reservationsTable').DataTable({
+            "pageLength": 10,
+            "lengthChange": false,
+            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Kërko rezervim...",
+                "paginate": {
+                    "previous": "‹",
+                    "next": "›"
+                },
+                "zeroRecords": "Asnjë rezultat i gjetur",
+                "info": "Duke shfaqur _START_ deri _END_ nga _TOTAL_",
                 "infoEmpty": "Nuk ka të dhëna"
             },
             "initComplete": function () {
@@ -850,6 +953,21 @@ $pageStyles = [
                 // Small delay to ensure collapse opens first
                 setTimeout(function () {
                     const target = $('#events-section');
+                    if (target.length) {
+                        $('html, body').animate({
+                            scrollTop: target.offset().top
+                        }, 600); // 600ms for smooth scroll
+                    }
+                }, 300); // delay a bit to allow the collapse animation
+            });
+        });
+
+        $(document).ready(function () {
+            // Scroll to utilities section when Utilities nav link is clicked
+            $('a[data-target="#collapseEvents"]').on('click', function (e) {
+                // Small delay to ensure collapse opens first
+                setTimeout(function () {
+                    const target = $('#reservation-section');
                     if (target.length) {
                         $('html, body').animate({
                             scrollTop: target.offset().top

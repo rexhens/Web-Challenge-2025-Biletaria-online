@@ -2,7 +2,7 @@
     --default-font: "Quicksand", sans-serif;
 
     --footer-bg: rgba(27, 27, 27, 0.85);      /* #1b1b1b */
-    --highlight-color: #82989f;               /* #82989f */
+    --highlight-color: rgb(130, 152, 145);               /* #82989f */
     --text-light: #e4e4e4;                   /* #e4e4e4 */
     --link-overlay: rgba(120, 94, 91, 0.2);    /* accent overlay */
     --border-color: rgba(200, 187, 179, 0.3);  /* #c8bbb3 */

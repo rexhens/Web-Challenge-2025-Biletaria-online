@@ -83,11 +83,13 @@
             <span>Dil</span></a>
     </li>
 
+    <?php if(checkAdmin($conn)){ ?>
     <li class="nav-item">
         <a class="nav-link" href="/biletaria_online/views/admin/index.php#graphs-section">
             <i class="fas fa-fw fa-chart-area"></i>
             <span>Grafikët</span></a>
     </li>
+    <?php } ?>
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -96,7 +98,7 @@
     <div class="sidebar-heading">
         Menaxhimi
     </div>
-
+    <?php if(checkAdmin($conn)){ ?>
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
@@ -113,7 +115,7 @@
             </div>
         </div>
     </li>
-
+    <?php } ?>
 
     <!-- Nav Item - Utilities Collapse Menu -->
     <!-- Menaxho Shfaqjet -->
@@ -127,11 +129,13 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
                 <a class="collapse-item" href="/biletaria_online/views/admin/shows/index.php">Të gjitha shfaqjet</a>
+                <?php if(checkAdmin($conn)){ ?>
                 <a class="collapse-item" href="/biletaria_online/views/admin/shows/add-show.php">Shto shfaqje të re</a>
+                <?php } ?>
             </div>
         </div>
     </li>
-
+    <?php if(checkAdmin($conn)){ ?>
     <!-- Menaxho Aktoret -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseActors" aria-expanded="true"
@@ -147,6 +151,7 @@
             </div>
         </div>
     </li>
+    <?php } ?>
 
     <!-- Menaxho Eventet -->
     <li class="nav-item">
@@ -159,7 +164,9 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Veprime</h6>
                 <a class="collapse-item" href="/biletaria_online/views/admin/events/index.php">Të gjitha eventet</a>
+                <?php if(checkAdmin($conn)){ ?>
                 <a class="collapse-item" href="/biletaria_online/views/admin/events/add-event.php">Shto event të ri</a>
+                <?php } ?>
             </div>
         </div>
     </li>
@@ -176,7 +183,6 @@
                 <h6 class="collapse-header">Veprime</h6>
                 <a class="collapse-item" href="/biletaria_online/views/admin/reservations/index.php">Të gjitha
                     rezervimet</a>
-                <a class="collapse-item" href="/biletaria_online/views/admin/reserve.php">Bej rezervim</a>
             </div>
         </div>
     </li>
