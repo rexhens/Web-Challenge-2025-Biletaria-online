@@ -4,7 +4,111 @@ require "../../config/db_connect.php";
 require "../../auth/auth.php";
 require "../../includes/functions.php";
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
+    $data = json_decode($_POST['ticket_json'], true);
 
+    // ─── Override customer info when logged in ──────────────────
+    if (isset($_SESSION['user_id'])) {
+        $ui = $conn->prepare("
+            SELECT CONCAT(name,' ',surname), email, phone
+              FROM users
+             WHERE id = ?
+             LIMIT 1
+        ");
+        $ui->bind_param("i", $_SESSION['user_id']);
+        $ui->execute();
+        $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
+        if ($ui->fetch()) {
+            $data['customer']['fullname'] = $loggedName;
+            $data['customer']['email']    = $loggedEmail;
+            $data['customer']['phone']    = $loggedPhone;
+        }
+        $ui->close();
+    }
+    // ────────────────────────────────────────────────────────────
+
+    if (isset(
+        $data['show_id'],
+        $data['seats'],
+        $data['customer']['fullname'],
+        $data['customer']['email'],
+        $data['customer']['phone'],
+        $data['hall'],
+        $data['chosen_date'],
+        $data['chosen_time']
+    )) {
+       // …
+// prepare reservations insert
+$resStmt = $conn->prepare("
+INSERT INTO reservations
+  (show_id,event_id,full_name,email,phone,hall,seat_id,show_date,show_time)
+VALUES
+  (?, NULL, ?, ?, ?, ?, ?, ?, ?)
+");
+// prepare tickets insert
+$ticketStmt = $conn->prepare("
+INSERT INTO tickets
+  (reservation_id,ticket_code,expires_at,paid)
+VALUES
+  (?, ?, ?, 0)
+");
+
+foreach ($data['seats'] as $seat) {
+// map cehov seats
+if (strtolower($data['hall'])==='cehov') {
+    $seat += 212;
+}
+$time_sql   = date("H:i:s", strtotime($data['chosen_time']));
+$date_sql   = $data['chosen_date'];
+
+// 1) insert reservation
+$resStmt->bind_param(
+    "issssiss",
+    $data['show_id'],
+    $data['customer']['fullname'],
+    $data['customer']['email'],
+    $data['customer']['phone'],
+    $data['hall'],
+    $seat,
+    $date_sql,
+    $time_sql
+);
+$resStmt->execute();
+// grab the new reservation id
+$reservation_id = $conn->insert_id;
+
+// 2) generate a random ticket code (32-byte hex = 64 chars)
+$ticket_code = bin2hex(random_bytes(32));
+
+// 3) compute expires_at as two days BEFORE the show date
+$expires_at = date(
+  "Y-m-d",
+  strtotime($date_sql . " -2 days")
+);
+
+// 4) insert ticket
+$ticketStmt->bind_param(
+    "iss",
+    $reservation_id,
+    $ticket_code,
+    $expires_at
+);
+$ticketStmt->execute();
+}
+
+$resStmt->close();
+$ticketStmt->close();
+
+header('Content-Type: application/json');
+echo json_encode(['status'=>'ok']);
+exit;
+}
+
+header('HTTP/1.1 400 Bad Request');
+echo json_encode(['error'=>'Bad request']);
+exit;
+}
+// ─
 
 /* 1. merr ID‑në e shfaqjes ----------------------------------- */
 $show_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -80,7 +184,7 @@ html{scroll-behavior:smooth;}
 .carousel-cell .date-numeric{font-size:1.5rem;font-weight:700;line-height:1;}
 .carousel-cell .date-month{font-size:.9rem;text-transform:uppercase;}
 .carousel-cell .date-day{font-size:.8rem;}
-.seat-iframe{width:100%;max-width:770px;height:120vh;display:block;margin:auto;}
+.seat-iframe{width:100%;max-width:770px;height:1100px;display:block;margin:auto;}
 .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
@@ -105,7 +209,7 @@ html{scroll-behavior:smooth;}
       <div class="collapse navbar-collapse"></div>
 
       <div class="Login_SignUp">
-        <a class="nav-link" href="sign_in.html"><i class="fa fa-user-circle-o"></i></a>
+        <a class="nav-link" href="../../auth/login.php"><i class="fa fa-user-circle-o"></i></a>
       </div>
 
       <div class="mobile-position">
@@ -184,9 +288,17 @@ html{scroll-behavior:smooth;}
   <input id="screen-next-btn" type="button" class="next-step btn btn-primary mt-3" value="Vazhdo" disabled>
 </fieldset>
 
+
+
 <!-- ───── STEP 2 – zgjedhja e vendeve ───── -->
 <fieldset>
-  <iframe id="seat-sel-iframe" class="seat-iframe" src="../../seat_selection/seat_sel.php?show_id=<?=$show_id?>" loading="lazy"></iframe><br>
+<iframe
+  id="seat-sel-iframe"
+  class="seat-iframe"
+  src=""
+  loading="lazy"
+></iframe>
+<br>
   <input type="button" class="next-step" value="Vazhdo">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
@@ -194,30 +306,50 @@ html{scroll-behavior:smooth;}
 <!-- ───── STEP 3 – Të dhënat tuaja ───── -->
 <fieldset>
   <h2 class="h4">Të dhënat tuaja</h2>
-  <div style="width:50%; align:center;">
-  <div class="form-group">
-  <label for="fullname">Emri i plotë</label>
-  <input id="fullname" name="fullname" type="text"
-         value="<?=htmlspecialchars($loggedName)?>" required>
-</div>
+  <div style="width:50%; margin:auto;">
+    <div class="form-group">
+      <label for="fullname">Emri i plotë</label>
+      <input
+        id="fullname"
+        name="fullname"
+        type="text"
+        value="<?= htmlspecialchars($loggedName) ?>"
+        <?= $loggedName ? 'readonly' : 'required' ?>
+      >
+    </div>
 
-<div class="form-group">
-  <label for="email">Email</label>
-  <input id="email" name="email" type="email"
-  value="<?=htmlspecialchars($loggedEmail)?>" <?= $loggedEmail ? 'readonly' : '' ?>>
-</div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        value="<?= htmlspecialchars($loggedEmail) ?>"
+        <?= $loggedEmail ? 'readonly' : 'required' ?>
+      >
+    </div>
 
-<div class="form-group">
-  <label for="phone">Telefon</label>
-  <input id="phone" name="phone" type="tel"
-         value="<?=htmlspecialchars($loggedPhone)?>" required>
-</div>
+    <div class="form-group">
+      <label for="phone">Telefon</label>
+      <input
+        id="phone"
+        name="phone"
+        type="tel"
+        value="<?= htmlspecialchars($loggedPhone) ?>"
+        <?= $loggedPhone ? 'readonly' : 'required' ?>
+      >
+    </div>
 
-  <div class="form-group"><label for="notes">Shënime (opsionale)</label><input id="notes" name="notes" type="text"></div>
-            </div>
+    <div class="form-group">
+      <label for="notes">Shënime (opsionale)</label>
+      <input id="notes" name="notes" type="text">
+    </div>
+  </div>
+
   <input type="button" class="next-step" value="Rishiko Biletën">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
+
 
 <!-- ───── STEP 4 – BILETA ───── -->
 <fieldset>
@@ -261,6 +393,7 @@ html{scroll-behavior:smooth;}
 
       <div class="serial d-flex flex-column align-items-center pt-2">
         <div class="qrcode" id="qr-main" style="width:120px;height:120px;"></div>
+        <div id="expiration-date" class="mt-2" style="font-size:0.9rem; color:#555;"></div>
       </div>
     </div>
   </div>
@@ -284,12 +417,21 @@ function selectDate(id){
   prevId=id;
   selectedDate=document.getElementById(id).dataset.date;
 }
-function enableNext(e){
+function enableNext(e){ 
   e.preventDefault();
   document.getElementById('chosen_date').value=selectedDate;
   document.getElementById('chosen_time').value=e.target.dataset.time;
   document.getElementById('chosen_hall').value=e.target.dataset.hall;
   document.getElementById('screen-next-btn').disabled=false;
+  // point the iframe at the date/time
+  const iframe = document.getElementById('seat-sel-iframe');
+  iframe.src = `../../seat_selection/seat_sel.php?show_id=<?=$show_id?>`
+             + `&date=${encodeURIComponent(selectedDate)}`
+             + `&hall=${encodeURIComponent(e.target.dataset.hall)}`
+             + `&time=${encodeURIComponent(e.target.dataset.time)}`;
+
+  // now enable the Next button
+  document.getElementById('screen-next-btn').disabled = false;
 }
 </script>
 
@@ -350,6 +492,20 @@ function gatherJSON(){
   document.getElementById('ticket-json').value=JSON.stringify(data);
   console.log(JSON.stringify(data,null,2));
 
+  // ─── INSERT VIA AJAX ────────────────────────────
+  fetch(window.location.pathname + '?id=<?=$show_id?>', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ ticket_json: JSON.stringify(data) })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.status !== 'ok') console.error('Insert failed', res);
+  })
+  .catch(err => console.error('AJAX error', err));
+  // ────────────────────────────────────────────────
+
+
   /* ► MBUSH TABELËN E VENDEVE º */
   const tbody=document.querySelector('#seat-table');
   [...tbody.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
@@ -361,10 +517,48 @@ function gatherJSON(){
   /* rifresko datën & orën në tabelën tjetër */
   document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
   document.getElementById('td-time').textContent=data.chosen_time;
+  const exp = new Date(data.chosen_date);
+exp.setDate(exp.getDate() - 2);
+const day   = String(exp.getDate()).padStart(2,'0');
+const month = String(exp.getMonth()+1).padStart(2,'0');
+const year  = exp.getFullYear();
+document.getElementById('expiration-date').textContent = `Data e skadimit: ${day}/${month}/${year}`;
 }
 
 document.querySelectorAll('.next-step')[2].addEventListener('click',gatherJSON);
 </script>
+<script>
+// find the “Rishiko Biletën” button on step 3:
+const reviewBtn = document.querySelectorAll('.next-step')[2];
+// the three inputs to watch:
+const fullEl  = document.getElementById('fullname');
+const emailEl = document.getElementById('email');
+const phoneEl = document.getElementById('phone');
+
+// validation function
+function validateStep3() {
+  const full  = fullEl.value.trim();
+  const email = emailEl.value.trim();
+  const phone = phoneEl.value.trim();
+  // simple email check
+  const emailOK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // require non‐empty full name, valid email, non‐empty phone
+  if (full && emailOK && phone) {
+    reviewBtn.disabled = false;
+  } else {
+    reviewBtn.disabled = true;
+  }
+}
+
+// wire up on input:
+[ fullEl, emailEl, phoneEl ].forEach(el => {
+  el.addEventListener('input', validateStep3);
+});
+
+// run once on load (in case fields are pre-filled)
+validateStep3();
+</script>
+
 
 </body>
 </html>
