@@ -369,12 +369,12 @@ $pageStyles = [
                                     </div>
                                     <div class="row no-gutters align-items-center">
                                         <div class="col-auto">
-                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo getOnlinePrecentage($conn) ?></div>
+                                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><?php echo countOnlineReservations($conn) ?></div>
                                         </div>
                                         <div class="col">
                                             <div class="progress progress-sm mr-2">
-                                                <div class="progress-bar bg-gold" role="progressbar" style="width: <?php echo getOnlinePrecentage($conn) ?>%"
-                                                    aria-valuenow="<?php echo getOnlinePrecentage($conn) ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-bar bg-gold" role="progressbar" style="width: <?php echo countOnlineReservations($conn) ?>%"
+                                                    aria-valuenow="<?php echo countOnlineReservations($conn) ?>" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </div>
                                     </div>
