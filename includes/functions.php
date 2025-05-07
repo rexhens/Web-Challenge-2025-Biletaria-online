@@ -437,3 +437,20 @@ function countOnlineReservations(mysqli $conn): int {
         return 0;
     }
 }
+
+function getOnlinePrecentage($conn): int {
+    $sql = "
+        SELECT COUNT(*) AS total
+        FROM reservations r
+        JOIN users u ON r.email = u.email
+        WHERE r.paid != 0
+    ";
+
+    $result = $conn->query($sql);
+
+    if ($result && $row = $result->fetch_assoc()) {
+        return (int) round((countOnlineReservations($conn) / (int)$row['total']) * 100);
+    } else {
+        return 0;
+    }
+}
