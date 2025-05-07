@@ -95,7 +95,7 @@ $pageStyles = [
                                     <div class="banner-info">
                                         <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                                         <p><?php echo implode(', ', $groupedDates); ?></p>
-                                        <p class='show-description' style="margin-top: -20px;">
+                                        <p class='show-description' style="margin-top: -20px; -webkit-line-clamp: 2;">
                                             <?php echo nl2br(htmlspecialchars($show['description'])); ?>
                                         </p>
                                         <p style="margin-top: -20px; margin-bottom: 0;"><a
