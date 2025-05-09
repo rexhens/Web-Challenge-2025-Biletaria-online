@@ -24,9 +24,9 @@ $events_query = "
     FROM events";
 $events_result = $conn->query($events_query);
 
-$reservations_query = "SELECT COUNT(*) as total FROM reservations";
-$reservations_result = $conn->query($reservations_query);
-$reservation_count = $reservations_result->fetch_assoc()['total'];
+$reviews_query = "SELECT COUNT(*) as total FROM reviews";
+$reviews_result = $conn->query($reviews_query);
+$reviews_count = $reviews_result->fetch_assoc()['total'];
 
 $query = "SELECT * FROM reservations";
 $reservations_result = $conn->query($query);
@@ -398,7 +398,7 @@ $pageStyles = [
                                         Review te shfaqjeve
                                     </div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                        <?php echo $reservation_count; ?>
+                                        <?php echo $reviews_count; ?>
                                     </div>
                                 </div>
                                 <div class="col-auto">
@@ -527,7 +527,6 @@ $pageStyles = [
                                     $i++;
                                 } ?>
 
-                                <!-- Add more rows here -->
                             </tbody>
                         </table>
                     </div>
@@ -754,7 +753,6 @@ $pageStyles = [
     <!-- jQuery Plugins that depend on jQuery -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
 
     <!-- Page level plugins -->
     <script src="../../assets/vendor/chart.js/Chart.min.js"></script>
@@ -764,17 +762,10 @@ $pageStyles = [
 
     <script>
         $(document).ready(function () {
-            $("#sidebarToggle").on('click', function (e) {
-                e.preventDefault();
-                $("body").toggleClass("sidebar-toggled");
-                $(".sidebar").toggleClass("toggled");
-            });
-        });
-        $(document).ready(function () {
             $('#userTable').DataTable({
                 "pageLength": 5,
                 "lengthChange": false,
-                "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
                 "language": {
                     "search": "",
                     "searchPlaceholder": "Kërko perdorues...",
@@ -796,7 +787,7 @@ $pageStyles = [
         $('#actorsTable').DataTable({
             "pageLength": 5,
             "lengthChange": false,
-            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
                 "searchPlaceholder": "Kërko aktorë...",
@@ -817,7 +808,7 @@ $pageStyles = [
         $('#showsTable').DataTable({
             "pageLength": 5,
             "lengthChange": false,
-            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
                 "searchPlaceholder": "Kërko shfaqje...",
@@ -838,7 +829,7 @@ $pageStyles = [
         $('#eventsTable').DataTable({
             "pageLength": 5,
             "lengthChange": false,
-            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
                 "searchPlaceholder": "Kërko event...",
@@ -859,7 +850,7 @@ $pageStyles = [
         $('#reservationsTable').DataTable({
             "pageLength": 10,
             "lengthChange": false,
-            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
                 "searchPlaceholder": "Kërko rezervim...",
@@ -963,7 +954,7 @@ $pageStyles = [
 
         $(document).ready(function () {
             // Scroll to utilities section when Utilities nav link is clicked
-            $('a[data-target="#collapseEvents"]').on('click', function (e) {
+            $('a[data-target="#collapseReservations"]').on('click', function (e) {
                 // Small delay to ensure collapse opens first
                 setTimeout(function () {
                     const target = $('#reservation-section');
