@@ -5,109 +5,92 @@ require "../../auth/auth.php";
 require "../../includes/functions.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
-    $data = json_decode($_POST['ticket_json'], true);
+  $data = json_decode($_POST['ticket_json'], true);
 
-    // ─── Override customer info when logged in ──────────────────
-    if (isset($_SESSION['user_id'])) {
-        $ui = $conn->prepare("
-            SELECT CONCAT(name,' ',surname), email, phone
-              FROM users
-             WHERE id = ?
-             LIMIT 1
-        ");
-        $ui->bind_param("i", $_SESSION['user_id']);
-        $ui->execute();
-        $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
-        if ($ui->fetch()) {
-            $data['customer']['fullname'] = $loggedName;
-            $data['customer']['email']    = $loggedEmail;
-            $data['customer']['phone']    = $loggedPhone;
-        }
-        $ui->close();
-    }
-    // ────────────────────────────────────────────────────────────
+  if (isset($_SESSION['user_id'])) {
+      $ui = $conn->prepare("
+          SELECT CONCAT(name,' ',surname), email, phone
+            FROM users
+           WHERE id = ?
+           LIMIT 1
+      ");
+      $ui->bind_param("i", $_SESSION['user_id']);
+      $ui->execute();
+      $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
+      if ($ui->fetch()) {
+          $data['customer']['fullname'] = $loggedName;
+          $data['customer']['email']    = $loggedEmail;
+          $data['customer']['phone']    = $loggedPhone;
+      }
+      $ui->close();
+  }
 
-    if (isset(
-        $data['show_id'],
-        $data['seats'],
-        $data['customer']['fullname'],
-        $data['customer']['email'],
-        $data['customer']['phone'],
-        $data['hall'],
-        $data['chosen_date'],
-        $data['chosen_time']
-    )) {
-       // …
-// prepare reservations insert
+  if (isset(
+      $data['show_id'],
+      $data['seats'],
+      $data['customer']['fullname'],
+      $data['customer']['email'],
+      $data['customer']['phone'],
+      $data['hall'],
+      $data['chosen_date'],
+      $data['chosen_time']
+  )) {
+ /* ─── ruaj çdo vend ─── */
+/* ─── ruaj çdo vend ─── */
+/* ─── ruaj çdo vend ─── */
 $resStmt = $conn->prepare("
-INSERT INTO reservations
-  (show_id,event_id,full_name,email,phone,hall,seat_id,show_date,show_time)
-VALUES
-  (?, NULL, ?, ?, ?, ?, ?, ?, ?)
-");
-// prepare tickets insert
-$ticketStmt = $conn->prepare("
-INSERT INTO tickets
-  (reservation_id,ticket_code,expires_at,paid)
-VALUES
-  (?, ?, ?, 0)
+    INSERT INTO reservations
+        (show_id, event_id, full_name, email, phone, hall,
+         seat_id, ticket_code, expires_at, paid,
+         show_date, show_time, total_price)
+    VALUES
+        (?, NULL, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
 ");
 
 foreach ($data['seats'] as $seat) {
-// map cehov seats
-if (strtolower($data['hall'])==='cehov') {
-    $seat += 212;
+    if (strtolower($data['hall']) === 'cehov') {
+        $seat += 212;                           // offset për sallën “cehov”
+    }
+
+    $ticketCode = bin2hex(random_bytes(8));
+    $expiresAt  = (new DateTime())->modify('+1 day')->format('Y-m-d H:i:s');
+
+    /* ▼ ÇMIMI PËR NJË BILETË, jo totali ▼ */
+    $pricePerSeat = 0;
+    if (!empty($data['seats']) && isset($data['total_price'])) {
+        $pricePerSeat = (int) round($data['total_price'] / count($data['seats']));
+    }
+
+    $resStmt->bind_param(
+        "issssissssi",
+        $data['show_id'],                       // i
+        $data['customer']['fullname'],          // s
+        $data['customer']['email'],             // s
+        $data['customer']['phone'],             // s
+        $data['hall'],                          // s
+        $seat,                                  // i
+        $ticketCode,                            // s
+        $expiresAt,                             // s
+        $data['chosen_date'],                   // s
+        date("H:i:s", strtotime($data['chosen_time'])), // s
+        $pricePerSeat                           // i  ← tani ruhet çmimi i biletës
+    );
+    $resStmt->execute();
 }
-$time_sql   = date("H:i:s", strtotime($data['chosen_time']));
-$date_sql   = $data['chosen_date'];
-
-// 1) insert reservation
-$resStmt->bind_param(
-    "issssiss",
-    $data['show_id'],
-    $data['customer']['fullname'],
-    $data['customer']['email'],
-    $data['customer']['phone'],
-    $data['hall'],
-    $seat,
-    $date_sql,
-    $time_sql
-);
-$resStmt->execute();
-// grab the new reservation id
-$reservation_id = $conn->insert_id;
-
-// 2) generate a random ticket code (32-byte hex = 64 chars)
-$ticket_code = bin2hex(random_bytes(32));
-
-// 3) compute expires_at as two days BEFORE the show date
-$expires_at = date(
-  "Y-m-d",
-  strtotime($date_sql . " -2 days")
-);
-
-// 4) insert ticket
-$ticketStmt->bind_param(
-    "iss",
-    $reservation_id,
-    $ticket_code,
-    $expires_at
-);
-$ticketStmt->execute();
-}
-
 $resStmt->close();
-$ticketStmt->close();
 
-header('Content-Type: application/json');
-echo json_encode(['status'=>'ok']);
-exit;
+
+
+      header('Content-Type: application/json');
+      echo json_encode(['status' => 'ok']);
+      exit;
+  }
+
+  header('HTTP/1.1 400 Bad Request');
+  echo json_encode(['error' => 'Bad request']);
+  exit;
 }
 
-header('HTTP/1.1 400 Bad Request');
-echo json_encode(['error'=>'Bad request']);
-exit;
-}
 // ─
 
 /* 1. merr ID‑në e shfaqjes ----------------------------------- */
@@ -237,6 +220,7 @@ html{scroll-behavior:smooth;}
 <input type="hidden" id="chosen_hall"  name="chosen_hall">
 <input type="hidden" id="chosen_date"  name="chosen_date">
 <input type="hidden" id="chosen_time"  name="chosen_time">
+<input type="hidden" id="total_price" name="total_price">
 <input type="hidden" id="ticket-json"  name="ticket_json">
 
 <!-- PROGRESSBAR -->
@@ -381,7 +365,7 @@ html{scroll-behavior:smooth;}
           <table class="info-table ticket-table table">
             <tr><th>ÇMIMI</th><th>DATA</th><th>ORA</th></tr>
             <tr>
-              <td>ALL.<?=number_format($ticketPrice,2)?></td>
+            <td id="td-price">ALL.<?=number_format($ticketPrice,2)?></td>
               <td id="td-date"></td>
               <td id="td-time"></td>
             </tr>
@@ -466,29 +450,36 @@ document.addEventListener('DOMContentLoaded',()=>{
 </script>
 
 <script>
-/* merr vendet nga iframe */
-window.addEventListener('message',e=>{
-  if(e.origin!==window.origin||e.data?.type!=='seatSelection') return;
-  document.getElementById('chosen_seats').value=e.data.seats.join(',');
-  if(e.data.hall) document.getElementById('chosen_hall').value=e.data.hall;
+/* merr vendet + totalin nga iframe */
+window.addEventListener('message', e => {
+  if (e.origin !== window.origin || e.data?.type !== 'seatSelection') return;
+  document.getElementById('chosen_seats').value = e.data.seats.join(',');
+  if (e.data.hall)  document.getElementById('chosen_hall').value = e.data.hall;
+  document.getElementById('total_price').value  = e.data.total;      // ▼ totali
 });
+
 </script>
 
 <script>
 function gatherJSON(){
   const f=document.forms[0];
-  const data={
-    show_id:<?=$show_id?>,
-    title:  <?=json_encode($showTitle)?>,
-    chosen_date:f.chosen_date.value||'',
-    chosen_time:f.chosen_time.value||'',
-    hall:       f.chosen_hall.value||'',
-    seats:(f.chosen_seats.value||'').split(',').filter(Boolean).map(Number),
-    customer:{
-      fullname:f.fullname.value,email:f.email.value,
-      phone:f.phone.value,notes:f.notes.value
-    }
-  };
+  const data = {
+  show_id     : <?=$show_id?>,
+  title       : <?=json_encode($showTitle)?>,
+  chosen_date : f.chosen_date.value || '',
+  chosen_time : f.chosen_time.value || '',
+  hall        : f.chosen_hall.value  || '',
+  seats       : (f.chosen_seats.value || '')
+                  .split(',').filter(Boolean).map(Number),
+  total_price : +f.total_price.value || 0,           // ▼ SHTUAR
+  customer    : {
+    fullname : f.fullname.value,
+    email    : f.email.value,
+    phone    : f.phone.value,
+    notes    : f.notes.value
+  }
+};
+
   document.getElementById('ticket-json').value=JSON.stringify(data);
   console.log(JSON.stringify(data,null,2));
 
@@ -517,6 +508,10 @@ function gatherJSON(){
   /* rifresko datën & orën në tabelën tjetër */
   document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
   document.getElementById('td-time').textContent=data.chosen_time;
+
+const total = data.total_price || (data.seats.length * <?=$ticketPrice?>);
+
+
   const exp = new Date(data.chosen_date);
 exp.setDate(exp.getDate() - 2);
 const day   = String(exp.getDate()).padStart(2,'0');
