@@ -6,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
 redirectIfNotAdminOrTicketOffice($conn);
 
-$query = "SELECT * FROM events";
+$query = "SELECT * FROM events ORDER BY id DESC";
 $events_result = $conn->query($query);
 ?>
 
@@ -338,26 +338,17 @@ $pageStyles = [
 
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
-
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-        $("#sidebarToggle").on('click', function (e) {
-            e.preventDefault();
-            $("body").toggleClass("sidebar-toggled");
-            $(".sidebar").toggleClass("toggled");
-        });
-    });
 
     $(document).ready(function () {
         $('#userTable').DataTable({
             "pageLength": 10,
             "lengthChange": false,
-            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
                 "searchPlaceholder": "Kërko event...",

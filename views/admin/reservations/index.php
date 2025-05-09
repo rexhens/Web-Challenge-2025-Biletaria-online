@@ -9,7 +9,7 @@ redirectIfNotAdminOrTicketOffice($conn);
 $filter = isset($_GET['show_id']) ? ' WHERE show_id = ' . $_GET['show_id'] : '';
 $filter = isset($_GET['event_id']) ? ' WHERE event_id = ' . $_GET['event_id'] : $filter;
 
-$query = "SELECT * FROM reservations" . $filter;
+$query = "SELECT * FROM reservations" . $filter . ' ORDER BY id DESC';
 $reservations_result = $conn->query($query);
 ?>
 
@@ -265,8 +265,6 @@ $pageStyles = [
 
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
-
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 </body>
 
@@ -274,17 +272,10 @@ $pageStyles = [
 
 <script>
     $(document).ready(function () {
-        $("#sidebarToggle").on('click', function (e) {
-            e.preventDefault();
-            $("body").toggleClass("sidebar-toggled");
-            $(".sidebar").toggleClass("toggled");
-        });
-    });
-    $(document).ready(function () {
         $('#userTable').DataTable({
             "pageLength": 10,
             "lengthChange": false,
-            "dom": '<"row mb-3"<"col-12"f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
                 "searchPlaceholder": "Kërko perdorues...",

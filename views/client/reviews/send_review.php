@@ -3,7 +3,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
-
+// ky file do te ekzekutohet automatikisht per te derguar email per preview cdo dy dit maksimumi
 $sql = "
 SELECT r.*,
        COALESCE(s.title, e.title) AS title

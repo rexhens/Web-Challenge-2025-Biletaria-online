@@ -207,16 +207,6 @@ $pageStyles = [
     <script src="/biletaria_online/assets/js/functions.js"></script>
     <script src="/biletaria_online/assets/js/signupValidations.js"></script>
 
-    <!-- Sidebar toggle -->
-    <script>
-        $(document).ready(function () {
-            $("#sidebarToggle").on('click', function (e) {
-                e.preventDefault();
-                $("body").toggleClass("sidebar-toggled");
-                $(".sidebar").toggleClass("toggled");
-            });
-        });
-    </script>
 </body>
 
 </html>
