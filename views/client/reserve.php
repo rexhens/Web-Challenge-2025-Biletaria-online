@@ -38,6 +38,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
  /* ─── ruaj çdo vend ─── */
 /* ─── ruaj çdo vend ─── */
 /* ─── ruaj çdo vend ─── */
+/* ─── ruaj çdo vend ─── */
+$insertedIds = [];
+
 $resStmt = $conn->prepare("
     INSERT INTO reservations
         (show_id, event_id, full_name, email, phone, hall,
@@ -49,13 +52,12 @@ $resStmt = $conn->prepare("
 
 foreach ($data['seats'] as $seat) {
     if (strtolower($data['hall']) === 'cehov') {
-        $seat += 212;                           // offset për sallën “cehov”
+        $seat += 212;
     }
 
     $ticketCode = bin2hex(random_bytes(8));
     $expiresAt  = (new DateTime())->modify('+1 day')->format('Y-m-d H:i:s');
 
-    /* ▼ ÇMIMI PËR NJË BILETË, jo totali ▼ */
     $pricePerSeat = 0;
     if (!empty($data['seats']) && isset($data['total_price'])) {
         $pricePerSeat = (int) round($data['total_price'] / count($data['seats']));
@@ -63,27 +65,27 @@ foreach ($data['seats'] as $seat) {
 
     $resStmt->bind_param(
         "issssissssi",
-        $data['show_id'],                       // i
-        $data['customer']['fullname'],          // s
-        $data['customer']['email'],             // s
-        $data['customer']['phone'],             // s
-        $data['hall'],                          // s
-        $seat,                                  // i
-        $ticketCode,                            // s
-        $expiresAt,                             // s
-        $data['chosen_date'],                   // s
-        date("H:i:s", strtotime($data['chosen_time'])), // s
-        $pricePerSeat                           // i  ← tani ruhet çmimi i biletës
+        $data['show_id'],
+        $data['customer']['fullname'],
+        $data['customer']['email'],
+        $data['customer']['phone'],
+        $data['hall'],
+        $seat,
+        $ticketCode,
+        $expiresAt,
+        $data['chosen_date'],
+        date("H:i:s", strtotime($data['chosen_time'])),
+        $pricePerSeat
     );
     $resStmt->execute();
+    $insertedIds[] = $conn->insert_id;   // ▼ ID‑ja e sapo‑krijuar
 }
 $resStmt->close();
 
+header('Content-Type: application/json');
+echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe id‑të
+exit;
 
-
-      header('Content-Type: application/json');
-      echo json_encode(['status' => 'ok']);
-      exit;
   }
 
   header('HTTP/1.1 400 Bad Request');
@@ -430,9 +432,13 @@ function enableNext(e){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 
 <script defer>
+
+const base = window.location.origin;           
+const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=`;
+
 document.addEventListener('DOMContentLoaded',()=>{
   new QRCode(document.getElementById('qr-main'),{
-    text:window.location.href,width:120,height:120,
+    text:payURL,width:120,height:120,
     colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H
   });
     /* Shkarkim / Sharing */
