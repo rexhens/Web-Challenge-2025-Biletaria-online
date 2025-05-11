@@ -4,37 +4,65 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
-$show_id = isset($_GET['show_id'])   ? (int)$_GET['show_id']   : 0;
+$show_id  = isset($_GET['show_id'])  ? (int)$_GET['show_id']  : 0;
+$event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 0;
 $date    = isset($_GET['date'])      ? $_GET['date']            : '';
 $time    = isset($_GET['time'])      ? $_GET['time']            : '';
 $hall_i    = isset($_GET['hall'])      ? $_GET['hall']            : '';
 
-if (!$show_id || !$date || !$time) {
-    die("Missing show, date or time.");
+if ((!$show_id && !$event_id) || !$date || !$time) {
+    die("Missing, date or time.");
 }
+$isEvent = $event_id > 0;
 $time_sql = date('H:i:s', strtotime($time)); // converts '7:00 PM' → '19:00:00'
 $hall_sql = $hall_i;                 
 
 /* ────────── detajet e shfaqjes ────────── */
-$stmt = $conn->prepare("
-    SELECT s.title, s.time, s.price, sd.show_date, s.hall
-      FROM shows AS s
-      JOIN show_dates AS sd ON sd.show_id = s.id
-     WHERE s.id         = ?
-       AND sd.show_date = ?
-       AND s.time       = ?
-       AND s.hall       = ?
-     LIMIT 1
-");
+$time_sql = date('H:i:s', strtotime($time));
+if ($isEvent) {
+  // query the events tables
+  $stmt = $conn->prepare("
+      SELECT e.title, e.time, e.price, ed.event_date, e.hall
+        FROM events AS e
+        JOIN event_dates AS ed
+          ON ed.event_id = e.id
+       WHERE e.id         = ?
+         AND ed.event_date = ?
+         AND e.time       = ?
+         AND e.hall       = ?
+       LIMIT 1
+  ");
+   $stmt->bind_param(
+    "isss",
+    $event_id,
+    $date,
+    $time_sql,
+    $hall_i
+);
+} else {
+  // your existing shows query
+  $stmt = $conn->prepare("
+      SELECT s.title, s.time, s.price, sd.show_date, s.hall
+        FROM shows AS s
+        JOIN show_dates AS sd
+          ON sd.show_id = s.id
+       WHERE s.id         = ?
+         AND sd.show_date = ?
+         AND s.time       = ?
+         AND s.hall       = ?
+       LIMIT 1
+  ");
+ 
 
-// bind_param:  i = integer, s = string, s = string, s = string
-$stmt->bind_param(
+  // …then later…
+  $stmt->bind_param(
     "isss",
     $show_id,
-    $date,    // e.g. '2025-05-24'
-    $time_sql,    // e.g. '19:00:00'
-    $hall_i   // e.g. 'shakespare'
+    $date,
+    $time_sql,
+    $hall_i
 );
+}
 
 $stmt->execute();
 $stmt->bind_result($title, $time, $price, $show_date, $hall);
@@ -67,20 +95,39 @@ $sq->close();
 // 2) fetch reserved seats for this show+hall
 
 $reservedIds = [];
-$rq = $conn->prepare("
-  SELECT seat_id
-    FROM reservations
-   WHERE show_id   = ?
-     AND hall      = ?
-     AND show_date = ?
-     AND show_time = ?
-");
-$rq->bind_param("isss",
-  $show_id,
-  $hall,
-  $date,   // date passed into iframe URL
-  $time_sql
+if ($isEvent) {
+  $rq = $conn->prepare("
+    SELECT seat_id
+      FROM reservations
+     WHERE event_id  = ?
+       AND hall      = ?
+       AND show_date = ?
+       AND show_time = ?
+  ");
+  $rq->bind_param(
+    "isss",
+    $event_id,
+    $hall,
+    $date,
+    $time_sql,
 );
+} else {
+  $rq = $conn->prepare("
+    SELECT seat_id
+      FROM reservations
+     WHERE show_id    = ?
+       AND hall       = ?
+       AND show_date  = ?
+       AND show_time  = ?
+  ");
+  $rq->bind_param(
+    "isss",
+    $show_id,
+    $hall,
+    $date,
+    $time_sql
+);
+}
 
 $rq->execute();
 $resR = $rq->get_result();
@@ -200,7 +247,7 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
 
 <!-- form i fshehtë nëse do ta përdorësh me submit direkt -->
 <form id="booking-form" action="process_booking.php" method="post" style="display:none;">
-  <input type="hidden" name="show_id" value="<?=$show_id?>">
+  <input type="hidden" name="<?= $isEvent ? 'event_id' : 'show_id' ?>" value="<?= $isEvent ? $event_id : $show_id ?>">
   <input type="hidden" name="selected_seats" id="selected-seats-input">
   <input type="hidden" name="total_price"   id="total-price-input" value="0">
 </form>
