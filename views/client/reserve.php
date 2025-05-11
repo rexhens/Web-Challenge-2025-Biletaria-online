@@ -4,6 +4,14 @@ require "../../config/db_connect.php";
 require "../../auth/auth.php";
 require "../../includes/functions.php";
 
+
+/* 1. merr ID‑në e shfaqjes ----------------------------------- */
+
+$show_id  = isset($_GET['show_id'])  ? (int)$_GET['show_id']  : 0;
+$event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 0;
+$isEvent  = $event_id > 0 && $show_id === 0;
+if (!$show_id && !$event_id) { die("ID shfaqjeje e pavlefshme."); }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
     $data = json_decode($_POST['ticket_json'], true);
 
@@ -24,9 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
         }
         $ui->close();
     }
-
+    $column = $isEvent ? 'event_id' : 'show_id';
+$colShow = $isEvent ? 'NULL' : '?';
+$colEvent = $isEvent ? '?' : 'NULL';
   if (isset(
-      $data['show_id'],
+      $data[$column],
       $data['seats'],
       $data['customer']['fullname'],
       $data['customer']['email'],
@@ -46,41 +56,41 @@ $resStmt = $conn->prepare("
                 (show_id, event_id, full_name, email, phone, hall,
                  seat_id, ticket_code, expires_at, paid,
                  show_date, show_time, total_price)
-            VALUES
-        (?, NULL, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
+             VALUES
+        ($colShow, $colEvent, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
 ");
 
         foreach ($data['seats'] as $seat) {
-    if (strtolower($data['hall']) === 'cehov') {
-        $seat += 212;
-    }
+            if (strtolower($data['hall']) === 'cehov') {
+                $seat += 212;
+            }
 
-    $ticketCode = bin2hex(random_bytes(8));
-    $expiresAt  = (new DateTime())->modify('+1 day')->format('Y-m-d H:i:s');
+            $ticketCode = bin2hex(random_bytes(8));
+            $expiresAt  = (new DateTime())->modify('+1 day')->format('Y-m-d H:i:s');
 
     $pricePerSeat = 0;
     if (!empty($data['seats']) && isset($data['total_price'])) {
         $pricePerSeat = (int) round($data['total_price'] / count($data['seats']));
     }
 
-    $resStmt->bind_param(
+            $resStmt->bind_param(
                 "issssissssi",
-                $data['show_id'],
+                $data[$column],
                 $data['customer']['fullname'],
                 $data['customer']['email'],
                 $data['customer']['phone'],
                 $data['hall'],
                 $seat,
-        $ticketCode,
-        $expiresAt,
+                $ticketCode,
+                $expiresAt,
                 $data['chosen_date'],
-        date("H:i:s", strtotime($data['chosen_time'])),
-        $pricePerSeat
+                date("H:i:s", strtotime($data['chosen_time'])),
+                $pricePerSeat
             );
-    $resStmt->execute();
+            $resStmt->execute();
     $insertedIds[] = $conn->insert_id;   // ▼ ID‑ja e sapo‑krijuar
         }
-$resStmt->close();
+        $resStmt->close();
 
         header('Content-Type: application/json');
 echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe id‑të
@@ -88,22 +98,64 @@ echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe 
 
     }
 
-  header('HTTP/1.1 400 Bad Request');
+    header('HTTP/1.1 400 Bad Request');
     echo json_encode(['error' => 'Bad request']);
     exit;
 }
 
 // ─
+if($isEvent){
+/* 2. titulli + çmimi ----------------------------------------- */
+$info = $conn->prepare("SELECT title, price FROM events WHERE id = ? LIMIT 1");
+$info->bind_param("i",$event_id);
+$info->execute();
+$info->bind_result($title,$ticketPrice);
+$info->fetch(); $info->close();
 
-/* 1. merr ID‑në e shfaqjes ----------------------------------- */
-$show_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-if (!$show_id) { die("ID shfaqjeje e pavlefshme."); }
+/* 2.1 – nëse përdoruesi është i loguar, nxirr emrin, email‑in, telefonin */
+$loggedName = $loggedEmail = $loggedPhone = '';
+if (isset($_SESSION['user_id'])) {
+    $uid = (int)$_SESSION['user_id'];
+    $u   = $conn->prepare("SELECT CONCAT(name,' ',surname) AS full_name,
+                                  email, phone
+                             FROM users
+                            WHERE id = ?
+                            LIMIT 1");
+    $u->bind_param("i", $uid);
+    $u->execute();
+    $u->bind_result($loggedName, $loggedEmail, $loggedPhone);
+    $u->fetch();
+    $u->close();
+}
+
+
+/* 3. datat e shfaqjes ---------------------------------------- */
+$dq = $conn->prepare("SELECT DISTINCT event_date FROM event_dates WHERE event_id = ? ORDER BY event_date ASC");
+$dq->bind_param("i",$event_id);
+$dq->execute();
+$res=$dq->get_result(); $dates=[];
+while($r=$res->fetch_assoc()) $dates[]=$r['event_date'];
+$dq->close(); $groupedDates=groupDates($dates);
+$today=new DateTime('today');
+
+/* 4. sallat + oraret ----------------------------------------- */
+$hallTimes=[];
+$ht=$conn->prepare("SELECT hall,time FROM events WHERE id=?");
+$ht->bind_param("i",$event_id);
+$ht->execute();
+$ht->bind_result($hall,$rawTime);
+while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('g:i A'); }
+$ht->close(); ksort($hallTimes); foreach($hallTimes as &$t) sort($t); unset($t);
+$conn->close();
+
+
+}else{
 
 /* 2. titulli + çmimi ----------------------------------------- */
 $info = $conn->prepare("SELECT title, price FROM shows WHERE id = ? LIMIT 1");
 $info->bind_param("i",$show_id);
 $info->execute();
-$info->bind_result($showTitle,$ticketPrice);
+$info->bind_result($title,$ticketPrice);
 $info->fetch(); $info->close();
 
 /* 2.1 – nëse përdoruesi është i loguar, nxirr emrin, email‑in, telefonin */
@@ -141,6 +193,10 @@ $ht->bind_result($hall,$rawTime);
 while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('g:i A'); }
 $ht->close(); ksort($hallTimes); foreach($hallTimes as &$t) sort($t); unset($t);
 $conn->close();
+
+
+}
+
 
 /* helper */
 function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$perRow)); }
@@ -425,11 +481,14 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 
       <div class="title">
         <p class="cinema">Teatri Metropol</p>
-        <p class="movie-title"><?=htmlspecialchars($showTitle)?></p>
+        <p class="movie-title"><?=htmlspecialchars($title)?></p>
       </div>
 
       <div class="poster">
-        <img src="../../includes/get_image.php?show_id=<?=$show_id?>" alt="Poster">
+      <img src="../../includes/get_image.php?<?= $isEvent
+         ? 'event_id=' . $event_id
+         : 'show_id='  . $show_id ?>"
+         alt="Poster for <?= htmlspecialchars($title) ?>">
       </div>
 
       <div class="info">
@@ -488,7 +547,9 @@ function enableNext(e){
   document.getElementById('screen-next-btn').disabled=false;
   // point the iframe at the date/time
   const iframe = document.getElementById('seat-sel-iframe');
-  iframe.src = `../../seat_selection/seat_sel.php?show_id=<?=$show_id?>`
+  iframe.src = `../../seat_selection/seat_sel.php?<?= $isEvent
+         ? 'event_id=' . $event_id
+         : 'show_id='  . $show_id ?>`
              + `&date=${encodeURIComponent(selectedDate)}`
              + `&hall=${encodeURIComponent(e.target.dataset.hall)}`
              + `&time=${encodeURIComponent(e.target.dataset.time)}`;
@@ -510,7 +571,8 @@ function enableNext(e){
 
 <script defer>
 
-const base = window.location.origin;           
+const base = window.location.origin;   
+console.log('') ;      
 const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=`;
 
 document.addEventListener('DOMContentLoaded',()=>{
@@ -520,7 +582,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   });
     /* Shkarkim / Sharing */
     const ticket=document.querySelector('.ticket');
-    const fileName='bileta_<?=$show_id?>.png';
+    const fileName='bileta_<?= $isEvent ? $event_id : $show_id ?>.png';
     async function toPNG(){ const c=await html2canvas(ticket,{scale:2}); return c.toDataURL('image/png'); }
     document.getElementById('dl-ticket').onclick=async()=>{const url=await toPNG(); Object.assign(document.createElement('a'),{href:url,download:fileName}).click();};
     const shareBtn=document.getElementById('share-ticket');
@@ -546,28 +608,32 @@ window.addEventListener('message', e => {
 <script>
 function gatherJSON(){
   const f=document.forms[0];
+
+  const key   = <?= $isEvent ? "'event_id'" : "'show_id'" ?>;
+  const value = <?= $isEvent ? $event_id : $show_id ?>;
+
   const data = {
-  show_id     : <?=$show_id?>,
-  title       : <?=json_encode($showTitle)?>,
-  chosen_date : f.chosen_date.value || '',
-  chosen_time : f.chosen_time.value || '',
-  hall        : f.chosen_hall.value  || '',
-  seats       : (f.chosen_seats.value || '')
-                  .split(',').filter(Boolean).map(Number),
-  total_price : +f.total_price.value || 0,           // ▼ SHTUAR
-  customer    : {
-    fullname : f.fullname.value,
-    email    : f.email.value,
-    phone    : f.phone.value,
-    notes    : f.notes.value
-  }
+    [key]:        value,                       // ← computed prop
+    title:        <?= json_encode($title) ?>,
+    chosen_date:  f.chosen_date.value  || '',
+    chosen_time:  f.chosen_time.value  || '',
+    hall:         f.chosen_hall.value  || '',
+    seats:        (f.chosen_seats.value || '')
+                    .split(',').filter(Boolean).map(Number),
+    total_price:  +f.total_price.value || 0,
+    customer: {
+      fullname: f.fullname.value,
+      email:    f.email.value,
+      phone:    f.phone.value,
+      notes:    f.notes.value
+    }
 };
 
   document.getElementById('ticket-json').value=JSON.stringify(data);
   console.log(JSON.stringify(data,null,2));
 
   // ─── INSERT VIA AJAX ────────────────────────────
-  fetch(window.location.pathname + '?id=<?=$show_id?>', {
+  fetch(window.location.pathname + '?<?= $isEvent ? 'event_id' : 'show_id' ?>=<?= $isEvent ? $event_id : $show_id ?>', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ ticket_json: JSON.stringify(data) })

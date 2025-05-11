@@ -199,7 +199,7 @@ $pageStyles = [
                     <h3><?php echo htmlspecialchars($show['title']); ?></h3>
                     <p><span>Zhanri: </span><?php echo htmlspecialchars($show['genre_name']); ?></p>
                 </div>
-                <button onclick="redirectTo('../reserve.php?id=<?php echo $show['id']; ?>')">Rezervo</button>
+                <button onclick="redirectTo('../reserve.php?show_id=<?php echo $show['id']; ?>')">Rezervo</button>
             </div>
         </div>
     </div>
@@ -217,7 +217,7 @@ $pageStyles = [
             <p><?php echo nl2br(htmlspecialchars($show['description'])); ?></p>
         </div>
         <div class='btn-group'>
-            <button onclick="redirectTo('../reserve.php?id=<?php echo $show['id']; ?>')">Rezervo</button>
+            <button onclick="redirectTo('../reserve.php?show_id=<?php echo $show['id']; ?>')">Rezervo</button>
             <?php if (checkAdmin($conn)): ?>
             <button onclick="window.location.href = '/biletaria_online/views/admin/reservations/index.php?show_id=<?php echo $show['id'] ?>'">Rezervime</button>
             <?php endif; ?>
