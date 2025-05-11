@@ -183,7 +183,7 @@ $pageStyles = [
             <div>
                 <h3><?php echo htmlspecialchars($event['title']); ?></h3>
             </div>
-            <button onclick="redirectTo('../reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
+            <button onclick="redirectTo('../reserve.php?event_id=<?php echo $event['id']; ?>')">Rezervo</button>
         </div>
     </div>
 </div>
@@ -200,7 +200,7 @@ $pageStyles = [
         <p><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
     </div>
     <div class='btn-group'>
-        <button onclick="redirectTo('../reserve.php?id=<?php echo $event['id']; ?>')">Rezervo</button>
+        <button onclick="redirectTo('../reserve.php?event_id=<?php echo $event['id']; ?>')">Rezervo</button>
         <?php if (checkAdmin($conn)): ?>
             <button onclick="window.location.href = '/biletaria_online/views/admin/reservations/index.php?event_id=<?php echo $event['id'] ?>'">Rezervime</button>
         <?php endif; ?>

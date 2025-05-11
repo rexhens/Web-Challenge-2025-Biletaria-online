@@ -5,25 +5,25 @@ require "../../auth/auth.php";
 require "../../includes/functions.php";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
-  $data = json_decode($_POST['ticket_json'], true);
+    $data = json_decode($_POST['ticket_json'], true);
 
-  if (isset($_SESSION['user_id'])) {
-      $ui = $conn->prepare("
-          SELECT CONCAT(name,' ',surname), email, phone
-            FROM users
-           WHERE id = ?
+    if (isset($_SESSION['user_id'])) {
+        $ui = $conn->prepare("
+            SELECT CONCAT(name,' ',surname), email, phone
+              FROM users
+             WHERE id = ?
            LIMIT 1
       ");
-      $ui->bind_param("i", $_SESSION['user_id']);
-      $ui->execute();
-      $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
-      if ($ui->fetch()) {
-          $data['customer']['fullname'] = $loggedName;
-          $data['customer']['email']    = $loggedEmail;
-          $data['customer']['phone']    = $loggedPhone;
-      }
-      $ui->close();
-  }
+        $ui->bind_param("i", $_SESSION['user_id']);
+        $ui->execute();
+        $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
+        if ($ui->fetch()) {
+            $data['customer']['fullname'] = $loggedName;
+            $data['customer']['email']    = $loggedEmail;
+            $data['customer']['phone']    = $loggedPhone;
+        }
+        $ui->close();
+    }
 
   if (isset(
       $data['show_id'],
@@ -39,18 +39,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
 /* ─── ruaj çdo vend ─── */
 /* ─── ruaj çdo vend ─── */
 /* ─── ruaj çdo vend ─── */
-$insertedIds = [];
+        $insertedIds = [];
 
 $resStmt = $conn->prepare("
-    INSERT INTO reservations
-        (show_id, event_id, full_name, email, phone, hall,
-         seat_id, ticket_code, expires_at, paid,
-         show_date, show_time, total_price)
-    VALUES
+            INSERT INTO reservations
+                (show_id, event_id, full_name, email, phone, hall,
+                 seat_id, ticket_code, expires_at, paid,
+                 show_date, show_time, total_price)
+            VALUES
         (?, NULL, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
 ");
 
-foreach ($data['seats'] as $seat) {
+        foreach ($data['seats'] as $seat) {
     if (strtolower($data['hall']) === 'cehov') {
         $seat += 212;
     }
@@ -64,33 +64,33 @@ foreach ($data['seats'] as $seat) {
     }
 
     $resStmt->bind_param(
-        "issssissssi",
-        $data['show_id'],
-        $data['customer']['fullname'],
-        $data['customer']['email'],
-        $data['customer']['phone'],
-        $data['hall'],
-        $seat,
+                "issssissssi",
+                $data['show_id'],
+                $data['customer']['fullname'],
+                $data['customer']['email'],
+                $data['customer']['phone'],
+                $data['hall'],
+                $seat,
         $ticketCode,
         $expiresAt,
-        $data['chosen_date'],
+                $data['chosen_date'],
         date("H:i:s", strtotime($data['chosen_time'])),
         $pricePerSeat
-    );
+            );
     $resStmt->execute();
     $insertedIds[] = $conn->insert_id;   // ▼ ID‑ja e sapo‑krijuar
-}
+        }
 $resStmt->close();
 
-header('Content-Type: application/json');
+        header('Content-Type: application/json');
 echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe id‑të
-exit;
+        exit;
 
-  }
+    }
 
   header('HTTP/1.1 400 Bad Request');
-  echo json_encode(['error' => 'Bad request']);
-  exit;
+    echo json_encode(['error' => 'Bad request']);
+    exit;
 }
 
 // ─
@@ -148,20 +148,40 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 <!DOCTYPE html>
 <html lang="sq">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rezervim Bilete</title>
+    <!--  ───────────────  META & SEO  ───────────────  -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:description" content="Teatri Metropol - Your theater experience in Albania / Eksperienca juaj teatrore në Shqipëri.">
+    <meta name="description" content="Teatri Metropol - Your theater experience in Albania / Eksperienca juaj teatrore në Shqipëri.">
+    <meta property="og:title" content="Teatri Metropol">
+    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png" type="image/x-icon">
 
-<link rel="stylesheet" href="../../assets/css/style-starter.css">
-<link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
-<link rel="stylesheet" href="../../assets/css/progress.css">
-<link rel="stylesheet" href="../../assets/css/ticket-booking.css">
-<link rel="stylesheet" href="../../assets/css/e-ticket.css">
-<link rel="stylesheet" href="../../assets/css/payment.css">
+    <title>Teatri Metropol | Rezervim bilete</title>
+
+    <!--  ───────────────  FONTS & ICONS  ───────────────  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!--  ───────────────  CORE STYLES  ───────────────  -->
+    <link rel="stylesheet" href="../../assets/css/stylese.css">
+
+    <link rel="stylesheet" href="../../assets/css/footer.css">
+
+    <!--  ─────────────  PAGE‑SPECIFIC CSS  ─────────────  -->
+    <link rel="stylesheet" href="../../assets/css/style-starter.css">
+    <link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
+    <link rel="stylesheet" href="../../assets/css/progress.css">
+    <link rel="stylesheet" href="../../assets/css/ticket-booking.css">
+    <link rel="stylesheet" href="../../assets/css/e-ticket.css">
+    <link rel="stylesheet" href="../../assets/css/payment.css">
+    <link rel="stylesheet" href="../../assets/css/navbar.css">
 <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
-<style>
-/* (stilet e pandryshuara) */
-html{scroll-behavior:smooth;}
+    <style>
+        html{scroll-behavior:smooth;}
 .form-group{margin-bottom:1rem;width:100%;}
 .form-group label{display:block;margin-bottom:.25rem;font-weight:600;}
 .form-group input{width:100%;padding:.6rem;border:1px solid #ccc;border-radius:4px;}
@@ -169,8 +189,8 @@ html{scroll-behavior:smooth;}
 .carousel-cell .date-numeric{font-size:1.5rem;font-weight:700;line-height:1;}
 .carousel-cell .date-month{font-size:.9rem;text-transform:uppercase;}
 .carousel-cell .date-day{font-size:.8rem;}
-.seat-iframe{width:100%;max-width:770px;height:1100px;display:block;margin:auto;}
-.ticket{max-width:420px;margin:auto;}
+        .seat-iframe{width:100%;max-width:770px;height:1100px;display:block;margin:auto;}
+        .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
 @media(max-width:576px){
@@ -181,34 +201,98 @@ html{scroll-behavior:smooth;}
   #progressbar{flex-wrap:wrap;gap:.25rem;}
   #progressbar li{flex:1 1 45%;font-size:.8rem;}
 }
-</style>
+/* vendose pas style‑starter.css ose tek style tag në fund të <head> */
+@media (max-width:1080px){
+  .navbar-links{
+      display:none;
+  }
+  .navbar-links.active{
+      display:flex !important;
+  }
+}
+
+/* ─── modern card + floating‑label helpers ─── */
+.glass-card{
+  max-width:420px;padding:2rem 1.5rem;border-radius:16px;
+ 
+  
+}
+.floating-group{position:relative;margin-bottom:1.5rem;}
+.floating-group input{
+  width:100%;border:1px solid #ccc;border-radius:8px;padding:0.9rem 1rem 0.9rem 2.75rem;
+  background:transparent;color:inherit;font-size:1rem;transition:all .2s;
+}
+.floating-group input:focus{border-color:#836e4f;box-shadow:0 0 0 2px rgba(131,110,79,.25);}
+.floating-group label{
+  position:absolute;left:2.75rem;top:50%;transform:translateY(-50%);
+  pointer-events:none;color:#888;transition:all .2s;font-size:1rem;
+}
+.floating-group input:not(:placeholder-shown) + label,
+.floating-group input:focus + label{
+  top:-8px;left:2.5rem;font-size:.78rem;background:var(--bs-body-bg,#fff);
+  padding:0 .35rem;color:#836e4f;border-radius:4px;
+}
+.form-icon{
+  position:absolute;left:1rem;top:50%;transform:translateY(-50%);
+  font-size:1rem;color:#836e4f;pointer-events:none;
+}
+/* gentle pulse when focused */
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(131,110,79,.4);}70%{box-shadow:0 0 0 10px rgba(131,110,79,0);}100%{box-shadow:0 0 0 0 rgba(131,110,79,0);}}
+.floating-group input:focus{animation:pulse 1s;}
+
+
+    </style>
 </head>
 <body>
-<header id="site-header" class="w3l-header fixed-top">
-  <nav class="navbar navbar-expand-lg navbar-light fill px-lg-0 py-0 px-3">
-    <div class="container">
-      <a class="navbar-brand logo-dark"  href="../../index.php"><img src="../../../biletaria_online/assets/images/metropol_icon.png"      style="height:35px;"></a>
-      <a class="navbar-brand logo-light" href="../../index.php"><img src="../../../biletaria_online/assets/images/metropol_iconblack.png" style="height:35px;"></a>
-      <a class="navbar-brand" href="../../index.php">Teatri <b style="color:#836e4f;">Metropol</b></a>
 
-      <div class="collapse navbar-collapse"></div>
+<!--  ───────────────────────────  NAVBAR  ───────────────────────────  -->
+<nav class="navbar">
+    <div class="navbar-logo" onclick="location.href='/biletaria_online/index.php'">
+        <img src="/biletaria_online/assets/img/metropol_icon.png" alt="Teatri Metropol Logo" class="logo-img">
+    </div>
 
-      <div class="Login_SignUp">
-        <a class="nav-link" href="../../auth/login.php"><i class="fa fa-user-circle-o"></i></a>
-      </div>
+    <div class="navbar-title" onclick="location.href='/biletaria_online/index.php'">
+        <h1>Teatri <span class="metropol">Metropol</span></h1>
+    </div>
 
-      <div class="mobile-position">
-        <nav class="navigation">
-          <div class="theme-switch-wrapper">
+    <ul class="navbar-links">
+        <li><a href="/biletaria_online/index.php"
+               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/index.php' ? 'active' : '' ?>">Kreu</a></li>
+        <li><a href="/biletaria_online/views/client/shows/index.php"
+               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/shows/index.php' ? 'active' : '' ?>">Shfaqje</a></li>
+        <li><a href="/biletaria_online/views/client/events/index.php"
+               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/events/index.php' ? 'active' : '' ?>">Evente</a></li>
+        <li><a href="/biletaria_online/views/client/about.php"
+               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/about.php' ? 'active' : '' ?>">Rreth&nbsp;nesh</a></li>
+        <li><a href="/biletaria_online/views/client/apply_form.php"
+               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/applications.php' ? 'active' : '' ?>">Aplikime</a></li>
+
+        <?php if (!isset($_SESSION['user_id'])): ?>
+            <li><a href="/biletaria_online/auth/login.php" class="profile-icon"><i class="fas fa-user-circle"></i></a></li>
+        <?php else: ?>
+            <li><a href="/biletaria_online/auth/logout.php" class="profile-icon"><i class="fa-solid fa-right-from-bracket"></i></a></li>
+        <?php endif; ?>
+
+        <!--  Dark / light  -->
+        <li>
+            <button id="theme-toggle" class="theme-toggle" title="Ndrysho temën">
+                
+            </button>
+           
+      
+         
             <label class="theme-switch" for="checkbox">
               <input type="checkbox" id="checkbox">
-              <div class="mode-container"><i class="gg-sun"></i><i class="gg-moon"></i></div>
+              <div class="mode-container"><i style="color: white;" class="gg-moon"></i><i class="gg-sun"></i></div>
             </label>
-          </div>
-        </nav>
-      </div>
-    </div>
-  </nav>
+         
+       
+     
+        </li>
+    </ul>
+
+    <div id="mobile-menu" class="navbar-toggle"><i class="fas fa-bars"></i></div>
+</nav>
 </header>
 
 
@@ -289,50 +373,43 @@ html{scroll-behavior:smooth;}
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
 
-<!-- ───── STEP 3 – Të dhënat tuaja ───── -->
+<!-- ───── STEP 3 – Të dhënat tuaja (modern version) ───── -->
 <fieldset>
-  <h2 class="h4">Të dhënat tuaja</h2>
-  <div style="width:50%; margin:auto;">
-    <div class="form-group">
+  <h2 class="h4 mb-4 text-center">Të dhënat tuaja</h2>
+
+  <div class="user-card glass-card mx-auto">
+    <div class="floating-group">
+      <i class="fa-solid fa-user form-icon"></i>
+      <input id="fullname" name="fullname" type="text"
+             value="<?=htmlspecialchars($loggedName)?>"
+             <?= $loggedName ? 'readonly' : 'required' ?> />
       <label for="fullname">Emri i plotë</label>
-      <input
-        id="fullname"
-        name="fullname"
-        type="text"
-        value="<?= htmlspecialchars($loggedName) ?>"
-        <?= $loggedName ? 'readonly' : 'required' ?>
-      >
     </div>
 
-    <div class="form-group">
+    <div class="floating-group">
+      <i class="fa-solid fa-envelope form-icon"></i>
+      <input id="email" name="email" type="email"
+             value="<?=htmlspecialchars($loggedEmail)?>"
+             <?= $loggedEmail ? 'readonly' : 'required' ?> />
       <label for="email">Email</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        value="<?= htmlspecialchars($loggedEmail) ?>"
-        <?= $loggedEmail ? 'readonly' : 'required' ?>
-      >
     </div>
 
-    <div class="form-group">
+    <div class="floating-group">
+      <i class="fa-solid fa-phone form-icon"></i>
+      <input id="phone" name="phone" type="tel"
+             value="<?=htmlspecialchars($loggedPhone)?>"
+             <?= $loggedPhone ? 'readonly' : 'required' ?> />
       <label for="phone">Telefon</label>
-      <input
-        id="phone"
-        name="phone"
-        type="tel"
-        value="<?= htmlspecialchars($loggedPhone) ?>"
-        <?= $loggedPhone ? 'readonly' : 'required' ?>
-      >
     </div>
 
-    <div class="form-group">
+    <div class="floating-group">
+      <i class="fa-solid fa-pen-to-square form-icon"></i>
+      <input id="notes" name="notes" type="text" />
       <label for="notes">Shënime (opsionale)</label>
-      <input id="notes" name="notes" type="text">
     </div>
   </div>
 
-  <input type="button" class="next-step" value="Rishiko Biletën">
+  <input type="button" class="next-step mt-4" value="Rishiko Biletën">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
 
@@ -560,6 +637,27 @@ function validateStep3() {
 validateStep3();
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  /* ─── MOBILE MENU ─── */
+  const mobileMenu  = document.getElementById('mobile-menu');
+  const navLinks    = document.querySelector('.navbar-links');
+  const menuIcon    = mobileMenu?.querySelector('i');
+
+  if (mobileMenu && navLinks && menuIcon) {
+    mobileMenu.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      menuIcon.classList.toggle('fa-bars');
+      menuIcon.classList.toggle('fa-times');
+    });
+  }
+
+
+});
+</script>
+
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 </body>
+
 </html>
