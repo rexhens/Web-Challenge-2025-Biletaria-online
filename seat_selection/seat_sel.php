@@ -11,7 +11,7 @@ $time    = isset($_GET['time'])      ? $_GET['time']            : '';
 $hall_i    = isset($_GET['hall'])      ? $_GET['hall']            : '';
 
 if ((!$show_id && !$event_id) || !$date || !$time) {
-    die("Missing, date or time.");
+    showError("Mungon data ose koha.");
 }
 $isEvent = $event_id > 0;
 $time_sql = date('H:i:s', strtotime($time)); // converts '7:00 PM' → '19:00:00'
@@ -67,8 +67,9 @@ if ($isEvent) {
 $stmt->execute();
 $stmt->bind_result($title, $time, $price, $show_date, $hall);
 if (!$stmt->fetch()) {
-    die("Show not found.");
+    showError("Show not found.");
 }
+$show_date = new DateTime($show_date);
 $stmt->close();
 ;
 
@@ -175,7 +176,7 @@ $svg_markup = file_get_contents(__DIR__ . '/' . basename($hall) . '.svg');
   --panel-heading:#000;
 }
 [data-theme='dark']{
-  --bg-body:#121212;
+  --bg-body:#1B1B1B;
   --text-main:#fff;
   --color-available:#fff;
   --panel-bg:#1e1e1e;
@@ -218,7 +219,7 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
       <h3>Të dhënat e shfaqjes</h3>
       <ul>
         <li><strong>Titulli:</strong> <?=htmlspecialchars($title)?></li>
-        <li><strong>Koha:</strong> <?=date('F j, Y',strtotime($show_date)).', '.date('H:i',strtotime($time))?></li>
+        <li><strong>Koha:</strong> <?=$show_date->format('d') . ' ' . muajiNeShqip($show_date->format('M')) . ' '. $show_date->format('Y').', '.date('H:i',strtotime($time))?></li>
         <li><strong>Çmimi bilete:</strong> <?=$price?> lekë</li>
       </ul>
     </div>

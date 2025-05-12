@@ -205,6 +205,19 @@ function muajiNeShqip($muajiAnglisht): string {
     return $muajt[$muajiAnglisht] ?? $muajiAnglisht;
 }
 
+function ditaNeShqip($ditaAnglisht): string {
+    $dita = [
+        'Monday'    => 'E Hënë',
+        'Tuesday'   => 'E Martë',
+        'Wednesday' => 'E Mërkurë',
+        'Thursday'  => 'E Enjte',
+        'Friday'    => 'E Premte',
+        'Saturday'  => 'E Shtunë',
+        'Sunday'    => 'E Diel',
+    ];
+    return $dita[$ditaAnglisht] ?? $ditaAnglisht;
+}
+
 function showError($error): void {
     echo "<!DOCTYPE html>
       <html lang='sq'>
