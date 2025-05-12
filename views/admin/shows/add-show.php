@@ -106,8 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $errors[] = "Një problem ndodhi! Provoni më vonë!";
         }
     }
-
-    $conn->close();
 }
 ?>
 
@@ -261,17 +259,6 @@ $pageStyles = [
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true
-            });
-        });
-    </script>
-
-    <!-- Sidebar toggle -->
-    <script>
-        $(document).ready(function () {
-            $("#sidebarToggle").on('click', function (e) {
-                e.preventDefault();
-                $("body").toggleClass("sidebar-toggled");
-                $(".sidebar").toggleClass("toggled");
             });
         });
     </script>

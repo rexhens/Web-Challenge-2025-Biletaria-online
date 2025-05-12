@@ -1,5 +1,4 @@
 <?php
-// Include database connection
 /** @var mysqli $conn */
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
@@ -7,7 +6,7 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
 redirectIfNotAdminOrTicketOffice($conn);
 
-$query = "SELECT * FROM reviews";
+$query = "SELECT * FROM reviews ORDER BY id DESC";
 $users_result = $conn->query($query);
 ?>
 
@@ -28,10 +27,6 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
     <style>
-        .dataTables_filter {
-            display: none !important;
-        }
-
         a.paginate_button:hover,
         a.paginate_button:disabled {
             background-color: #8f793f !important;
@@ -92,8 +87,6 @@ $pageStyles = [
         }
     </style>
 
-
-
 </head>
 
 <body id="page-top">
@@ -115,7 +108,6 @@ $pageStyles = [
         <div class="card shadow border-0 rounded">
             <div class="card-header bg-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-primary" style="color: #8f793f !important;">Lista e Review-ve</h5>
-
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -123,9 +115,9 @@ $pageStyles = [
                         <thead class="thead-light">
                             <tr>
                                 <th>#</th>
-                                <th>Perdoruesi</th>
+                                <th>Përdoruesi</th>
                                 <th>Shfaqja</th>
-                                <th>Vleresimi</th>
+                                <th>Vlerësimi</th>
                                 <th>Komenti</th>
                                 <th>Veprime</th>
                             </tr>
@@ -192,40 +184,25 @@ $pageStyles = [
         </div>
     </div>
 
-    <!-- 1. Load jQuery first -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- 2. Then load any plugins that depend on jQuery -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
     <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- 3. Then load your main template JS file -->
-    <script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
-
-    <!-- 4. Optional: Other JS libraries -->
     <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 
-
-</body>
-
-</html>
-
 <script>
-    $(document).ready(function () {
-        $("#sidebarToggle").on('click', function (e) {
-            e.preventDefault();
-            $("body").toggleClass("sidebar-toggled");
-            $(".sidebar").toggleClass("toggled");
-        });
-    });
     $(document).ready(function () {
         $('#userTable').DataTable({
             "pageLength": 10,
             "lengthChange": false,
-            "dom": 'rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7 text-end"p>>',
+
             "language": {
                 "search": "",
-                "searchPlaceholder": "Kërko perdorues...",
+                "searchPlaceholder": "Kërko koment...",
                 "paginate": {
                     "previous": "‹",
                     "next": "›"
@@ -241,7 +218,8 @@ $pageStyles = [
             }
         });
     });
-
+</script>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");
 
@@ -266,3 +244,7 @@ $pageStyles = [
         window.history.replaceState({}, document.title, url.pathname + url.search);
     }
 </script>
+
+</body>
+
+</html>

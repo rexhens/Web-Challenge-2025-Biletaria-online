@@ -10,7 +10,7 @@ require "../../includes/functions.php";
 $show_id  = isset($_GET['show_id'])  ? (int)$_GET['show_id']  : 0;
 $event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 0;
 $isEvent  = $event_id > 0 && $show_id === 0;
-if (!$show_id && !$event_id) { die("ID shfaqjeje e pavlefshme."); }
+if (!$show_id && !$event_id) { showError("ID shfaqjeje e pavlefshme."); }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
     $data = json_decode($_POST['ticket_json'], true);
@@ -130,7 +130,7 @@ if (isset($_SESSION['user_id'])) {
 
 
 /* 3. datat e shfaqjes ---------------------------------------- */
-$dq = $conn->prepare("SELECT DISTINCT event_date FROM event_dates WHERE event_id = ? ORDER BY event_date ASC");
+$dq = $conn->prepare("SELECT DISTINCT event_date FROM event_dates WHERE event_id = ? AND event_date >= CURRENT_DATE() ORDER BY event_date ASC");
 $dq->bind_param("i",$event_id);
 $dq->execute();
 $res=$dq->get_result(); $dates=[];
@@ -176,7 +176,7 @@ if (isset($_SESSION['user_id'])) {
 
 
 /* 3. datat e shfaqjes ---------------------------------------- */
-$dq = $conn->prepare("SELECT DISTINCT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
+$dq = $conn->prepare("SELECT DISTINCT show_date FROM show_dates WHERE show_id = ? AND show_date >= CURRENT_DATE() ORDER BY show_date ASC");
 $dq->bind_param("i",$show_id);
 $dq->execute();
 $res=$dq->get_result(); $dates=[];
@@ -213,7 +213,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
     <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
     <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png" type="image/x-icon">
 
-    <title>Teatri Metropol | Rezervim bilete</title>
+    <title>Teatri Metropol | Rezervim Bilete</title>
 
     <!--  ───────────────  FONTS & ICONS  ───────────────  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -223,7 +223,6 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <!--  ───────────────  CORE STYLES  ───────────────  -->
-    <link rel="stylesheet" href="../../assets/css/stylese.css">
 
     <link rel="stylesheet" href="../../assets/css/footer.css">
 
@@ -238,9 +237,6 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
     <style>
         html{scroll-behavior:smooth;}
-.form-group{margin-bottom:1rem;width:100%;}
-.form-group label{display:block;margin-bottom:.25rem;font-weight:600;}
-.form-group input{width:100%;padding:.6rem;border:1px solid #ccc;border-radius:4px;}
 .carousel-cell{width:90px;margin-right:8px;border-radius:8px;background:#f3ebeb;padding:.5rem;cursor:pointer;text-align:center;user-select:none;}
 .carousel-cell .date-numeric{font-size:1.5rem;font-weight:700;line-height:1;}
 .carousel-cell .date-month{font-size:.9rem;text-transform:uppercase;}
@@ -249,6 +245,40 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
         .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
+.next-step{
+    color: var(--surface-color);
+    padding: 10px;
+    width: 140px;
+    border: none;
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 100;
+}
+.next-step:hover{
+    cursor: pointer;
+    background-image: linear-gradient(to bottom, var(--heading2-color), #ad8d39);
+}
+.next-step:active{
+    transform: scale(0.95);
+}
+.previous-step{
+    color: var(--surface-color) !important;
+    padding: 10px;
+    width: 140px !important;
+    border: none;
+    border-radius: 10px !important;
+    background-image: linear-gradient(to bottom, #363a42 , #363a42);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 100;
+}
+
+.previous-step:hover {
+    background-image: linear-gradient(to bottom, #363a42 , #3c475c);
+}
+.previous-step:active{
+    transform: scale(0.95);
+}
 @media(max-width:576px){
   html{font-size:15px;}
   .carousel-cell{width:70px;padding:.4rem;}
@@ -267,31 +297,130 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
   }
 }
 
-/* ─── modern card + floating‑label helpers ─── */
-.glass-card{
-  max-width:420px;padding:2rem 1.5rem;border-radius:16px;
- 
-  
-}
-.floating-group{position:relative;margin-bottom:1.5rem;}
-.floating-group input{
-  width:100%;border:1px solid #ccc;border-radius:8px;padding:0.9rem 1rem 0.9rem 2.75rem;
-  background:transparent;color:inherit;font-size:1rem;transition:all .2s;
-}
-.floating-group input:focus{border-color:#836e4f;box-shadow:0 0 0 2px rgba(131,110,79,.25);}
-.floating-group label{
-  position:absolute;left:2.75rem;top:50%;transform:translateY(-50%);
-  pointer-events:none;color:#888;transition:all .2s;font-size:1rem;
-}
-.floating-group input:not(:placeholder-shown) + label,
-.floating-group input:focus + label{
-  top:-8px;left:2.5rem;font-size:.78rem;background:var(--bs-body-bg,#fff);
-  padding:0 .35rem;color:#836e4f;border-radius:4px;
-}
+        .form-container {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 30px !important;
+            background: rgba(228, 228, 228, 0.04) !important;
+            -webkit-backdrop-filter: blur(5px) !important;
+            backdrop-filter: blur(5px) !important;
+            color: var(--text-color) !important;
+            padding: 45px 50px !important;
+            box-sizing: revert !important;
+            border-radius: 10px !important;
+            box-shadow: 5px 5px 20px rgba(0, 0, 0) !important;
+            width: 400px !important;
+            margin: auto !important;
+            animation: fadeIn 0.5s ease-in-out !important;
+            transition: width 0.3s ease !important;
+        }
+
+        .form-container.light {
+            box-shadow: 2px 2px 5px gray !important;
+            background: rgba(200, 187, 179, 0.13) !important;
+            -webkit-backdrop-filter: blur(5px) !important;
+            backdrop-filter: blur(5px) !important;
+        }
+
+        .form-group {
+            display: flex !important;
+            flex-direction: column !important;
+            box-sizing: revert !important;
+            margin-bottom: revert !important;
+            position: relative !important;
+            width: 320px !important;
+        }
+
+        .form-group input {
+            padding: 10px !important;
+            padding-left: 35px !important;
+            font-family: var(--default-font) !important;
+            font-size: 15px !important;
+            color: var(--text-color) !important;
+            margin-bottom: 0 !important;
+            border: none !important;
+            border-bottom: 2px solid rgb(143, 121, 63, 0.5) !important;
+            outline: none !important;
+            background: none !important;
+            z-index: 1 !important;
+        }
+
+        .light .form-group input {
+            color: var(--background-color) !important;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-color) !important;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+            -webkit-text-fill-color: var(--text-color) !important;
+            color: var(--text-color) !important;
+            font-family: var(--default-font) !important;
+            font-size: 15px !important;
+            transition: background-color 9999s ease-in-out 0s !important;
+        }
+
+        .light input:-webkit-autofill,
+        .light input:-webkit-autofill:focus,
+        .light input:-webkit-autofill:hover,
+        .light input:-webkit-autofill:active {
+            -webkit-text-fill-color: var(--background-color) !important;
+            color: var(--background-color) !important;
+        }
+
+        .form-group label {
+            position: absolute !important;
+            top: 10px !important;
+            left: 35px !important;
+            font-size: 18px !important;
+            transition: all 0.3s ease !important;
+            pointer-events: none !important;
+            padding: 0 5px !important;
+            margin: 0 !important;
+            color: var(--surface-color) !important;
+        }
+
+        .light .form-group label {
+            color: #826008 !important;
+            font-weight: 500 !important;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -17px !important;
+            left: 10px !important;
+            font-size: 14px !important;
+            color: var(--surface-color) !important;
+            font-weight: bold !important;
+        }
+
+        .light .form-group input:focus + label,
+        .light .form-group input:not(:placeholder-shown) + label {
+            color: #826008 !important;
+        }
+
 .form-icon{
   position:absolute;left:1rem;top:50%;transform:translateY(-50%);
   font-size:1rem;color:#836e4f;pointer-events:none;
 }
+
+        @media (max-width: 945px) {
+            .form-container {
+                padding: 30px 20px !important;
+                max-width: 80% !important;
+            }
+
+            .form-group {
+                width: 70% !important;
+            }
+        }
 /* gentle pulse when focused */
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(131,110,79,.4);}70%{box-shadow:0 0 0 10px rgba(131,110,79,0);}100%{box-shadow:0 0 0 0 rgba(131,110,79,0);}}
 .floating-group input:focus{animation:pulse 1s;}
@@ -331,9 +460,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 
         <!--  Dark / light  -->
         <li>
-            <button id="theme-toggle" class="theme-toggle" title="Ndrysho temën">
-                
-            </button>
+            <button id="theme-toggle" class="theme-toggle" title="Ndrysho temën" style="display: none"></button>
            
       
          
@@ -383,13 +510,13 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <?php foreach($dates as $idx=>$dateStr):
            $d=new DateTime($dateStr);
            $diff=$today->diff($d)->format('%r%a');
-           $label=$diff==0?'Sot':($diff==1?'Nesër':$d->format('l')); ?>
+           $label=$diff==0?'Sot':($diff==1?'Nesër':ditaNeShqip($d->format('l'))); ?>
         <div class="carousel-cell"
              id="<?=$idx+1?>"
              data-date="<?=$d->format('Y-m-d')?>"
              onclick="selectDate(<?=$idx+1?>)">
           <div class="date-numeric"><?=$d->format('j')?></div>
-          <div class="date-month"><?=$d->format('M')?></div>
+          <div class="date-month"><?=muajiNeShqip($d->format('M'))?></div>
           <div class="date-day"><?=$label?></div>
         </div>
       <?php endforeach;?>
@@ -411,7 +538,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <?php endforeach;?>
     </ul>
   </div>
-  <input id="screen-next-btn" type="button" class="next-step btn btn-primary mt-3" value="Vazhdo" disabled>
+  <input id="screen-next-btn" type="button" class="next-step" value="Vazhdo" disabled>
 </fieldset>
 
 
@@ -433,39 +560,30 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 <fieldset>
   <h2 class="h4 mb-4 text-center">Të dhënat tuaja</h2>
 
-  <div class="user-card glass-card mx-auto">
-    <div class="floating-group">
-      <i class="fa-solid fa-user form-icon"></i>
+  <div class="form-container">
+    <div class="form-group">
       <input id="fullname" name="fullname" type="text"
-             value="<?=htmlspecialchars($loggedName)?>"
-             <?= $loggedName ? 'readonly' : 'required' ?> />
+             value="<?php echo htmlspecialchars($loggedName ?? '') ?>" placeholder=" " required/>
       <label for="fullname">Emri i plotë</label>
+        <span><i class="fa-solid fa-user form-icon"></i></span>
     </div>
 
-    <div class="floating-group">
-      <i class="fa-solid fa-envelope form-icon"></i>
+    <div class="form-group">
       <input id="email" name="email" type="email"
-             value="<?=htmlspecialchars($loggedEmail)?>"
-             <?= $loggedEmail ? 'readonly' : 'required' ?> />
+             value="<?php echo htmlspecialchars($loggedEmail ?? '') ?>" placeholder=" " required/>
       <label for="email">Email</label>
+        <i class="fa-solid fa-envelope form-icon"></i>
     </div>
 
-    <div class="floating-group">
-      <i class="fa-solid fa-phone form-icon"></i>
+    <div class="form-group">
       <input id="phone" name="phone" type="tel"
-             value="<?=htmlspecialchars($loggedPhone)?>"
-             <?= $loggedPhone ? 'readonly' : 'required' ?> />
+             value="<?php echo htmlspecialchars($loggedPhone ?? '') ?>" placeholder=" " required/>
       <label for="phone">Telefon</label>
-    </div>
-
-    <div class="floating-group">
-      <i class="fa-solid fa-pen-to-square form-icon"></i>
-      <input id="notes" name="notes" type="text" />
-      <label for="notes">Shënime (opsionale)</label>
+        <i class="fa-solid fa-phone form-icon"></i>
     </div>
   </div>
-
-  <input type="button" class="next-step mt-4" value="Rishiko Biletën">
+    <br>
+  <input type="button" class="next-step" value="Rishiko Biletën">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
 
@@ -494,7 +612,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <div class="info">
         <div class="table-responsive">
           <table id="seat-table" class="info-table ticket-table table">
-            <tr><th>SALLA</th><th>RRËSHTI</th><th>VENDI</th></tr>
+            <tr><th>SALLA</th><th>RRESHTI</th><th>VENDI</th></tr>
             <!-- <tr> …mbushet nga JS… </tr> -->
           </table>
         </div>
@@ -521,8 +639,8 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
   </div>
 
   <div class="text-center mt-3">
-    <button id="dl-ticket"  type="button" class="home-page-btn btn btn-outline-primary me-2">Shkarko Biletën</button>
-    <button id="share-ticket" type="button" class="home-page-btn btn btn-outline-success" style="display:none">Ndaj Biletën</button>
+      <input id="dl-ticket" type="button" class="next-step" value="Shkarko Biletën">
+
   </div>
 </fieldset>
 
@@ -624,8 +742,7 @@ function gatherJSON(){
     customer: {
       fullname: f.fullname.value,
       email:    f.email.value,
-      phone:    f.phone.value,
-      notes:    f.notes.value
+      phone:    f.phone.value
     }
 };
 

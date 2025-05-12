@@ -101,12 +101,12 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
             $errors[] = "Nuk u gjet një llogari me këtë email.";
         } else {
             $subject = "Verifikoni Email";
-            $body = "<h2>Ndryshimi i fjalëkalimit u krye me sukses!</h2>
-                     <p>Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar me ndryshimin e fjalëkalimit.</p>
-                     <br>
-                     <a href='http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token'>Kliko këtu</a>";
+            $title = "Ndryshimi i fjalëkalimit u krye me sukses!";
+            $body = "Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar me ndryshimin e fjalëkalimit.";
+            $link = "http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token";
 
-            if(!sendEmail($email, $subject, $body)) {
+
+            if(!sendEmail($email, $subject, $title, $body, $link)) {
                 $errors[] = "Një problem ndodhi! Provoni më vonë!";
             } else {
                 echo "<div class='errors show' style='background-color: rgba(131, 173, 68) !important'>

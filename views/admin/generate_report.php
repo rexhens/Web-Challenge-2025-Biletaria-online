@@ -118,6 +118,87 @@ while ($row = $result->fetch_assoc()) {
 $html .= "</table>";
 $html .= "</div>";
 
+//////////////////////////  
+// Reservations Section
+//////////////////////////
+
+
+$result = $conn->query("SELECT * FROM reservations");
+
+$html .= "<div class='section'>";
+$html .= "<h2>Raporti i Rezervimeve</h2>";
+$html .= "<table>";
+$html .= "<tr>
+    <th>ID</th><th>Emri i plotë</th><th>Telefoni</th>
+    <th>Data</th><th>Salla</th><th>Skena</th><th>Data e shfaqjes</th>
+    <th>Ora e shfaqjes</th><th>Çmimi Total</th>
+</tr>";
+
+while ($row = $result->fetch_assoc()) {
+    $date = date("d-m-Y", strtotime($row['date']));
+    $showDate = date("d-m-Y", strtotime($row['show_date']));
+    $html .= "<tr>
+        <td>{$row['id']}</td>
+        <td>{$row['full_name']}</td>
+        <td>{$row['phone']}</td>
+        <td>{$date}</td>
+        <td>{$row['hall']}</td>
+        <td>{$row['seat_id']}</td>
+        <td>{$showDate}</td>
+        <td>{$row['show_time']}</td>
+        <td>" . number_format($row['total_price'], 2) . "</td>
+    </tr>";
+}
+
+$html .= "</table>";
+$html .= "</div>";
+
+
+//////////////////////////
+// Reviews Section
+//////////////////////////
+$result = $conn->query("
+    SELECT 
+        reviews.id,
+        reviews.email,
+        reviews.rating,
+        reviews.comment,
+        reviews.date,
+        shows.title AS show_title,
+        events.title AS event_title
+    FROM reviews
+    LEFT JOIN shows ON reviews.show_id = shows.id
+    LEFT JOIN events ON reviews.event_id = events.id
+");
+
+$html .= "<div class='section'>";
+$html .= "<h2>Raporti i Komenteve</h2>";
+$html .= "<table>";
+$html .= "<tr><th>ID</th><th>Email</th><th>Shfaqja</th><th>Eventi</th><th>Vlerësimi</th><th>Komenti</th><th>Data</th></tr>";
+
+while ($row = $result->fetch_assoc()) {
+    $date = date("d-m-Y", strtotime($row['date']));
+    $comment = htmlspecialchars($row['comment']);
+    $showTitle = $row['show_title'] ?? '-';
+    $eventTitle = $row['event_title'] ?? '-';
+
+    $html .= "<tr>
+        <td>{$row['id']}</td>
+        <td>{$row['email']}</td>
+        <td>{$showTitle}</td>
+        <td>{$eventTitle}</td>
+        <td>{$row['rating']}</td>
+        <td><div class='description'>{$comment}</div></td>
+        <td>{$date}</td>
+    </tr>";
+}
+
+$html .= "</table>";
+$html .= "</div>";
+
+
+
+
 //////////////////////////
 // Actors Section
 //////////////////////////
@@ -128,7 +209,7 @@ $html .= "<table>";
 $html .= "<tr><th>ID</th><th>Emri</th><th>Email</th><th>Datëlindja</th></tr>";
 
 while ($row = $result->fetch_assoc()) {
-    $birthdate = $row['birthdate'] ? date("d-m-Y", strtotime($row['birthdate'])) : '-';
+    $birthdate = $row['birthday'] ? date("d-m-Y", strtotime($row['birthday'])) : '-';
     $html .= "<tr>";
     $html .= "<td>{$row['id']}</td>";
     $html .= "<td>{$row['name']}</td>";

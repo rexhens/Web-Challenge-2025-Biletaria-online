@@ -288,8 +288,6 @@ $pageStyles = [
 
 <script src="/biletaria_online/assets/vendor/jquery-easing/jquery.easing.min.js"></script>
 
-<script src="/biletaria_online/assets/js/sb-admin-2.min.js"></script>
-
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
 
 <script>

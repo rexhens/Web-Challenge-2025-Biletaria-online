@@ -3,7 +3,7 @@
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
-
+// ky file do te ekzekutohet automatikisht per te derguar email per preview cdo dy dit maksimumi
 $sql = "
 SELECT r.*,
        COALESCE(s.title, e.title) AS title
@@ -23,20 +23,20 @@ $result = $stmt->get_result();
 while($row = $result->fetch_assoc()) {
     $subject = 'Jepni opinionin tuaj!';
     $type = $row['show_id'] ? 'shfaqjen' : 'eventin';
-    $body = "<h2>Na tregoni mendimin tuaj për $type \"{$row['title']}\"</h2>
-             <p>Për të bërë një vlerësim dhe për të lënë komentin tuaj mund te plotesoni formularin që gjendet në linkun e mëposhtëm</p>
-             <br>";
+    $title = "Na tregoni mendimin tuaj për $type \"{$row['title']}\"";
+    $body = "Për të bërë një vlerësim dhe për të lënë komentin tuaj mund te plotesoni formularin që gjendet në linkun e mëposhtëm";
     $email = $row['email'];
+    $reservation_id = $row['id'];
+    $link = '';
     if(!empty($row['show_id'])) {
         $show_id = $row['show_id'];
-        $reservation_id = $row['id'];
-        $body .= "<a href='http://localhost/biletaria_online/views/client/reviews/index.php?show_id=$show_id&res=$reservation_id'>Kliko këtu</a>";
+        $link = "http://localhost/biletaria_online/views/client/reviews/index.php?show_id=$show_id&res=$reservation_id";
     } else if(!empty($row['event_id'])) {
         $event_id = $row['event_id'];
-        $body .= "<a href='http://localhost/biletaria_online/views/client/reviews/index.php?event_id=$event_id&res=$reservation_id'>Kliko këtu</a>";
+        $link = "http://localhost/biletaria_online/views/client/reviews/index.php?event_id=$event_id&res=$reservation_id";
     }
 
-    if(sendEmail($email, $subject, $body)) {
+    if(sendEmail($email, $subject, $title, $body, $link)) {
         $insertSql = "INSERT INTO notifications (reservation_id) VALUES (?)";
         $insertStmt = $conn->prepare($insertSql);
         $insertStmt->bind_param("i", $reservation_id);

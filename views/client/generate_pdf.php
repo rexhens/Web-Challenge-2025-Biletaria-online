@@ -1,6 +1,8 @@
 <?php
-
-session_start();
+/** @var mysqli $conn */
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 // Include Dompdf library
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/assets/dompdf/autoload.inc.php';
@@ -205,10 +207,12 @@ try {
 
     $mail->isHTML(true);
     $mail->Subject = "Formulari për ambient me qera";
-    $mail->Body = "Përshëndetje, formulari i aplikimit është bashkëngjitur si dokument PDF.
+    $title = "Formulari për ambient me qera";
+    $body = "Përshëndetje, formulari i aplikimit është bashkëngjitur si dokument PDF.
 <br><strong>Aplikues:</strong> $emer $mbiemer
 <br><strong>Email:</strong> <a href='mailto:$email'>$email</a>
 <br><strong>Telefon:</strong> $telefoni";
+    $mail->Body = emailTemplate($title, $body, '');
 
     $mail->addAttachment($tempPdfPath, 'formulari_ambient_qera.pdf');
     $mail->send();
