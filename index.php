@@ -143,7 +143,7 @@ $pageStyles = [
                 <div class="headerhny-title" style="margin-bottom: -20px;">
                     <div class="w3l-title-grids">
                         <div class="headerhny-left">
-                            <h3 class="hny-title" style="color: white;">Rreth nesh</h3>
+                            <h3 class="hny-title" style="/*color: white;*/">Rreth nesh</h3>
                         </div>
                         <div class="headerhny-right text-lg-right">
                             <h4><a class="show-title" href="views/client/about.php">Më shumë</a></h4>
@@ -157,16 +157,16 @@ $pageStyles = [
 
                         <!-- Text Content -->
                         <div class="about-text" style="flex: 1 1 50%; min-width: 300px;">
-                            <div class="single-event-content" display="flex"
+                            <div display="flex"
                                 style=" display: flex; flex-direction: column; align-items: center; justify-content: center;;">
-                                <p style="color: white;"><strong style="color: #8f793f;">Teatri Metropol</strong>
+                                <p style="/*color: white;*/"><strong style="color: #8f793f;">Teatri Metropol</strong>
                                     është një qendër dinamike
                                     kulturore që synon të sjellë për publikun shqiptar dhe ndërkombëtar vepra teatrore
                                     me nivel të lartë artistik. I udhëhequr nga vlerat e gjithëpërfshirjes, dialogut
                                     konstruktiv dhe humanizmit universal, Metropoli është një hapësirë ku arti takon
                                     komunitetin dhe frymëzon reflektim, bashkëbisedim dhe rritje.</p>
                                 <br>
-                                <p style="color: white;"><strong style="color: #8f793f;">Misioni ynë</strong> është të realizojmë shfaqje
+                                <p style="/*color: white;*/"><strong style="color: #8f793f;">Misioni ynë</strong> është të realizojmë shfaqje
                                     cilësore – shqiptare dhe botërore – që flasin me ndershmëri dhe forcë artistike për
                                     realitetin dhe shpirtin njerëzor. Vizioni ynë është të ndërtojmë një standard të ri
                                     në cilësinë e prodhimit artistik dhe trajnimit profesional të talenteve të reja,
@@ -176,7 +176,7 @@ $pageStyles = [
 
                         <!-- Image -->
                         <div class="about-image" style="flex: 1 1 30%; min-width: 300px;">
-                            <img src="/biletaria_online/assets/img/about/1.jpg" alt="Teatri Metropol Tirane"
+                            <img src="/biletaria_online/assets/img/about/main.jpg" alt="Teatri Metropol Tirane"
                                 style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                         </div>
 
@@ -193,7 +193,7 @@ $pageStyles = [
                 <div class="headerhny-title" style="margin-bottom: -20px;">
                     <div class="w3l-title-grids">
                         <div class="headerhny-left">
-                            <h3 class="hny-title" style="color: white;">Sezoni i Ri</h3>
+                            <h3 class="hny-title" style="/*color: white;*/">Sezoni i Ri</h3>
                         </div>
                         <div class="headerhny-right text-lg-right">
                             <h4><a class="show-title" href="views/client/shows/index.php">Më shumë</a></h4>
@@ -216,7 +216,7 @@ $pageStyles = [
                     <div class="headerhny-title">
                         <div class="w3l-title-grids">
                             <div class="headerhny-left">
-                                <h3 class="hny-title" style="color: white;">Evente të tjera</h3>
+                                <h3 class="hny-title" style="/*color: white;*/">Evente të tjera</h3>
                             </div>
                             <div class="headerhny-right text-lg-right">
                                 <h4><a class="show-title" href="views/client/events/index.php">Më shumë</a></h4>
@@ -338,7 +338,7 @@ $pageStyles = [
                 <div class="headerhny-title">
                     <div class="w3l-title-grids">
                         <div class="headerhny-left">
-                            <h3 class="hny-title" style="color: white;">Vendodhja</h3>
+                            <h3 class="hny-title" style="/*color: white;*/">Vendodhja</h3>
                         </div>
                     </div>
                 </div>

@@ -460,17 +460,10 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 
         <!--  Dark / light  -->
         <li>
-            <button id="theme-toggle" class="theme-toggle" title="Ndrysho temën" style="display: none"></button>
-           
-      
-         
             <label class="theme-switch" for="checkbox">
               <input type="checkbox" id="checkbox">
               <div class="mode-container"><i style="color: white;" class="gg-moon"></i><i class="gg-sun"></i></div>
             </label>
-         
-       
-     
         </li>
     </ul>
 
