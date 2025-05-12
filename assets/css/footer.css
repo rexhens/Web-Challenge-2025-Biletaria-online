@@ -1,7 +1,7 @@
 :root {
     --default-font: "Quicksand", sans-serif;
 
-    --footer-bg: rgba(27, 27, 27, 0.85);      /* #1b1b1b */
+    --footer-bg: rgba(20, 20, 20, 0.85);      /* #1b1b1b */
     --highlight-color: rgb(130, 152, 145);               /* #82989f */
     --text-light: #e4e4e4;                   /* #e4e4e4 */
     --link-overlay: rgba(120, 94, 91, 0.2);    /* accent overlay */

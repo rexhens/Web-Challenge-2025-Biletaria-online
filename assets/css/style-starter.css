@@ -14175,7 +14175,7 @@ ul {
   --theme-dark: #111;
   --theme-lite: #f6f6f6;
   --theme-blue: #127681;
-  --theme-para: #888;
+  --theme-para: #262626;
   --theme-white: #fff;
   --theme-hd-bg: #fff;
   --theme-border: #f0f0f0;
@@ -14188,7 +14188,7 @@ ul {
 
 [data-theme="dark"] {
   --theme-rose: #836e4f;
-  --theme-para: #888;
+  --theme-para: #E4E4E4;
   --theme-hd-bg: #0c0f0a;
   --theme-dark: #111;
   --theme-lite: #222;
@@ -14197,7 +14197,7 @@ ul {
   --theme-title: #fff;
   --theme-nav: rgb(255, 255, 255);
   --theme-white: #fff;
-  --theme-bg: #0c0f0a;
+  --theme-bg: #111;
   --theme-border: #222;
   --theme-fm-border: #fff;
   --theme-progressbar: rgb(255, 255, 255);
