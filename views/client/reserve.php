@@ -10,7 +10,7 @@ require "../../includes/functions.php";
 $show_id  = isset($_GET['show_id'])  ? (int)$_GET['show_id']  : 0;
 $event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 0;
 $isEvent  = $event_id > 0 && $show_id === 0;
-if (!$show_id && !$event_id) { die("ID shfaqjeje e pavlefshme."); }
+if (!$show_id && !$event_id) { showError("ID shfaqjeje e pavlefshme."); }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
     $data = json_decode($_POST['ticket_json'], true);
@@ -130,7 +130,7 @@ if (isset($_SESSION['user_id'])) {
 
 
 /* 3. datat e shfaqjes ---------------------------------------- */
-$dq = $conn->prepare("SELECT DISTINCT event_date FROM event_dates WHERE event_id = ? ORDER BY event_date ASC");
+$dq = $conn->prepare("SELECT DISTINCT event_date FROM event_dates WHERE event_id = ? AND event_date >= CURRENT_DATE() ORDER BY event_date ASC");
 $dq->bind_param("i",$event_id);
 $dq->execute();
 $res=$dq->get_result(); $dates=[];
@@ -176,7 +176,7 @@ if (isset($_SESSION['user_id'])) {
 
 
 /* 3. datat e shfaqjes ---------------------------------------- */
-$dq = $conn->prepare("SELECT DISTINCT show_date FROM show_dates WHERE show_id = ? ORDER BY show_date ASC");
+$dq = $conn->prepare("SELECT DISTINCT show_date FROM show_dates WHERE show_id = ? AND show_date >= CURRENT_DATE() ORDER BY show_date ASC");
 $dq->bind_param("i",$show_id);
 $dq->execute();
 $res=$dq->get_result(); $dates=[];
@@ -213,7 +213,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
     <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
     <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png" type="image/x-icon">
 
-    <title>Teatri Metropol | Rezervim bilete</title>
+    <title>Teatri Metropol | Rezervim Bilete</title>
 
     <!--  ───────────────  FONTS & ICONS  ───────────────  -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -249,6 +249,40 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
         .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
+.next-step{
+    color: var(--surface-color);
+    padding: 10px;
+    width: 140px;
+    border: none;
+    border-radius: 10px;
+    background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 100;
+}
+.next-step:hover{
+    cursor: pointer;
+    background-image: linear-gradient(to bottom, var(--heading2-color), #ad8d39);
+}
+.next-step:active{
+    transform: scale(0.95);
+}
+.previous-step{
+    color: var(--surface-color) !important;
+    padding: 10px;
+    width: 140px !important;
+    border: none;
+    border-radius: 10px !important;
+    background-image: linear-gradient(to bottom, #363a42 , #363a42);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    z-index: 100;
+}
+
+.previous-step:hover {
+    background-image: linear-gradient(to bottom, #363a42 , #3c475c);
+}
+.previous-step:active{
+    transform: scale(0.95);
+}
 @media(max-width:576px){
   html{font-size:15px;}
   .carousel-cell{width:70px;padding:.4rem;}
@@ -383,13 +417,13 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <?php foreach($dates as $idx=>$dateStr):
            $d=new DateTime($dateStr);
            $diff=$today->diff($d)->format('%r%a');
-           $label=$diff==0?'Sot':($diff==1?'Nesër':$d->format('l')); ?>
+           $label=$diff==0?'Sot':($diff==1?'Nesër':ditaNeShqip($d->format('l'))); ?>
         <div class="carousel-cell"
              id="<?=$idx+1?>"
              data-date="<?=$d->format('Y-m-d')?>"
              onclick="selectDate(<?=$idx+1?>)">
           <div class="date-numeric"><?=$d->format('j')?></div>
-          <div class="date-month"><?=$d->format('M')?></div>
+          <div class="date-month"><?=muajiNeShqip($d->format('M'))?></div>
           <div class="date-day"><?=$label?></div>
         </div>
       <?php endforeach;?>
@@ -411,7 +445,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <?php endforeach;?>
     </ul>
   </div>
-  <input id="screen-next-btn" type="button" class="next-step btn btn-primary mt-3" value="Vazhdo" disabled>
+  <input id="screen-next-btn" type="button" class="next-step" value="Vazhdo" disabled>
 </fieldset>
 
 
@@ -464,8 +498,8 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <label for="notes">Shënime (opsionale)</label>
     </div>
   </div>
-
-  <input type="button" class="next-step mt-4" value="Rishiko Biletën">
+    <br>
+  <input type="button" class="next-step" value="Rishiko Biletën">
   <input type="button" class="previous-step" value="Mbrapa">
 </fieldset>
 
@@ -494,7 +528,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
       <div class="info">
         <div class="table-responsive">
           <table id="seat-table" class="info-table ticket-table table">
-            <tr><th>SALLA</th><th>RRËSHTI</th><th>VENDI</th></tr>
+            <tr><th>SALLA</th><th>RRESHTI</th><th>VENDI</th></tr>
             <!-- <tr> …mbushet nga JS… </tr> -->
           </table>
         </div>
@@ -521,8 +555,8 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
   </div>
 
   <div class="text-center mt-3">
-    <button id="dl-ticket"  type="button" class="home-page-btn btn btn-outline-primary me-2">Shkarko Biletën</button>
-    <button id="share-ticket" type="button" class="home-page-btn btn btn-outline-success" style="display:none">Ndaj Biletën</button>
+      <input id="dl-ticket" type="button" class="next-step" value="Shkarko Biletën">
+
   </div>
 </fieldset>
 
