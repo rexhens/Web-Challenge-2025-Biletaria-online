@@ -220,7 +220,7 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
       <ul>
         <li><strong>Titulli:</strong> <?=htmlspecialchars($title)?></li>
         <li><strong>Koha:</strong> <?=$show_date->format('d') . ' ' . muajiNeShqip($show_date->format('M')) . ' '. $show_date->format('Y').', '.date('H:i',strtotime($time))?></li>
-        <li><strong>Çmimi bilete:</strong> <?=$price?> lekë</li>
+        <li><strong>Çmimi i biletës:</strong> <?=$price?> lekë</li>
       </ul>
     </div>
     <div class="sum-block">

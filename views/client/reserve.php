@@ -223,7 +223,6 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <!--  ───────────────  CORE STYLES  ───────────────  -->
-    <link rel="stylesheet" href="../../assets/css/stylese.css">
 
     <link rel="stylesheet" href="../../assets/css/footer.css">
 
@@ -298,7 +297,6 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
   }
 }
 
-/* ─── modern card + floating‑label helpers ─── */
         .form-container {
             display: flex !important;
             flex-direction: column !important;
@@ -309,7 +307,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
             -webkit-backdrop-filter: blur(5px) !important;
             backdrop-filter: blur(5px) !important;
             color: var(--text-color) !important;
-            padding: 35px 50px !important;
+            padding: 45px 50px !important;
             box-sizing: revert !important;
             border-radius: 10px !important;
             box-shadow: 5px 5px 20px rgba(0, 0, 0) !important;
@@ -462,9 +460,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 
         <!--  Dark / light  -->
         <li>
-            <button id="theme-toggle" class="theme-toggle" title="Ndrysho temën">
-                
-            </button>
+            <button id="theme-toggle" class="theme-toggle" title="Ndrysho temën" style="display: none"></button>
            
       
          
