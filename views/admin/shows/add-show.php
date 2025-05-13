@@ -148,8 +148,7 @@ $pageStyles = [
                         <select name="hall" id="hall" required>
                             <option value="" disabled <?php echo empty($hall) ? 'selected' : ''; ?>>-- Zgjidh sallën --
                             </option>
-                            <option value="Shakespare" <?php echo ($hall == 'Shakespare') ? 'selected' : ''; ?>>Shakespare
-                            </option>
+                            <option value="Shakespare" <?php echo ($hall == 'Shakespare') ? 'selected' : ''; ?>>Shakespare</option>
                             <option value="Çehov" <?php echo ($hall == 'Çehov') ? 'selected' : ''; ?>>Çehov</option>
                             <option value="Bodrum" <?php echo ($hall == 'Bodrum') ? 'selected' : ''; ?>>Bodrum</option>
                         </select>
