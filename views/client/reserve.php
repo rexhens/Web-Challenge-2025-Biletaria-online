@@ -61,7 +61,7 @@ $resStmt = $conn->prepare("
 ");
 
         foreach ($data['seats'] as $seat) {
-            if (strtolower($data['hall']) === 'cehov') {
+            if (strtolower($data['hall']) === 'çehov') {
                 $seat += 212;
             }
 
@@ -614,7 +614,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
           <table class="info-table ticket-table table">
             <tr><th>ÇMIMI</th><th>DATA</th><th>ORA</th></tr>
             <tr>
-            <td id="td-price">ALL.<?=number_format($ticketPrice,2)?></td>
+            <td id="td-price"></td>
               <td id="td-date"></td>
               <td id="td-time"></td>
             </tr>
@@ -680,41 +680,40 @@ function enableNext(e){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
 
-<script defer>
 
-const base = window.location.origin;   
-console.log('') ;      
-const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=`;
-
-document.addEventListener('DOMContentLoaded',()=>{
-  new QRCode(document.getElementById('qr-main'),{
-    text:payURL,width:120,height:120,
-    colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H
-  });
-    /* Shkarkim / Sharing */
-    const ticket=document.querySelector('.ticket');
-    const fileName='bileta_<?= $isEvent ? $event_id : $show_id ?>.png';
-    async function toPNG(){ const c=await html2canvas(ticket,{scale:2}); return c.toDataURL('image/png'); }
-    document.getElementById('dl-ticket').onclick=async()=>{const url=await toPNG(); Object.assign(document.createElement('a'),{href:url,download:fileName}).click();};
-    const shareBtn=document.getElementById('share-ticket');
-    if(navigator.canShare && navigator.canShare({files:[]})){
-      shareBtn.style.display='';
-      shareBtn.onclick=async()=>{const blob=await(await fetch(await toPNG())).blob();
-        await navigator.share({files:[new File([blob],fileName,{type:'image/png'})],title:'Bileta ime'});}
-    }
-});
-</script>
 
 <script>
-/* merr vendet + totalin nga iframe */
+// ─── Step 2 “Vazhdo” gating based on iframe seat selection ───
+
+// 1. grab the “Vazhdo” button on Step 2 (it's the second .next-step)
+const step2NextBtn = document.querySelectorAll('.next-step')[1];
+
+// 2. disable it by default
+step2NextBtn.disabled = true;
+
+// 3. listen for your iframe’s seatSelection message
 window.addEventListener('message', e => {
   if (e.origin !== window.origin || e.data?.type !== 'seatSelection') return;
+
+  // populate your hidden inputs as before
   document.getElementById('chosen_seats').value = e.data.seats.join(',');
   if (e.data.hall)  document.getElementById('chosen_hall').value = e.data.hall;
-  document.getElementById('total_price').value  = e.data.total;      // ▼ totali
+  document.getElementById('total_price').value  = e.data.total;
+
+  // enable the button only if at least one seat was selected
+  const hasSeats = Array.isArray(e.data.seats) && e.data.seats.length > 0;
+  step2NextBtn.disabled = !hasSeats;
 });
 
+// 4. extra double-check on click: block progression if no seats
+step2NextBtn.addEventListener('click', ev => {
+  if (!document.getElementById('chosen_seats').value) {
+    alert('Ju lutem, zgjidhni të paktën një vend për të vazhduar.');
+    ev.preventDefault();
+  }
+});
 </script>
+
 
 <script>
 function gatherJSON(){
@@ -769,7 +768,10 @@ function gatherJSON(){
   document.getElementById('td-time').textContent=data.chosen_time;
 
 const total = data.total_price || (data.seats.length * <?=$ticketPrice?>);
-
+qty = data.seats.length;
+unitPrice = <?=$ticketPrice?>;
+document.getElementById('td-price').textContent =
+  `${qty} × ALL.${unitPrice.toFixed(0)} = ALL.${total.toFixed(0)}`;
 
   const exp = new Date(data.chosen_date);
 exp.setDate(exp.getDate() - 2);
@@ -811,6 +813,32 @@ function validateStep3() {
 
 // run once on load (in case fields are pre-filled)
 validateStep3();
+</script>
+
+
+<script defer>
+
+const base = window.location.origin;   
+console.log(data.seats.length) ;      
+const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=`;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  new QRCode(document.getElementById('qr-main'),{
+    text:payURL,width:120,height:120,
+    colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H
+  });
+    /* Shkarkim / Sharing */
+    const ticket=document.querySelector('.ticket');
+    const fileName='bileta_<?= $isEvent ? $event_id : $show_id ?>.png';
+    async function toPNG(){ const c=await html2canvas(ticket,{scale:2}); return c.toDataURL('image/png'); }
+    document.getElementById('dl-ticket').onclick=async()=>{const url=await toPNG(); Object.assign(document.createElement('a'),{href:url,download:fileName}).click();};
+    const shareBtn=document.getElementById('share-ticket');
+    if(navigator.canShare && navigator.canShare({files:[]})){
+      shareBtn.style.display='';
+      shareBtn.onclick=async()=>{const blob=await(await fetch(await toPNG())).blob();
+        await navigator.share({files:[new File([blob],fileName,{type:'image/png'})],title:'Bileta ime'});}
+    }
+});
 </script>
 
 <script>
