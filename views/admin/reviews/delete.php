@@ -6,8 +6,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
 redirectIfNotAdminOrTicketOffice($conn);
 
-if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET['id'])) {
-    $id = $_GET['id'];
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
+    $id = $_POST['id'];
 
     if (is_numeric($id)) {
         $stmt = $conn->prepare("DELETE FROM reviews WHERE id = ?");
