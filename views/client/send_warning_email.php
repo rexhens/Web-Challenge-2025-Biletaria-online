@@ -12,16 +12,18 @@ SELECT
     r.event_id,
     r.show_date,
     r.show_time,
+    r.expires_at,
     COALESCE(s.title, e.title) AS title
 FROM reservations r
 LEFT JOIN shows s ON r.show_id = s.id
 LEFT JOIN events e ON r.event_id = e.id
-WHERE CONCAT(r.show_date, ' ', r.show_time) < (NOW() - INTERVAL 3 HOUR)
+WHERE NOW() BETWEEN (r.expires_at - INTERVAL 2 DAY) AND (r.expires_at - INTERVAL 3 HOUR)
 AND r.id NOT IN (
     SELECT n.reservation_id
     FROM notifications n
-    WHERE type = 'review'
+    WHERE type = 'warning'
 )
+AND r.paid = 0
 GROUP BY 
     r.email,
     r.show_id,
@@ -34,23 +36,15 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 while($row = $result->fetch_assoc()) {
-    $subject = 'Jepni opinionin tuaj!';
+    $subject = mb_encode_mimeheader('KUJTESË!');
     $type = $row['show_id'] ? 'shfaqjen' : 'eventin';
-    $title = "Na tregoni mendimin tuaj për $type \"{$row['title']}\"";
-    $body = "Për të bërë një vlerësim dhe për të lënë komentin tuaj mund te plotesoni formularin që gjendet në linkun e mëposhtëm";
+    $title = "Kujtesë rreth pagesës së biletës së rezervuar për $type \"{$row['title']}\"";
+    $body = "Duke ju falenderuar qe zgjidhni Teatrin Metropol si oazin tuaj te argëtimit dhe artit, ju sjellim këtë email automatik, për t'ju njoftuar që keni kohë të bëni pagesën e rezervimit tuaj deri më " . date("d, m, Y H:i", strtotime($row['expires_at'])) . "<br>Kjo është një procedurë që ne e ndjekim për sigurinë e rezervimeve.<br>Faleminderit!";
     $email = $row['email'];
     $reservation_id = $row['id'];
-    $link = '';
-    if(!empty($row['show_id'])) {
-        $show_id = $row['show_id'];
-        $link = "http://localhost/biletaria_online/views/client/reviews/index.php?show_id=$show_id&res=$reservation_id";
-    } else if(!empty($row['event_id'])) {
-        $event_id = $row['event_id'];
-        $link = "http://localhost/biletaria_online/views/client/reviews/index.php?event_id=$event_id&res=$reservation_id";
-    }
 
-    if(sendEmail($email, $subject, $title, $body, $link)) {
-        $insertSql = "INSERT INTO notifications (reservation_id, type) VALUES (?, 'review')";
+    if(sendEmail($email, $subject, $title, $body, '')) {
+        $insertSql = "INSERT INTO notifications (reservation_id, type) VALUES (?, 'warning')";
         $insertStmt = $conn->prepare($insertSql);
         $insertStmt->bind_param("i", $reservation_id);
         $insertStmt->execute();
