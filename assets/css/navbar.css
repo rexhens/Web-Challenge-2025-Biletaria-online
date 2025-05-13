@@ -106,7 +106,8 @@ h1 {
     color: var(--heading2-color);
 }
 
-.navbar-icons {
+.navbar-icons,
+.theme-switch{
     display: flex;
     align-items: center;
     gap: 20px;
@@ -118,6 +119,10 @@ h1 {
     font-size: 30px;
     color: white;
     transition: color 0.3s;
+}
+
+.theme-switch label {
+    margin: 0;
 }
 
 .light.profile-icon i,
@@ -173,7 +178,7 @@ h1 {
         border-radius: 10px;
         border: 2px solid var(--text-color);
         gap: 25px;
-        z-index: 40;
+        z-index: 100;
     }
 
     .light.navbar-links {
