@@ -57,8 +57,8 @@
         <li class="theme-switch">
             <label for="checkbox" style="cursor: pointer;">
                 <input type="checkbox" id="checkbox" style="display: none;">
-                <i class="fas fa-moon moon-icon"></i>
-                <i class="fas fa-sun sun-icon"></i>
+                <i class="gg-moon moon-icon"></i>
+                <i class="gg-sun sun-icon"></i>
             </label>
         </li>
     </ul>
