@@ -134,7 +134,7 @@ $rq->execute();
 $resR = $rq->get_result();
 while ($r = $resR->fetch_assoc()) {
     $rawSeat = (int)$r['seat_id'];
-    if (strtolower($hall) === 'cehov') {
+    if (strtolower($hall) === 'çehov') {
         $rawSeat -= 212;
     }
     $reservedIds[] = $rawSeat;
