@@ -4588,15 +4588,6 @@ input[type="button"].btn-block {
   display: block;
 }
 
-.navbar {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1rem;
-}
-
 .navbar .container,
 .navbar .container-fluid,
 .navbar .container-sm,

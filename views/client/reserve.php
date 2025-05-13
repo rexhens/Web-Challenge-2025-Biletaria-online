@@ -201,40 +201,28 @@ $conn->close();
 /* helper */
 function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$perRow)); }
 ?>
+
+<?php
+$pageTitle = "Rezervim Bilete";
+$pageStyles = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+    "https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700",
+    "https://npmcdn.com/flickity@2/dist/flickity.css",
+    "/biletaria_online/assets/css/footer.css",
+    "/biletaria_online/assets/css/style-starter.css",
+    "/biletaria_online/assets/css/progress.css",
+    "/biletaria_online/assets/css/ticket-booking.css",
+    "/biletaria_online/assets/css/e-ticket.css",
+    "/biletaria_online/assets/css/payment.css",
+    "/biletaria_online/assets/css/navbar.css"
+];
+?>
+
 <!DOCTYPE html>
 <html lang="sq">
 <head>
-    <!--  ───────────────  META & SEO  ───────────────  -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:description" content="Teatri Metropol - Your theater experience in Albania / Eksperienca juaj teatrore në Shqipëri.">
-    <meta name="description" content="Teatri Metropol - Your theater experience in Albania / Eksperienca juaj teatrore në Shqipëri.">
-    <meta property="og:title" content="Teatri Metropol">
-    <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" href="/biletaria_online/assets/img/metropol_icon.png" type="image/x-icon">
 
-    <title>Teatri Metropol | Rezervim Bilete</title>
-
-    <!--  ───────────────  FONTS & ICONS  ───────────────  -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-    <!--  ───────────────  CORE STYLES  ───────────────  -->
-
-    <link rel="stylesheet" href="../../assets/css/footer.css">
-
-    <!--  ─────────────  PAGE‑SPECIFIC CSS  ─────────────  -->
-    <link rel="stylesheet" href="../../assets/css/style-starter.css">
-    <link rel="stylesheet" href="https://npmcdn.com/flickity@2/dist/flickity.css">
-    <link rel="stylesheet" href="../../assets/css/progress.css">
-    <link rel="stylesheet" href="../../assets/css/ticket-booking.css">
-    <link rel="stylesheet" href="../../assets/css/e-ticket.css">
-    <link rel="stylesheet" href="../../assets/css/payment.css">
-    <link rel="stylesheet" href="../../assets/css/navbar.css">
-<link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700" rel="stylesheet">
+    <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
     <style>
         html{scroll-behavior:smooth;}
 .carousel-cell{width:90px;margin-right:8px;border-radius:8px;background:#f3ebeb;padding:.5rem;cursor:pointer;text-align:center;user-select:none;}
@@ -246,7 +234,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
 .next-step{
-    color: var(--surface-color);
+    color: var(--text-color);
     padding: 10px;
     width: 140px;
     border: none;
@@ -263,7 +251,7 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
     transform: scale(0.95);
 }
 .previous-step{
-    color: var(--surface-color) !important;
+    color: var(--text-color) !important;
     padding: 10px;
     width: 140px !important;
     border: none;
@@ -286,15 +274,6 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
   .screen-time{padding:.25rem .5rem;font-size:.8rem;}
   #progressbar{flex-wrap:wrap;gap:.25rem;}
   #progressbar li{flex:1 1 45%;font-size:.8rem;}
-}
-/* vendose pas style‑starter.css ose tek style tag në fund të <head> */
-@media (max-width:1080px){
-  .navbar-links{
-      display:none;
-  }
-  .navbar-links.active{
-      display:flex !important;
-  }
 }
 
         .form-container {
@@ -423,54 +402,12 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
         }
 /* gentle pulse when focused */
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(131,110,79,.4);}70%{box-shadow:0 0 0 10px rgba(131,110,79,0);}100%{box-shadow:0 0 0 0 rgba(131,110,79,0);}}
-.floating-group input:focus{animation:pulse 1s;}
-
 
     </style>
 </head>
 <body>
 
-<!--  ───────────────────────────  NAVBAR  ───────────────────────────  -->
-<nav class="navbar">
-    <div class="navbar-logo" onclick="location.href='/biletaria_online/index.php'">
-        <img src="/biletaria_online/assets/img/metropol_icon.png" alt="Teatri Metropol Logo" class="logo-img">
-    </div>
-
-    <div class="navbar-title" onclick="location.href='/biletaria_online/index.php'">
-        <h1>Teatri <span class="metropol">Metropol</span></h1>
-    </div>
-
-    <ul class="navbar-links">
-        <li><a href="/biletaria_online/index.php"
-               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/index.php' ? 'active' : '' ?>">Kreu</a></li>
-        <li><a href="/biletaria_online/views/client/shows/index.php"
-               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/shows/index.php' ? 'active' : '' ?>">Shfaqje</a></li>
-        <li><a href="/biletaria_online/views/client/events/index.php"
-               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/events/index.php' ? 'active' : '' ?>">Evente</a></li>
-        <li><a href="/biletaria_online/views/client/about.php"
-               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/about.php' ? 'active' : '' ?>">Rreth&nbsp;nesh</a></li>
-        <li><a href="/biletaria_online/views/client/apply_form.php"
-               class="<?= $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/applications.php' ? 'active' : '' ?>">Aplikime</a></li>
-
-        <?php if (!isset($_SESSION['user_id'])): ?>
-            <li><a href="/biletaria_online/auth/login.php" class="profile-icon"><i class="fas fa-user-circle"></i></a></li>
-        <?php else: ?>
-            <li><a href="/biletaria_online/auth/logout.php" class="profile-icon"><i class="fa-solid fa-right-from-bracket"></i></a></li>
-        <?php endif; ?>
-
-        <!--  Dark / light  -->
-        <li>
-            <label class="theme-switch" for="checkbox">
-              <input type="checkbox" id="checkbox">
-              <div class="mode-container"><i style="color: white;" class="gg-moon"></i><i class="gg-sun"></i></div>
-            </label>
-        </li>
-    </ul>
-
-    <div id="mobile-menu" class="navbar-toggle"><i class="fas fa-bars"></i></div>
-</nav>
-</header>
-
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
 <div class="container" id="progress-container-id">
 <div class="row"><div class="col-12 col-lg-10 mx-auto">
@@ -641,6 +578,8 @@ function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$per
 </div></div></div>
 </div>
 
+<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
+
 <script>
 /* ─── logjika për zgjedhjen e datës/orës ─── */
 let prevId="1", selectedDate='';
@@ -734,7 +673,8 @@ function gatherJSON(){
     customer: {
       fullname: f.fullname.value,
       email:    f.email.value,
-      phone:    f.phone.value
+      phone:    f.phone.value,
+      /*notes:    f.notes.value*/
     }
 };
 
@@ -825,7 +765,7 @@ const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=
 document.addEventListener('DOMContentLoaded',()=>{
   new QRCode(document.getElementById('qr-main'),{
     text:payURL,width:120,height:120,
-    colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H
+      colorDark: "#000000", colorLight: "#ffffff",correctLevel:QRCode.CorrectLevel.H
   });
     /* Shkarkim / Sharing */
     const ticket=document.querySelector('.ticket');
@@ -840,27 +780,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     }
 });
 </script>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  /* ─── MOBILE MENU ─── */
-  const mobileMenu  = document.getElementById('mobile-menu');
-  const navLinks    = document.querySelector('.navbar-links');
-  const menuIcon    = mobileMenu?.querySelector('i');
-
-  if (mobileMenu && navLinks && menuIcon) {
-    mobileMenu.addEventListener('click', () => {
-      navLinks.classList.toggle('active');
-      menuIcon.classList.toggle('fa-bars');
-      menuIcon.classList.toggle('fa-times');
-    });
-  }
-
-
-});
-</script>
-
-<?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 </body>
 
