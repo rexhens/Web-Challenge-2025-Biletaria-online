@@ -47,6 +47,10 @@ unset($_SESSION['old']);
             margin-left: -20px;
         }
 
+        .light h1 {
+            color: var(--background-color);
+        }
+
         .form-container {
             max-width: 1000px;
             margin: 20px 10px 0 10px !important;
@@ -279,6 +283,8 @@ unset($_SESSION['old']);
     }, 4500);
 </script>
 <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
+<script src="/biletaria_online/assets/js/theme-change.js"></script>
+
 </body>
 
 </html>

@@ -48,10 +48,13 @@ h1 {
     z-index: 2000;
 }
 
+.light.navbar {
+    background-color: #f2f2f2;
+}
+
 .navbar-logo {
     display: flex;
     align-items: center;
-    color: white;
     cursor: pointer;
 }
 
@@ -66,6 +69,10 @@ h1 {
     display: flex;
     justify-content: flex-start;
     flex-grow: 1;
+}
+
+.light.navbar-title {
+    color: var(--background-color);
 }
 
 .metropol {
@@ -87,6 +94,10 @@ h1 {
     padding: 20px;
 }
 
+.light.navbar-links li a {
+    color: var(--background-color);
+}
+
 .navbar-links li a.active {
     color: var(--heading2-color);
 }
@@ -102,35 +113,39 @@ h1 {
 }
 
 .profile-icon i,
-.navbar-toggle i {
+.navbar-toggle i,
+.theme-switch i {
     font-size: 30px;
     color: white;
     transition: color 0.3s;
 }
 
+.light.profile-icon i,
+.light.navbar-toggle i,
+.theme-switch.light i {
+    color: var(--background-color);
+}
+
+.theme-switch i {
+    font-size: 20px;
+}
+
 .profile-icon i:hover,
-.navbar-toggle i:hover {
+.navbar-toggle i:hover,
+.theme-switch i:hover{
     color: var(--heading2-color);
 }
 
-/*
-.theme-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.theme-toggle i {
-    font-size: 20px;
-    color: white;
-}
-*/
 .navbar-toggle {
     display: none;
     font-size: 28px;
     color: white;
     cursor: pointer;
     margin-left: 5px;
+}
+
+.light.navbar-toggle {
+    color: var(--background-color);
 }
 
 @media (max-width: 1300px) {
@@ -159,6 +174,11 @@ h1 {
         border: 2px solid var(--text-color);
         gap: 25px;
         z-index: 40;
+    }
+
+    .light.navbar-links {
+        background-color: var(--text-color);
+        border: 2px solid var(--background-color);
     }
 
     .navbar-title {

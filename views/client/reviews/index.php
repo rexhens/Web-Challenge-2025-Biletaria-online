@@ -95,6 +95,10 @@ $pageStyles = [
             background: rgba(228, 228, 228, 0.04) !important;
         }
 
+        .review-form.light {
+            background: #f2f2f2 !important;
+        }
+
         .review-form h2 {
             text-align: center;
             margin-bottom: 20px;
@@ -146,7 +150,7 @@ $pageStyles = [
         .comment-section textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--accent-color);
             border-radius: 4px;
             box-sizing: border-box;
             min-height: 100px;
@@ -157,8 +161,6 @@ $pageStyles = [
             display: block;
             width: 100%;
             padding: 12px;
-
-
             cursor: pointer;
             font-size: 16px;
             margin-top: 15px;
@@ -243,6 +245,7 @@ $pageStyles = [
             Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
         }, 4500);
     </script>
+    <script src="/biletaria_online/assets/js/theme-change.js"></script>
 
 </body>
 </html>
