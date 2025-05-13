@@ -23,38 +23,11 @@ $pageStyles = [
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/header.php'; ?>
 
     <style>
-        :root {
-            --default-font: "Quicksand", sans-serif;
-            --heading-font: "Russo One", sans-serif;
-            --nav-font: "Afacad Flux", sans-serif;
-
-            --background-color: #1B1B1B;
-            --default-color: #785E5B;
-            --heading2-color: #836e4f;
-            --heading-color: #7C8598;
-            --accent2-color: rgb(130, 152, 145);
-            --accent-color: #8f793f;
-            --surface-color: #c8bbb3;
-            --text-color: #E4E4E4;
-            --error-color: #f44336;
-            --success-color: rgba(131, 173, 68);
-        }
 
         .section-spacing {
             padding-top: 60px;
             padding-bottom: 40px;
         }
-
-
-        body {
-            background-color: #111;
-            font-family: var(--default-font);
-            color: var(--text-color);
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
-
 
         .carousel-width {
             width: 100%;
@@ -117,17 +90,21 @@ $pageStyles = [
             z-index: 10001;
         }
 
-
+/*
         .hny-title {
             color: var(--text-color);
             font-family: var(--heading-font);
             margin-bottom: 20px;
         }
-
+*/
         .map-container iframe {
             filter: invert(90%) hue-rotate(180deg);
             width: 100%;
             border: 0;
+        }
+
+        .map-container.light iframe {
+            filter: none;
         }
 
         .map-container {
@@ -149,8 +126,8 @@ $pageStyles = [
                     Dialogut</h3>
 
                 <div class="column mt-2">
-                    <div class="single-event-content">
-                        <p style="color: white;"><strong style="color:#836e4f;">Teatri Metropol</strong> është një
+                    <div>
+                        <p><strong style="color:#836e4f;">Teatri Metropol</strong> është një
                             qendër dinamike kulturore
                             që synon të sjellë për
                             publikun shqiptar dhe ndërkombëtar vepra teatrore me nivel të lartë artistik. I udhëhequr
@@ -158,7 +135,7 @@ $pageStyles = [
                             është një hapësirë ku arti takon komunitetin dhe frymëzon reflektim, bashkëbisedim dhe
                             rritje.</p>
 
-                        <p style="color: white;"><strong style="color:#836e4f;">Misioni ynë</strong> është të realizojmë
+                        <p><strong style="color:#836e4f;">Misioni ynë</strong> është të realizojmë
                             shfaqje cilësore –
                             shqiptare dhe botërore –
                             që flasin me ndershmëri dhe forcë artistike për realitetin dhe shpirtin njerëzor. Vizioni
@@ -170,17 +147,17 @@ $pageStyles = [
                             artistike është e ndarë në tre
                             shtylla:</h6>
                         <ul>
-                            <li style="color: white;"><strong style="color:#836e4f;">Teatri i të Rriturve:</strong> 6
+                            <li><strong style="color:#836e4f;">Teatri i të Rriturve:</strong> 6
                                 premiera çdo vit, me
                                 produksione origjinale dhe
                                 bashkëpunime me artistë të jashtëm. Dy prej tyre janë të lëvizshme dhe çdo shfaqje jepet
                                 deri në 15 herë.</li>
-                            <li style="color: white;"><strong style="color:#836e4f;">Teatri i Fëmijëve:</strong> 4
+                            <li><strong style="color:#836e4f;">Teatri i Fëmijëve:</strong> 4
                                 premiera në vit, të
                                 krijuara me dashuri për
                                 publikun më të vogël, nga të cilat dy janë të lëvizshme dhe secila shfaqet deri në 20
                                 herë.</li>
-                            <li style="color: white;"><strong style="color:#836e4f;">Teatri i të Rinjve:</strong> 2
+                            <li><strong style="color:#836e4f;">Teatri i të Rinjve:</strong> 2
                                 premiera në vit të
                                 dedikuara moshës 14-18 vjeç,
                                 me një fokus të veçantë tek temat bashkëkohore dhe përfshirja aktive e të rinjve në
@@ -223,7 +200,7 @@ $pageStyles = [
     </div>
 
     <div class="map-section">
-        <div class="grids-main py-5" style="margin-bottom: -70px; margin-top: -100px;">
+        <div class="grids-main py-5" style="margin-bottom: -20px; margin-top: -100px;">
             <div class="container py-lg-3">
                 <div class="headerhny-title">
                     <div class="w3l-title-grids">
@@ -278,6 +255,7 @@ $pageStyles = [
 
         });
     </script>
+    <script src="/biletaria_online/assets/js/theme-change.js"></script>
 
 </body>
 

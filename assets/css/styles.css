@@ -29,7 +29,7 @@ body {
     color: var(--text-color);
 }
 
-.light {
+body.light {
     background-color: white !important;
     color: var(--background-color) !important;
 }
@@ -69,14 +69,14 @@ body {
 
 .form-container.light {
     box-shadow: 2px 2px 5px gray !important;
-    background: rgba(200, 187, 179, 0.13) !important;
+    background: rgba(200, 187, 179, 0.09) !important;
     -webkit-backdrop-filter: blur(5px) !important;
     backdrop-filter: blur(5px) !important;
 }
 
 .side-container.light {
     box-shadow: 2px 2px 5px gray !important;
-    background: rgba(200, 187, 179, 0.13) !important;
+    background: rgba(200, 187, 179, 0.09) !important;
     -webkit-backdrop-filter: blur(5px) !important;
     backdrop-filter: blur(5px) !important;
 }
@@ -286,6 +286,11 @@ textarea::-webkit-scrollbar-thumb:hover {
     transition: border-color 0.3s ease;
 }
 
+.search-container.light input[type="text"] {
+    background-color: #f2f2f2;
+    color: var(--background-color);
+}
+
 .search-container input[type="text"]:focus {
     outline: none;
     border-color: var(--accent-color);
@@ -293,6 +298,10 @@ textarea::-webkit-scrollbar-thumb:hover {
 
 .search-container input[type="text"]::placeholder {
     color: var(--surface-color);
+}
+
+.search-container.light input[type="text"]::placeholder {
+    color: gray;
 }
 
 .search-container .fa-search {
@@ -331,6 +340,11 @@ header {
     border: 2px solid rgb(143, 121, 63, 0.5) !important;
     background-color: var(--background-color) !important;
     color: var(--surface-color) !important;
+}
+
+.filter-container.light select {
+    background-color:  #f2f2f2 !important;
+    color: var(--background-color) !important;
 }
 
 .filter-container select:focus {

@@ -33,6 +33,10 @@ $pageStyles = [
         .map-container iframe {
             filter: invert(90%) hue-rotate(180deg);
         }
+
+        .map-container.light iframe {
+            filter: none;
+        }
     </style>
 </head>
 
@@ -211,7 +215,7 @@ $pageStyles = [
     <!--mid-slider -->
     <section class="w3l-mid-slider position-relative">
         <div class="companies20-content">
-            <div class="grids-main py-5" style="margin-bottom: -110px; margin-top: -60px;">
+            <div class="grids-main py-5" style="margin-bottom: -70px; margin-top: -60px;">
                 <div class="container py-lg-3">
                     <div class="headerhny-title">
                         <div class="w3l-title-grids">
@@ -333,7 +337,7 @@ $pageStyles = [
     </section>
     <!-- Map Section -->
     <div class="map-section">
-        <div class="grids-main py-5" style="margin-bottom: -70px; margin-top: -60px;">
+        <div class="grids-main py-5" style="margin-bottom: -30px; margin-top: -60px;">
             <div class="container py-lg-3">
                 <div class="headerhny-title">
                     <div class="w3l-title-grids">

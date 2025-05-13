@@ -66,7 +66,7 @@ $pageStyles = [
         }
 
         .footer-glass {
-            width: calc(100% - 35px);
+            width: calc(100% - 32px);
         }
 
         .footer-bottom {
@@ -97,6 +97,10 @@ $pageStyles = [
             height: 100%;
         }
 
+        .light.review {
+            background: #f2f2f2;
+        }
+
         .star-rating {
             color: var(--accent-color);
             font-size: 1.3em;
@@ -111,6 +115,10 @@ $pageStyles = [
         .review p {
             color: var(--surface-color);
             line-height: 1.6;
+        }
+
+        .light.review p {
+            color: var(--background-color);
         }
 
         .comment-preview,
@@ -212,11 +220,19 @@ $pageStyles = [
 <section id="reviews" class="owl-carousel owl-theme">
 
     <?php
-    $sql = "SELECT res.full_name, r.date, r.comment, r.rating
-                FROM reviews r
-                JOIN reservations res 
-                    ON r.email = res.email AND r.event_id = res.event_id
-                WHERE r.event_id = ?";
+    $sql = "SELECT 
+                r.date, 
+                r.comment, 
+                r.rating,
+                (
+                    SELECT res.full_name 
+                    FROM reservations res 
+                    WHERE res.email = r.email 
+                      AND res.event_id = r.event_id
+                    LIMIT 1
+                ) AS full_name
+            FROM reviews r
+            WHERE r.event_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $event['id']);
     if(!$stmt->execute()) {
@@ -408,6 +424,8 @@ $pageStyles = [
         Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
     }, 4500);
 </script>
+<script src="/biletaria_online/assets/js/theme-change.js"></script>
+
 </body>
 
 </html>

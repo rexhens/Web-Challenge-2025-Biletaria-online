@@ -102,6 +102,8 @@ $pageStyles = [
     fetchFilteredShows();
 </script>
 <script src="/biletaria_online/assets/js/functions.js"></script>
+<script src="/biletaria_online/assets/js/theme-change.js"></script>
+
 </body>
 
 </html>

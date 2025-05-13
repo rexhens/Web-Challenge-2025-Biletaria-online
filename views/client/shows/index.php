@@ -119,13 +119,7 @@ $pageStyles = [
         fetchFilteredShows();
     </script>
     <script src="/biletaria_online/assets/js/functions.js"></script>
-    <script>
-        if(localStorage.getItem('theme') === 'light') {
-            document.body.classList.add('light');
-        } else {
-            document.body.classList.remove('light');
-        }
-    </script>
+    <script src="/biletaria_online/assets/js/theme-change.js"></script>
 </body>
 
 </html>

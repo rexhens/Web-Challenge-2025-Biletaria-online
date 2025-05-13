@@ -53,6 +53,14 @@
             </div>
         </li>
         <?php } ?>
+
+        <li class="theme-switch">
+            <label for="checkbox" style="cursor: pointer;">
+                <input type="checkbox" id="checkbox" style="display: none;">
+                <i class="fas fa-moon moon-icon"></i>
+                <i class="fas fa-sun sun-icon"></i>
+            </label>
+        </li>
     </ul>
 
     <div class="navbar-toggle" id="mobile-menu">
@@ -62,7 +70,7 @@
 <script>
     const mobileMenu = document.getElementById('mobile-menu');
     const navbarLinks = document.querySelector('.navbar-links');
-    const menuIcon = mobileMenu.querySelector('i');
+    const menuIcon = mobileMenu.querySelector('.navbar-toggle i');
 
     mobileMenu.addEventListener('click', () => {
         navbarLinks.classList.toggle('active');
@@ -75,18 +83,4 @@
             menuIcon.classList.add('fa-bars');
         }
     });
-/*
-    // Toggle dark/light icon
-    const themeToggle = document.querySelector('.theme-toggle');
-    const themeIcon = themeToggle.querySelector('i');
-
-    themeToggle.addEventListener('click', () => {
-        if (themeIcon.classList.contains('fa-sun')) {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        } else {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-    });*/
 </script>

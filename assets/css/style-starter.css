@@ -8749,11 +8749,6 @@ button.bg-dark:focus {
   padding-right: 3rem !important;
 }
 
-.pb-5,
-.py-5 {
-  padding-bottom: 3rem !important;
-}
-
 .pl-5,
 .px-5 {
   padding-left: 3rem !important;
@@ -19422,13 +19417,6 @@ nav {
   font-size: 1rem;
 }
 
-.theme-switch {
-  display: inline-block;
-  position: relative;
-  width: 60px;
-  margin: 0;
-}
-
 .theme-switch input {
   display: none;
 }
@@ -19436,11 +19424,7 @@ nav {
 /*-- //toggle switch --*/
 
 /*-- dark and light mode styling --*/
-.mode-container {
-  width: 24px;
-  height: 24px;
-  margin-left: 12px;
-}
+
 
 .gg-sun {
   position: relative;

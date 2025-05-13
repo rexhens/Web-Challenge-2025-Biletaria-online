@@ -5,8 +5,14 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
 require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 // ky file do te ekzekutohet automatikisht per te derguar email per preview cdo dy dit maksimumi
 $sql = "
-SELECT r.*,
-       COALESCE(s.title, e.title) AS title
+SELECT 
+    MIN(r.id) AS id,
+    r.email,
+    r.show_id,
+    r.event_id,
+    r.show_date,
+    r.show_time,
+    COALESCE(s.title, e.title) AS title
 FROM reservations r
 LEFT JOIN shows s ON r.show_id = s.id
 LEFT JOIN events e ON r.event_id = e.id
@@ -14,7 +20,13 @@ WHERE CONCAT(r.show_date, ' ', r.show_time) < (NOW() - INTERVAL 3 HOUR)
 AND r.id NOT IN (
     SELECT n.reservation_id
     FROM notifications n
-);
+)
+GROUP BY 
+    r.email,
+    r.show_id,
+    r.event_id,
+    r.show_date,
+    r.show_time
 ";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
