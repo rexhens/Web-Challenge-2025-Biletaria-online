@@ -73,6 +73,9 @@ $resStmt = $conn->prepare("
         $pricePerSeat = (int) round($data['total_price'] / count($data['seats']));
     }
 
+            $parsedTime = strtotime($data['chosen_time']);
+            $formattedTime = $parsedTime ? date("H:i:s", $parsedTime) : '00:00:00'; // fallback në rast gabimi
+
             $resStmt->bind_param(
                 "issssissssi",
                 $data[$column],
@@ -84,11 +87,11 @@ $resStmt = $conn->prepare("
                 $ticketCode,
                 $expiresAt,
                 $data['chosen_date'],
-                date("H:i:s", strtotime($data['chosen_time'])),
+                $formattedTime, // tashmë variabël e sigurt
                 $pricePerSeat
             );
             $resStmt->execute();
-    $insertedIds[] = $conn->insert_id;   // ▼ ID‑ja e sapo‑krijuar
+            $insertedIds[] = $conn->insert_id;   // ▼ ID‑ja e sapo‑krijuar
         }
         $resStmt->close();
 
@@ -520,7 +523,7 @@ $pageStyles = [
 
 <!-- ───── STEP 4 – BILETA ───── -->
 <fieldset>
-  <h2 class="h4">Biletat e tua</h2><br>
+  <h2 class="h4">Bileta jote</h2><br>
 
   <!-- tabelë statike me header, do mbushet me JS -->
   <div class="ticket-body mb-4">
@@ -529,7 +532,7 @@ $pageStyles = [
 
       <div class="title">
         <p class="cinema">Teatri Metropol</p>
-        <p class="movie-title"><?=htmlspecialchars($title)?></p>
+        <p class="movie-title" style="color: #1b1b1b"><?=htmlspecialchars($title)?></p>
       </div>
 
       <div class="poster">
@@ -624,104 +627,103 @@ function enableNext(e){
 <script>
 // ─── Step 2 “Vazhdo” gating based on iframe seat selection ───
 
-// 1. grab the “Vazhdo” button on Step 2 (it's the second .next-step)
+// 1. Marrim butonin "Vazhdo" në hapin 2
 const step2NextBtn = document.querySelectorAll('.next-step')[1];
 
-// 2. disable it by default
+// 2. E çaktivizojmë në fillim
 step2NextBtn.disabled = true;
 
-// 3. listen for your iframe’s seatSelection message
+// 3. Dëgjojmë mesazhin nga iframe për përzgjedhjen e vendeve ose biletave
 window.addEventListener('message', e => {
-  if (e.origin !== window.origin || e.data?.type !== 'seatSelection') return;
+    if (e.origin !== window.origin || e.data?.type !== 'seatSelection') return;
 
-  // populate your hidden inputs as before
-  document.getElementById('chosen_seats').value = e.data.seats.join(',');
-  if (e.data.hall)  document.getElementById('chosen_hall').value = e.data.hall;
-  document.getElementById('total_price').value  = e.data.total;
+    // Ruajmë të dhënat në input-e të fshehura
+    document.getElementById('chosen_seats').value = e.data.seats?.join(',') || '';
+    if (e.data.hall) document.getElementById('chosen_hall').value = e.data.hall;
+    document.getElementById('total_price').value = e.data.total;
 
-  // enable the button only if at least one seat was selected
-  const hasSeats = Array.isArray(e.data.seats) && e.data.seats.length > 0;
-  step2NextBtn.disabled = !hasSeats;
+    //  ✅ Aktivizo butonin nëse totali është më i madh se 0
+    const total = parseInt(e.data.total);
+    step2NextBtn.disabled = isNaN(total) || total <= 0;
 });
 
-// 4. extra double-check on click: block progression if no seats
+// 4. Siguri shtesë: mos lejo kalimin nëse totali është bosh ose zero
 step2NextBtn.addEventListener('click', ev => {
-  if (!document.getElementById('chosen_seats').value) {
-    alert('Ju lutem, zgjidhni të paktën një vend për të vazhduar.');
-    ev.preventDefault();
-  }
+    const total = parseInt(document.getElementById('total_price').value);
+    if (isNaN(total) || total <= 0) {
+        alert('Ju lutem, zgjidhni të paktën një biletë për të vazhduar.');
+        ev.preventDefault();
+    }
 });
 </script>
 
-
 <script>
-function gatherJSON(){
-  const f=document.forms[0];
+    function gatherJSON(){
+        const f=document.forms[0];
 
-  const key   = <?= $isEvent ? "'event_id'" : "'show_id'" ?>;
-  const value = <?= $isEvent ? $event_id : $show_id ?>;
+        const key   = <?= $isEvent ? "'event_id'" : "'show_id'" ?>;
+        const value = <?= $isEvent ? $event_id : $show_id ?>;
 
-  const data = {
-    [key]:        value,                       // ← computed prop
-    title:        <?= json_encode($title) ?>,
-    chosen_date:  f.chosen_date.value  || '',
-    chosen_time:  f.chosen_time.value  || '',
-    hall:         f.chosen_hall.value  || '',
-    seats:        (f.chosen_seats.value || '')
-                    .split(',').filter(Boolean).map(Number),
-    total_price:  +f.total_price.value || 0,
-    customer: {
-      fullname: f.fullname.value,
-      email:    f.email.value,
-      phone:    f.phone.value,
-      /*notes:    f.notes.value*/
+        const data = {
+            [key]:        value,                       // ← computed prop
+            title:        <?= json_encode($title) ?>,
+            chosen_date:  f.chosen_date.value  || '',
+            chosen_time:  f.chosen_time.value  || '',
+            hall:         f.chosen_hall.value  || '',
+            seats:        (f.chosen_seats.value || '')
+                .split(',').filter(Boolean).map(Number),
+            total_price:  +f.total_price.value || 0,
+            customer: {
+                fullname: f.fullname.value,
+                email:    f.email.value,
+                phone:    f.phone.value,
+                /*notes:    f.notes.value*/
+            }
+        };
+
+        document.getElementById('ticket-json').value=JSON.stringify(data);
+        console.log(JSON.stringify(data,null,2));
+
+        // ─── INSERT VIA AJAX ────────────────────────────
+        fetch(window.location.pathname + '?<?= $isEvent ? 'event_id' : 'show_id' ?>=<?= $isEvent ? $event_id : $show_id ?>', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ ticket_json: JSON.stringify(data) })
+        })
+            .then(r => r.json())
+            .then(res => {
+                if (res.status !== 'ok') console.error('Insert failed', res);
+            })
+            .catch(err => console.error('AJAX error', err));
+        // ────────────────────────────────────────────────
+
+
+        /* ► MBUSH TABELËN E VENDEVE º */
+        const tbody=document.querySelector('#seat-table');
+        [...tbody.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
+        data.seats.forEach(nr=>{
+            const tr=document.createElement('tr');
+            tr.innerHTML = `<td>${data.hall}</td><td>X</td><td>${nr}</td>`;
+            tbody.appendChild(tr);
+        });
+        /* rifresko datën & orën në tabelën tjetër */
+        document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
+        document.getElementById('td-time').textContent=data.chosen_time;
+
+        const qty = data.seats.length;
+        const unitPrice = <?=$ticketPrice?>;
+        const total = data.total_price || (qty * unitPrice);
+        document.getElementById('td-price').textContent = `${qty} × ALL.${unitPrice.toFixed(0)} = ALL.${total.toFixed(0)}`;
+
+        const exp = new Date(data.chosen_date);
+        exp.setDate(exp.getDate() - 2);
+        const day   = String(exp.getDate()).padStart(2,'0');
+        const month = String(exp.getMonth()+1).padStart(2,'0');
+        const year  = exp.getFullYear();
+        document.getElementById('expiration-date').textContent = `Data e skadimit: ${day}/${month}/${year}`;
     }
-};
 
-  document.getElementById('ticket-json').value=JSON.stringify(data);
-  console.log(JSON.stringify(data,null,2));
-
-  // ─── INSERT VIA AJAX ────────────────────────────
-  fetch(window.location.pathname + '?<?= $isEvent ? 'event_id' : 'show_id' ?>=<?= $isEvent ? $event_id : $show_id ?>', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ ticket_json: JSON.stringify(data) })
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.status !== 'ok') console.error('Insert failed', res);
-  })
-  .catch(err => console.error('AJAX error', err));
-  // ────────────────────────────────────────────────
-
-
-  /* ► MBUSH TABELËN E VENDEVE º */
-  const tbody=document.querySelector('#seat-table');
-  [...tbody.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
-  data.seats.forEach(nr=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${data.hall}</td><td>X</td><td>${nr}</td>`;
-    tbody.appendChild(tr);
-  });
-  /* rifresko datën & orën në tabelën tjetër */
-  document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
-  document.getElementById('td-time').textContent=data.chosen_time;
-
-const total = data.total_price || (data.seats.length * <?=$ticketPrice?>);
-qty = data.seats.length;
-unitPrice = <?=$ticketPrice?>;
-document.getElementById('td-price').textContent =
-  `${qty} × ALL.${unitPrice.toFixed(0)} = ALL.${total.toFixed(0)}`;
-
-  const exp = new Date(data.chosen_date);
-exp.setDate(exp.getDate() - 2);
-const day   = String(exp.getDate()).padStart(2,'0');
-const month = String(exp.getMonth()+1).padStart(2,'0');
-const year  = exp.getFullYear();
-document.getElementById('expiration-date').textContent = `Data e skadimit: ${day}/${month}/${year}`;
-}
-
-document.querySelectorAll('.next-step')[2].addEventListener('click',gatherJSON);
+    document.querySelectorAll('.next-step')[2].addEventListener('click',gatherJSON);
 </script>
 <script>
 // find the “Rishiko Biletën” button on step 3:
@@ -758,8 +760,7 @@ validateStep3();
 
 <script defer>
 
-const base = window.location.origin;   
-console.log(data.seats.length) ;      
+const base = window.location.origin;
 const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=`;
 
 document.addEventListener('DOMContentLoaded',()=>{
