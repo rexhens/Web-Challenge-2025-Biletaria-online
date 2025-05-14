@@ -95,9 +95,17 @@ $sq->close();
 
 // 2) fetch reserved seats for this show+hall
 
+/* ────────── SVG i sallës ────────── */
+$svg_path = __DIR__ . '/' . basename($hall) . '.svg';
+if (file_exists($svg_path)) {
+    $svg_markup = file_get_contents($svg_path);
+}
+
 $reservedIds = [];
-if ($isEvent) {
-  $rq = $conn->prepare("
+
+if(isset($svg_markup)) {
+    if ($isEvent) {
+        $rq = $conn->prepare("
     SELECT seat_id
       FROM reservations
      WHERE event_id  = ?
@@ -105,15 +113,15 @@ if ($isEvent) {
        AND show_date = ?
        AND show_time = ?
   ");
-  $rq->bind_param(
-    "isss",
-    $event_id,
-    $hall,
-    $date,
-    $time_sql,
-);
-} else {
-  $rq = $conn->prepare("
+        $rq->bind_param(
+            "isss",
+            $event_id,
+            $hall,
+            $date,
+            $time_sql,
+        );
+    } else {
+        $rq = $conn->prepare("
     SELECT seat_id
       FROM reservations
      WHERE show_id    = ?
@@ -121,44 +129,40 @@ if ($isEvent) {
        AND show_date  = ?
        AND show_time  = ?
   ");
-  $rq->bind_param(
-    "isss",
-    $show_id,
-    $hall,
-    $date,
-    $time_sql
-);
-}
-
-$rq->execute();
-$resR = $rq->get_result();
-while ($r = $resR->fetch_assoc()) {
-    $rawSeat = (int)$r['seat_id'];
-    if (strtolower($hall) === 'çehov') {
-        $rawSeat -= 212;
+        $rq->bind_param(
+            "isss",
+            $show_id,
+            $hall,
+            $date,
+            $time_sql
+        );
     }
-    $reservedIds[] = $rawSeat;
-}
-$rq->close();
+
+    $rq->execute();
+    $resR = $rq->get_result();
+    while ($r = $resR->fetch_assoc()) {
+        $rawSeat = (int)$r['seat_id'];
+        if (strtolower($hall) === 'çehov') {
+            $rawSeat -= 212;
+        }
+        $reservedIds[] = $rawSeat;
+    }
+    $rq->close();
 
 // 3) mark them unavailable
-foreach ($allSeats as &$s) {
-    if (in_array($s['number'], $reservedIds, true)) {
-        $s['status'] = 'unavailable';
+    foreach ($allSeats as &$s) {
+        if (in_array($s['number'], $reservedIds, true)) {
+            $s['status'] = 'unavailable';
+        }
     }
+    unset($s);
 }
-unset($s);
 
 // 4) prepare reserved list for JS
 $reserved = $reservedIds;
 
 $conn->close();
 
-/* ────────── SVG i sallës ────────── */
-$svg_path = __DIR__ . '/' . basename($hall) . '.svg';
-if (file_exists($svg_path)) {
-    $svg_markup = file_get_contents($svg_path);
-}
 ?>
 <!DOCTYPE html>
 <html lang="sq">
@@ -174,7 +178,7 @@ if (file_exists($svg_path)) {
   --color-reserved:#e53935;
   --bg-body:#f7f7f7;
   --text-main:#000;
-  --panel-bg:#fff;
+  --panel-bg:rgba(200, 187, 179, 0.13);
   --panel-border:#ddd;
   --panel-heading:#000;
 }
@@ -208,6 +212,76 @@ h2{margin:0 0 1rem;}
 .legend .box{width:20px;height:20px;border-radius:4px;display:inline-block;margin-right:4px;vertical-align:middle;}
 button#checkout{margin-top:1rem;padding:.6rem 1.2rem;background:#4caf50;border:none;border-radius:4px;color:#fff;font-weight:600;cursor:pointer;}
 button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
+input[type='number'] {
+    background: none;
+    border: none;
+}
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+input[type="number"] {
+    -moz-appearance: textfield !important;
+}
+.ticket-counter {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 16px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.counter-wrapper {
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+
+#counter-input {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s ease;
+    color: var(--text-main);
+}
+
+#counter-input:focus {
+    border-color: #8f793f;
+}
+
+.custom-spinner {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
+.custom-spinner .plus,
+.custom-spinner .minus {
+    width: 20px;
+    height: 20px;
+    background-color: #836e4f;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.custom-spinner .plus:hover,
+.custom-spinner .minus:hover {
+    background-color: #8f793f;
+}
 </style>
 </head>
 <body>
@@ -234,8 +308,15 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
       <h3>Përmbledhje</h3>
       <ul>
           <?php if (!isset($svg_markup)) { ?>
-              <li>Numri i biletave:
-                  <input type="number" id="counter-input" min="1" max="30" value="0" style="width: 60px;">
+              <li class="ticket-counter">
+                  Numri i biletave:
+                  <div class="counter-wrapper">
+                      <input type="number" id="counter-input" min="1" max="30" value="1">
+                      <div class="custom-spinner">
+                          <div class="plus" onclick="document.querySelector('#counter-input').stepUp(); document.querySelector('#counter-input').dispatchEvent(new Event('input'));">+</div>
+                          <div class="minus" onclick="document.querySelector('#counter-input').stepDown(); document.querySelector('#counter-input').dispatchEvent(new Event('input'));">−</div>
+                      </div>
+                  </div>
               </li>
           <?php } else { ?>
               <li>Numri i biletave: <span id="counter">0</span></li>
@@ -345,7 +426,7 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
                     parent.postMessage({
                         type : 'seatSelection',
                         hall : '<?=addslashes($hall)?>',
-                        seats: [],
+                        seats: Array(val).fill(-1),
                         total: val * price
                     }, window.origin);
                 }
