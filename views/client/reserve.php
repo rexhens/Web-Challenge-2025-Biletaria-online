@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
         $ui->close();
     }
     $column = $isEvent ? 'event_id' : 'show_id';
-$colShow = $isEvent ? 'NULL' : '?';
-$colEvent = $isEvent ? '?' : 'NULL';
+    $colShow = $isEvent ? 'NULL' : '?';
+    $colEvent = $isEvent ? '?' : 'NULL';
   if (isset(
       $data[$column],
       $data['seats'],
@@ -51,27 +51,29 @@ $colEvent = $isEvent ? '?' : 'NULL';
 /* ─── ruaj çdo vend ─── */
         $insertedIds = [];
 
-$resStmt = $conn->prepare("
-            INSERT INTO reservations
-                (show_id, event_id, full_name, email, phone, hall,
-                 seat_id, ticket_code, expires_at, paid,
-                 show_date, show_time, total_price)
-             VALUES
-        ($colShow, $colEvent, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
-");
+        $resStmt = $conn->prepare("
+                    INSERT INTO reservations
+                        (show_id, event_id, full_name, email, phone, hall,
+                         seat_id, ticket_code, expires_at, paid,
+                         show_date, show_time, total_price)
+                     VALUES
+                ($colShow, $colEvent, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
+        ");
 
         foreach ($data['seats'] as $seat) {
             if (strtolower($data['hall']) === 'çehov') {
                 $seat += 212;
             }
 
+            $seat = $seat == -1 ? null : $seat;
+
             $ticketCode = bin2hex(random_bytes(8));
             $expiresAt  = (new DateTime())->modify('+1 day')->format('Y-m-d H:i:s');
 
-    $pricePerSeat = 0;
-    if (!empty($data['seats']) && isset($data['total_price'])) {
-        $pricePerSeat = (int) round($data['total_price'] / count($data['seats']));
-    }
+            $pricePerSeat = 0;
+            if (!empty($data['seats']) && isset($data['total_price'])) {
+                $pricePerSeat = (int) round($data['total_price'] / count($data['seats']));
+            }
 
             $parsedTime = strtotime($data['chosen_time']);
             $formattedTime = $parsedTime ? date("H:i:s", $parsedTime) : '00:00:00'; // fallback në rast gabimi
