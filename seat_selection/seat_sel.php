@@ -155,7 +155,10 @@ $reserved = $reservedIds;
 $conn->close();
 
 /* ────────── SVG i sallës ────────── */
-$svg_markup = file_get_contents(__DIR__ . '/' . basename($hall) . '.svg');
+$svg_path = __DIR__ . '/' . basename($hall) . '.svg';
+if (file_exists($svg_path)) {
+    $svg_markup = file_get_contents($svg_path);
+}
 ?>
 <!DOCTYPE html>
 <html lang="sq">
@@ -211,7 +214,7 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
 
 <h2>Rezervim për "<?=htmlspecialchars($title)?>"</h2>
 
-<?= $svg_markup ?>
+<?php echo $svg_markup ?? '' ?>
 
 <div class="panel" id="booking-panel">
   <div id="summary">
@@ -223,14 +226,20 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
         <li><strong>Çmimi i biletës:</strong> <?=$price?> lekë</li>
       </ul>
     </div>
-    <div class="sum-block">
-      <h3>Vendet e zgjedhura</h3>
-      <ul id="selected-list"></ul>
-    </div>
+      <div class="sum-block" style="display: <?php echo isset($svg_markup) ? 'block' : 'none' ?>">
+          <h3>Vendet e zgjedhura</h3>
+          <ul id="selected-list"></ul>
+      </div>
     <div class="sum-block">
       <h3>Përmbledhje</h3>
       <ul>
-        <li>Numri i biletave: <span id="counter">0</span></li>
+          <?php if (!isset($svg_markup)) { ?>
+              <li>Numri i biletave:
+                  <input type="number" id="counter-input" min="1" max="30" value="0" style="width: 60px;">
+              </li>
+          <?php } else { ?>
+              <li>Numri i biletave: <span id="counter">0</span></li>
+          <?php } ?>
         <li>Totali: <strong><span id="total">0</span> lekë</strong></li>
       </ul>
     </div>
@@ -254,66 +263,97 @@ button#checkout:disabled{background:#9e9e9e;cursor:not-allowed;}
 </form>
 
 <script>
-(function(){
-  const price     = <?=$price?>;
-  const RESERVED  = <?=json_encode($reserved)?>.map(Number);
+    (function(){
+        const price     = <?=$price?>;
+        const RESERVED  = <?=json_encode($reserved)?>.map(Number);
+        const hasSeats  = document.querySelectorAll('.seat').length > 0;
 
-  const seats     = document.querySelectorAll('.seat');
-  const listSel   = document.getElementById('selected-list');
-  const counterEl = document.getElementById('counter');
-  const totalEl   = document.getElementById('total');
-  const inpSeats  = document.getElementById('selected-seats-input');
-  const inpTotal  = document.getElementById('total-price-input');
-  const checkoutBt= document.getElementById('checkout'); // mund të jetë null
+        const seats     = document.querySelectorAll('.seat');
+        const listSel   = document.getElementById('selected-list');
+        const counterEl = document.getElementById('counter');
+        const totalEl   = document.getElementById('total');
+        const inpSeats  = document.getElementById('selected-seats-input');
+        const inpTotal  = document.getElementById('total-price-input');
+        const checkoutBt= document.getElementById('checkout');
+        const manualInput = document.getElementById('counter-input');
 
-  /* ngjyros vendet e zëna dhe lidh click‑un */
-  seats.forEach(seat=>{
-    const nr = +seat.dataset.seat;
-    if(RESERVED.includes(nr)) seat.classList.add('reserved');
+        function render(){
+            const selected = Array.from(document.querySelectorAll('.seat.selected'))
+                .map(s=>+s.dataset.seat).sort((a,b)=>a-b);
 
-    seat.addEventListener('click',()=>{
-      if(seat.classList.contains('reserved')) return;
-      seat.classList.toggle('selected');
-      render();
-    });
-  });
+            if (listSel) {
+                listSel.innerHTML = '';
+                selected.forEach(nr=>{
+                    const li = document.createElement('li');
+                    li.textContent = 'Karrikja ' + nr;
+                    listSel.appendChild(li);
+                });
+            }
 
-  if(checkoutBt){
-    checkoutBt.addEventListener('click',()=>document.getElementById('booking-form').submit());
-  }
+            if (manualInput && document.activeElement !== manualInput) {
+                manualInput.value = selected.length;
+            }
 
-  function render(){
-    const selected = Array.from(document.querySelectorAll('.seat.selected'))
-                           .map(s=>+s.dataset.seat).sort((a,b)=>a-b);
+            if (counterEl) counterEl.textContent = selected.length;
 
-    /* lista vizuale */
-    listSel.innerHTML='';
-    selected.forEach(nr=>{
-      const li=document.createElement('li');
-      li.textContent='Karrikja '+nr;
-      listSel.appendChild(li);
-    });
+            const total = selected.length * price;
+            if (totalEl)  totalEl.textContent = total;
+            if (inpSeats) inpSeats.value = selected.join(',');
+            if (inpTotal) inpTotal.value = total;
+            if (checkoutBt) checkoutBt.disabled = selected.length === 0;
 
-    /* përmbledhja */
-    counterEl.textContent = selected.length;
-    const total = selected.length*price;
-    totalEl.textContent   = total;
-    inpSeats.value        = selected.join(',');
-    inpTotal.value        = total;
-    if(checkoutBt) checkoutBt.disabled = selected.length===0;
+            parent.postMessage({
+                type : 'seatSelection',
+                hall : '<?=addslashes($hall)?>',
+                seats: selected,
+                total: total
+            }, window.origin);
+        }
 
-    /* ─── Dërgo tek prindi (reservation.php) ─── */
-    parent.postMessage({
-      type : 'seatSelection',
-      hall : '<?=addslashes($hall)?>',
-      seats: selected,           // array numrash
-      total: total
-    }, window.origin);
-  }
+        // Klikimi mbi vendet, vetëm nëse ka salle (SVG)
+        if (hasSeats) {
+            seats.forEach(seat=>{
+                const nr = +seat.dataset.seat;
+                if(RESERVED.includes(nr)) seat.classList.add('reserved');
 
-  /* inicializo për rast se s'ka zgjedhje */
-  render();
-})();
+                seat.addEventListener('click',()=>{
+                    if(seat.classList.contains('reserved')) return;
+                    seat.classList.toggle('selected');
+                    render();
+                });
+            });
+        }
+
+        // Nëse ka buton për submit
+        if (checkoutBt){
+            checkoutBt.addEventListener('click',()=>{
+                document.getElementById('booking-form').submit();
+            });
+        }
+
+        // Nëse s’ka salle (pra vetëm numërimi manual)
+        if (!hasSeats && manualInput) {
+            manualInput.addEventListener('input', function () {
+                const val = parseInt(this.value);
+                if (!isNaN(val) && val >= 0) {
+                    if (counterEl) counterEl.textContent = val;
+                    if (totalEl)  totalEl.textContent = val * price;
+                    if (inpSeats) inpSeats.value = ''; // nuk ka karrige
+                    if (inpTotal) inpTotal.value = val * price;
+                    if (checkoutBt) checkoutBt.disabled = val === 0;
+
+                    parent.postMessage({
+                        type : 'seatSelection',
+                        hall : '<?=addslashes($hall)?>',
+                        seats: [],
+                        total: val * price
+                    }, window.origin);
+                }
+            });
+        }
+
+        render();
+    })();
 </script>
 
 <script>
