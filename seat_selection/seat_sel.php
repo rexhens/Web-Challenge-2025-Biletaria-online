@@ -209,6 +209,7 @@ h2 {
 .seat path,
 .seat polygon {
     cursor: pointer;
+    pointer-events: bounding-box;
     transition: fill 0.15s;
     stroke: var(--color-available);
     fill: var(--color-available);
