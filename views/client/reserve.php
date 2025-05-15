@@ -234,7 +234,7 @@ $pageStyles = [
 .carousel-cell .date-numeric{font-size:1.5rem;font-weight:700;line-height:1;}
 .carousel-cell .date-month{font-size:.9rem;text-transform:uppercase;}
 .carousel-cell .date-day{font-size:.8rem;}
-        .seat-iframe{width:100%;max-width:770px;height:1100px;display:block;margin:auto;}
+        .seat-iframe{width:100%;max-width:770px;height:200px;display:block;margin:auto;sc}
         .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
@@ -586,6 +586,14 @@ $pageStyles = [
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <script>
+    window.addEventListener('message', function (e) {
+        if (e.data?.type === 'resizeIframe') {
+            const iframe = document.querySelector('.seat-iframe');
+            if (iframe) iframe.style.height = e.data.height + 'px';
+        }
+    });
+</script>
+<script>
 /* ─── logjika për zgjedhjen e datës/orës ─── */
 let prevId="1", selectedDate='';
 function selectDate(id){
@@ -644,12 +652,12 @@ window.addEventListener('message', e => {
     if (e.data.hall) document.getElementById('chosen_hall').value = e.data.hall;
     document.getElementById('total_price').value = e.data.total;
 
-    //  ✅ Aktivizo butonin nëse totali është më i madh se 0
+    // Aktivizo butonin nëse totali është më i madh se 0
     const total = parseInt(e.data.total);
     step2NextBtn.disabled = isNaN(total) || total <= 0;
 });
 
-// 4. Siguri shtesë: mos lejo kalimin nëse totali është bosh ose zero
+//  Siguri shtesë: mos lejo kalimin nëse totali është bosh ose zero
 step2NextBtn.addEventListener('click', ev => {
     const total = parseInt(document.getElementById('total_price').value);
     if (isNaN(total) || total <= 0) {
@@ -672,8 +680,7 @@ step2NextBtn.addEventListener('click', ev => {
             chosen_date:  f.chosen_date.value  || '',
             chosen_time:  f.chosen_time.value  || '',
             hall:         f.chosen_hall.value  || '',
-            seats:        (f.chosen_seats.value || '')
-                .split(',').filter(Boolean).map(Number),
+            seats:        (f.chosen_seats.value || '').split(',').filter(Boolean).map(Number),
             total_price:  +f.total_price.value || 0,
             customer: {
                 fullname: f.fullname.value,
