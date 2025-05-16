@@ -466,7 +466,7 @@ $pageStyles = [
               <button class="screen-time"
                       data-time="<?=$t?>"
                       data-hall="<?=htmlspecialchars($h)?>"
-                      onclick="enableNext(event)"><?=$t?></button>
+                      disabled><?=$t?></button>
             <?php endforeach;?>
           </div>
         </li>
@@ -547,7 +547,7 @@ $pageStyles = [
       <div class="info">
         <div class="table-responsive">
           <table id="seat-table" class="info-table ticket-table table">
-            <tr><th>SALLA</th><th>RRESHTI</th><th>VENDI</th></tr>
+            <tr><th style="text-align: center">SALLA</th><th style="text-align: center">VENDI/ET</th></tr>
             <!-- <tr> …mbushet nga JS… </tr> -->
           </table>
         </div>
@@ -594,32 +594,39 @@ $pageStyles = [
     });
 </script>
 <script>
-/* ─── logjika për zgjedhjen e datës/orës ─── */
-let prevId="1", selectedDate='';
-function selectDate(id){
-  document.getElementById(prevId).style.background="#f3ebeb";
-  document.getElementById(id).style.background="#836e4f";
-  prevId=id;
-  selectedDate=document.getElementById(id).dataset.date;
-}
-function enableNext(e){ 
-  e.preventDefault();
-  document.getElementById('chosen_date').value=selectedDate;
-  document.getElementById('chosen_time').value=e.target.dataset.time;
-  document.getElementById('chosen_hall').value=e.target.dataset.hall;
-  document.getElementById('screen-next-btn').disabled=false;
-  // point the iframe at the date/time
-  const iframe = document.getElementById('seat-sel-iframe');
-  iframe.src = `../../seat_selection/seat_sel.php?<?= $isEvent
-         ? 'event_id=' . $event_id
-         : 'show_id='  . $show_id ?>`
-             + `&date=${encodeURIComponent(selectedDate)}`
-             + `&hall=${encodeURIComponent(e.target.dataset.hall)}`
-             + `&time=${encodeURIComponent(e.target.dataset.time)}`;
+    let prevId = "1", selectedDate = '';
 
-  // now enable the Next button
-  document.getElementById('screen-next-btn').disabled = false;
-}
+    function selectDate(id) {
+        // Ndryshon ngjyrën vizuale të zgjedhjes
+        document.getElementById(prevId).style.background = "#f3ebeb";
+        document.getElementById(id).style.background = "#836e4f";
+        prevId = id;
+
+        // Merr datën e zgjedhur nga atributi data-date
+        selectedDate = document.getElementById(id).dataset.date;
+
+        // Merr orën dhe sallën e vetme të paracaktuara (merret e para në listë)
+        const timeBtn = document.querySelector('.screen-time');
+        const chosenTime = timeBtn.dataset.time;
+        const chosenHall = timeBtn.dataset.hall;
+
+        // Vendos vlerat në inputet hidden
+        document.getElementById('chosen_date').value = selectedDate;
+        document.getElementById('chosen_time').value = chosenTime;
+        document.getElementById('chosen_hall').value = chosenHall;
+
+        // Aktivizo butonin "Vazhdo"
+        document.getElementById('screen-next-btn').disabled = false;
+
+        // Ndrysho iframe për selektimin e vendeve
+        const iframe = document.getElementById('seat-sel-iframe');
+        iframe.src = `../../seat_selection/seat_sel.php?<?= $isEvent
+                ? 'event_id=' . $event_id
+                : 'show_id=' . $show_id ?>`
+            + `&date=${encodeURIComponent(selectedDate)}`
+            + `&hall=${encodeURIComponent(chosenHall)}`
+            + `&time=${encodeURIComponent(chosenTime)}`;
+    }
 </script>
 
 <script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
@@ -710,11 +717,17 @@ step2NextBtn.addEventListener('click', ev => {
         /* ► MBUSH TABELËN E VENDEVE º */
         const tbody=document.querySelector('#seat-table');
         [...tbody.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
-        data.seats.forEach(nr=>{
+        if(data.seats.includes(-1)) {
             const tr=document.createElement('tr');
-            tr.innerHTML = `<td>${data.hall}</td><td>X</td><td>${nr}</td>`;
+            tr.innerHTML = `<td>${data.hall}</td><td>${data.seats.length}</td>`;
             tbody.appendChild(tr);
-        });
+        } else {
+            data.seats.forEach(nr=>{
+                const tr=document.createElement('tr');
+                tr.innerHTML = `<td>${data.hall}</td><td>${nr}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
         /* rifresko datën & orën në tabelën tjetër */
         document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
         document.getElementById('td-time').textContent=data.chosen_time;
