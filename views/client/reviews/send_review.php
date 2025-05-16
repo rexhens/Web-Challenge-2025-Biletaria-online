@@ -43,10 +43,18 @@ while($row = $result->fetch_assoc()) {
     $link = '';
     if(!empty($row['show_id'])) {
         $show_id = $row['show_id'];
-        $link = "http://localhost/biletaria_online/views/client/reviews/index.php?show_id=$show_id&res=$reservation_id";
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = "/biletaria_online/views/client/reviews/index.php";
+
+        $link = $protocol . $host . $path . "?show_id=" . urlencode($show_id) . "&res=" . urlencode($reservation_id);
     } else if(!empty($row['event_id'])) {
         $event_id = $row['event_id'];
-        $link = "http://localhost/biletaria_online/views/client/reviews/index.php?event_id=$event_id&res=$reservation_id";
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = "/biletaria_online/views/client/reviews/index.php";
+
+        $link = $protocol . $host . $path . "?event_id=" . urlencode($event_id) . "&res=" . urlencode($reservation_id);
     }
 
     if(sendEmail($email, $subject, $title, $body, $link)) {

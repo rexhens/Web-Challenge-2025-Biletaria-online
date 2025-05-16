@@ -103,7 +103,11 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
             $subject = "Verifikoni Email";
             $title = "Ndryshimi i fjalëkalimit u krye me sukses!";
             $body = "Verifikoni email-in tuaj duke klikuar link-un më poshtë për të përfunduar me ndryshimin e fjalëkalimit.";
-            $link = "http://localhost/biletaria_online/auth/verify-email.php?token=$verification_token";
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+            $host = $_SERVER['HTTP_HOST'];
+            $path = "/biletaria_online/auth/verify-email.php";
+
+            $link = $protocol . $host . $path . "?token=" . urlencode($verification_token);
 
 
             if(!sendEmail($email, $subject, $title, $body, $link)) {
