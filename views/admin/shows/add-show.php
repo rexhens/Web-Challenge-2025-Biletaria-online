@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 if (empty($errors)) {
                     $conn->commit();
-                    header("Location: assign_actors.php?show_id=" . $show_id);
+                    header("Location: add-show.php?update=success");
                     exit();
                 } else {
                     $conn->rollback();
@@ -214,13 +214,20 @@ $pageStyles = [
                 }
                 ?>
             </div>
+        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+            <div class='errors show' style='background-color: rgba(131, 173, 68) !important'>
+                <p style='color: #E4E4E4;'>Shfaqja u shtua me sukses!</p>
+            </div>
+        <?php endif; ?>
+
 
     <script>
         const elementsToHide = document.getElementsByClassName("show");
         setTimeout(() => {
             Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
-        }, 4500);
+        }, 5000);
     </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const genreSelect = document.getElementById("select-genre");
@@ -260,6 +267,13 @@ $pageStyles = [
                 time_24hr: true
             });
         });
+    </script>
+    <script>
+        if (window.history.replaceState) {
+            const url = new URL(window.location);
+            url.searchParams.delete('update');
+            window.history.replaceState({}, document.title, url.pathname + url.search);
+        }
     </script>
     <script src="/biletaria_online/assets/js/flatpickr.min.js"></script>
     <script src="/biletaria_online/assets/js/functions.js"></script>

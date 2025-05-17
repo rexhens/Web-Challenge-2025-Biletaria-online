@@ -39,9 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete-event'])) {
 
     } catch (Exception $e) {
         $conn->rollback();
-        showError("Një problem ndodhi! " . $e->getMessage());
+        $message = "Një problem ndodhi! " . $e->getMessage();
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
 } else {
-    showError("Nuk ka informacion mbi të dhënat që duhen fshirë!");
+    $message = "Nuk ka informacion mbi të dhënat që duhen fshirë!";
+    $encodedMessage = urlencode($message);
+    header('Location: index.php?update=error&message=' . $encodedMessage);
+    exit();
 }

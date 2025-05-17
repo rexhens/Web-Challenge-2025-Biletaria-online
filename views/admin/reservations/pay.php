@@ -19,12 +19,17 @@ if ($id) {
     $stmt = $conn->prepare("UPDATE reservations SET paid = 1 WHERE id = ?");
     $stmt->bind_param("i", $id);
     if (!$stmt->execute()) {
-        showError('Një problem ndodhi! Rezervimi nuk u pagua!');
+        $message = "Një problem ndodhi! Rezervimi nuk u pagua!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
     $stmt->close();
     header('Location: index.php?update=success');
     exit();
 }
 
-/* nëse nuk u gjet ID – kthe gabim */
-showError('Nuk ka informacion mbi rezervimin që duhet përditësuar!');
+$message = "Nuk ka informacion mbi rezervimin që duhet përditësuar!";
+$encodedMessage = urlencode($message);
+header('Location: index.php?update=error&message=' . $encodedMessage);
+exit();

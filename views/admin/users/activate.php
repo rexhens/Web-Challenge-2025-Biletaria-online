@@ -10,7 +10,10 @@ if (isset($_POST['activateUserSubmit'])) {
     $userId = $_POST['userId'];
 
     if(empty($userId)) {
-        showError("Mungojnë të dhëna!");
+        $message = "Mungojnë të dhëna!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     $stmt = $conn->prepare("UPDATE users SET status = 'active' WHERE id = ?");
@@ -20,8 +23,14 @@ if (isset($_POST['activateUserSubmit'])) {
         header("Location: index.php?update=success");
         exit;
     } else {
-        showError("Një problem ndodhi! Provoni më vonë!");
+        $message = "Një problem ndodhi! Provoni më vonë!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 } else {
-    showError("Nuk ka informacion mbi të dhënat që duhen update-uar!");
+    $message = "Nuk ka informacion mbi të dhënat që duhen update-uar!";
+    $encodedMessage = urlencode($message);
+    header('Location: index.php?update=error&message=' . $encodedMessage);
+    exit();
 }

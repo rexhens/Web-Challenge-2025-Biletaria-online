@@ -50,4 +50,3 @@ $stmt->close();
 /* ─── sukses – kthehu te lista ─── */
 header('Location: index.php?update=success');
 exit;
-?>

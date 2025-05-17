@@ -19,12 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
     $posterPath = getPosterPath($conn, "shows", $id);
 
     if(empty($id) || empty($title) || empty($hall) || empty($genre_id) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price) || empty($posterPath)) {
-        showError("Të dhënat mungojnë!");
+        $message = "Të dhënat mungojnë!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     $result = isHallAvailable($conn, $hall, $time, $dates, $id);
     if (!$result['available']) {
-        showError("Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']));
+        $message = "Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']);
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     if (isset($_FILES['file-input']) && is_uploaded_file($_FILES['file-input']['tmp_name'])) {
@@ -43,13 +49,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
                 if (move_uploaded_file($_FILES['file-input']['tmp_name'], $targetPath)) {
                     $posterPath = $targetPath;
                     if (!deletePoster($conn, "shows", $id)) {
-                        showError("Një problem ndodhi! Provoni më vonë!");
+                        $message = "Një problem ndodhi! Provoni më vonë!";
+                        $encodedMessage = urlencode($message);
+                        header('Location: index.php?update=error&message=' . $encodedMessage);
+                        exit();
                     }
                 } else {
-                    showError("Nuk mund të ngarkohej imazhi.");
+                    $message = "Nuk mund të ngarkohej imazhi.";
+                    $encodedMessage = urlencode($message);
+                    header('Location: index.php?update=error&message=' . $encodedMessage);
+                    exit();
                 }
             } else {
-                showError("Skedari nuk është një imazh i vlefshëm.");
+                $message = "Skedari nuk është një imazh i vlefshëm.";
+                $encodedMessage = urlencode($message);
+                header('Location: index.php?update=error&message=' . $encodedMessage);
+                exit();
             }
         }
     }
@@ -99,9 +114,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-show'])) {
 
     } catch (Exception $e) {
         $conn->rollback();
-        showError("Një problem ndodhi! Provoni më vonë!");
+        $message = "Një problem ndodhi! Provoni më vonë!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
 } else {
-    showError("Nuk ka informacion mbi të dhënat që duhen update-uar!");
+    $message = "Nuk ka informacion mbi të dhënat që duhen update-uar!";
+    $encodedMessage = urlencode($message);
+    header('Location: index.php?update=error&message=' . $encodedMessage);
+    exit();
 }

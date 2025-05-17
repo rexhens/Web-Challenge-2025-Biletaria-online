@@ -18,12 +18,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-event'])) {
     $posterPath = getPosterPath($conn, "events", $id);
 
     if(empty($id) || empty($title) || empty($hall) || empty($dates) || empty($time) || empty($description) || empty($trailer) || empty($price) || empty($posterPath)) {
-        showError("Të dhënat mungojnë!");
+        $message = "Të dhënat mungojnë!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     $result = isHallAvailable($conn, $hall, $time, $dates, $id);
     if (!$result['available']) {
-        showError("Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']));
+        $message = "Salla është e zënë në: <br>" . implode('<br>', $result['conflict_info']);
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     $conn->begin_transaction();
@@ -97,9 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-event'])) {
 
     } catch (Exception $e) {
         $conn->rollback();
-        showError("Një problem ndodhi! " . $e->getMessage());
+        $message = "Një problem ndodhi! " . $e->getMessage();
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
 } else {
-    showError("Nuk ka informacion mbi të dhënat që duhen update-uar!");
+    $message = "Nuk ka informacion mbi të dhënat që duhen update-uar!";
+    $encodedMessage = urlencode($message);
+    header('Location: index.php?update=error&message=' . $encodedMessage);
+    exit();
 }

@@ -16,20 +16,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-user'])) {
     $userId = $_POST['userId'];
 
     if(empty($emri) || empty($mbiemri) || empty($email) || empty($telefon) || empty($roli) || empty($userId)) {
-        showError("Të dhënat mungojnë!");
+        $message = "Të dhënat mungojnë!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     if (!preg_match('/^[a-zA-ZëËçÇ ]+$/', $emri)) {
-        showError("Emri nuk është i vlefshëm.");
+        $message = "Emri nuk është i vlefshëm.";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
     if (!preg_match('/^[a-zA-ZëËçÇ ]+$/', $mbiemri)) {
-        showError("Mbiemri nuk është i vlefshëm.");
+        $message = "Mbiemri nuk është i vlefshëm.";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        showError("Email-i nuk është i vlefshëm.");
+        $message = "Email-i nuk është i vlefshëm.";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
     if (!preg_match('/^\+?[0-9\s\-\(\)]+$/', $telefon)) {
-        showError("Numri i telefonit nuk është i vlefshëm.");
+        $message = "Numri i telefonit nuk është i vlefshëm.";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 
     $sql = "UPDATE users SET name = ?, surname = ?, email = ?, phone = ?, role = ? WHERE id = ?";
@@ -41,8 +56,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit-user'])) {
         header("Location: index.php?update=success");
         exit;
     } else {
-        showError("Një problem ndodhi! Provoni më vonë!");
+        $message = "Një problem ndodhi! Provoni më vonë!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 } else {
-    showError("Nuk ka informacion mbi të dhënat që duhen update-uar!");
+    $message = "Nuk ka informacion mbi të dhënat që duhen update-uar!";
+    $encodedMessage = urlencode($message);
+    header('Location: index.php?update=error&message=' . $encodedMessage);
+    exit();
 }
