@@ -3,7 +3,7 @@ Chart.defaults.global.defaultFontFamily = 'Nunito, -apple-system, system-ui, Bli
 Chart.defaults.global.defaultFontColor = '#858796';
 
 // Fetch data and create chart
-fetch('../../includes/get_reservations_percentage.php')
+fetch('/biletaria_online/includes/get_reservations_percentage.php')
     .then(response => response.json())
     .then(onlinePercentage => {
       // Ensure percentage is an integer and in valid range
@@ -13,6 +13,7 @@ fetch('../../includes/get_reservations_percentage.php')
 
       // Pie Chart Example (inside the fetch callback!)
       var ctx = document.getElementById("myPieChart");
+      console.log(onlinePercentage);
       var myPieChart = new Chart(ctx, {
         type: 'doughnut',
         data: {

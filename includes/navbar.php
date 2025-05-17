@@ -5,7 +5,7 @@
     </div>
 
     <div class="navbar-title" onclick="window.location.href='/biletaria_online/index.php'">
-        <h1>Teatri <span class="metropol">Metropol</span></h1>
+        <h1 style="cursor: pointer;">Teatri <span class="metropol">Metropol</span></h1>
     </div>
 
     <ul class="navbar-links">
@@ -35,12 +35,11 @@
         </li>
         <li>
             <a href="/biletaria_online/views/client/apply_form.php"
-               class="<?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/applications.php' ? 'active' : ''; ?>">
+               class="<?php echo $_SERVER['SCRIPT_NAME'] == '/biletaria_online/views/client/apply_form.php' ? 'active' : ''; ?>">
                 Aplikime
             </a>
         </li>
-        <?php if(!isset($_SESSION['user_id'])) {
-        ?>
+        <?php if(!isset($_SESSION['user_id'])) { ?>
         <li>
             <div class="navbar-icons">
                 <a href="/biletaria_online/auth/login.php" class="profile-icon"><i class="fas fa-user-circle"></i></a>
@@ -49,7 +48,7 @@
         <?php } else { ?>
         <li>
             <div class="navbar-icons">
-                <a href="/biletaria_online/auth/logout.php" class="profile-icon"><i class="fa-solid fa-right-from-bracket"></i></a>
+                <a href="/biletaria_online/auth/logout.php" class="profile-icon"><i class="fas fa-sign-out-alt"></i></a>
             </div>
         </li>
         <?php } ?>

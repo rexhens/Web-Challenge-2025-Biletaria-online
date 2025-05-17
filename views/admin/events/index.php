@@ -123,6 +123,17 @@ $pageStyles = [
         </div>
     <?php endif; ?>
 
+    <?php if (isset($_GET['update']) && $_GET['update'] === 'error'): ?>
+        <div class="alert alert-danger alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
+             style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: #f44336; color: #540702;">
+            Ndryshimet u kryen me sukses!
+            <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
+                    style="top: 50%; transform: translateY(-50%);">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <?php endif; ?>
+
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
     <section id="users-section">

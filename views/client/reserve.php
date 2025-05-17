@@ -1,11 +1,20 @@
 <?php
 /** @var mysqli $conn */
-require "../../config/db_connect.php";
-require "../../auth/auth.php";
-require "../../includes/functions.php";
 
+use JetBrains\PhpStorm\NoReturn;
+
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/config/db_connect.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/auth/auth.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 /* 1. merr ID‑në e shfaqjes ----------------------------------- */
+
+function error($msg) {
+    header('Content-Type: application/json');
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => $msg]);
+    exit;
+}
 
 $show_id  = isset($_GET['show_id'])  ? (int)$_GET['show_id']  : 0;
 $event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 0;
@@ -15,23 +24,6 @@ if (!$show_id && !$event_id) { showError("ID shfaqjeje e pavlefshme."); }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
     $data = json_decode($_POST['ticket_json'], true);
 
-    if (isset($_SESSION['user_id'])) {
-        $ui = $conn->prepare("
-            SELECT CONCAT(name,' ',surname), email, phone
-              FROM users
-             WHERE id = ?
-           LIMIT 1
-      ");
-        $ui->bind_param("i", $_SESSION['user_id']);
-        $ui->execute();
-        $ui->bind_result($loggedName, $loggedEmail, $loggedPhone);
-        if ($ui->fetch()) {
-            $data['customer']['fullname'] = $loggedName;
-            $data['customer']['email']    = $loggedEmail;
-            $data['customer']['phone']    = $loggedPhone;
-        }
-        $ui->close();
-    }
     $column = $isEvent ? 'event_id' : 'show_id';
     $colShow = $isEvent ? 'NULL' : '?';
     $colEvent = $isEvent ? '?' : 'NULL';
@@ -45,19 +37,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
       $data['chosen_date'],
       $data['chosen_time']
   )) {
- /* ─── ruaj çdo vend ─── */
-/* ─── ruaj çdo vend ─── */
-/* ─── ruaj çdo vend ─── */
-/* ─── ruaj çdo vend ─── */
+
+      if(!isActiveEmail($data['customer']['email'], $conn)) {
+          error("Ju jeni ndaluar të bëni rezervime në Teatrin Metropol!.");
+      }
+
         $insertedIds = [];
+
+        $online = (checkAdmin($conn) || checkTicketOffice($conn)) ? 0 : 1;
 
         $resStmt = $conn->prepare("
                     INSERT INTO reservations
                         (show_id, event_id, full_name, email, phone, hall,
                          seat_id, ticket_code, expires_at, paid,
-                         show_date, show_time, total_price)
+                         show_date, show_time, total_price, online)
                      VALUES
-                ($colShow, $colEvent, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?)
+                ($colShow, $colEvent, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, $online)
         ");
 
         foreach ($data['seats'] as $seat) {
@@ -68,7 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
             $seat = $seat == -1 ? null : $seat;
 
             $ticketCode = bin2hex(random_bytes(8));
-            $expiresAt  = (new DateTime())->modify('+1 day')->format('Y-m-d H:i:s');
+            $expiresAt  = calculateExpireTime($data['chosen_date'], $data['chosen_time']);
+
+            if (!$expiresAt) {
+                error("Nuk lejohet rezervimi më pak se 6 orë para shfaqjes.");
+            }
+
+            $expiresAt = $expiresAt->format('Y-m-d H:i:s');
 
             $pricePerSeat = 0;
             if (!empty($data['seats']) && isset($data['total_price'])) {
@@ -98,14 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
         $resStmt->close();
 
         header('Content-Type: application/json');
-echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe id‑të
+        echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe id‑të
         exit;
 
     }
-
-    header('HTTP/1.1 400 Bad Request');
-    echo json_encode(['error' => 'Bad request']);
-    exit;
 }
 
 // ─
@@ -149,7 +146,7 @@ $ht=$conn->prepare("SELECT hall,time FROM events WHERE id=?");
 $ht->bind_param("i",$event_id);
 $ht->execute();
 $ht->bind_result($hall,$rawTime);
-while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('g:i A'); }
+while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('H:i'); }
 $ht->close(); ksort($hallTimes); foreach($hallTimes as &$t) sort($t); unset($t);
 $conn->close();
 
@@ -195,13 +192,12 @@ $ht=$conn->prepare("SELECT hall,time FROM shows WHERE id=?");
 $ht->bind_param("i",$show_id);
 $ht->execute();
 $ht->bind_result($hall,$rawTime);
-while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('g:i A'); }
+while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('H:i'); }
 $ht->close(); ksort($hallTimes); foreach($hallTimes as &$t) sort($t); unset($t);
 $conn->close();
 
 
 }
-
 
 /* helper */
 function seatRow(int $seat,int $perRow=20):string{ return chr(64+ceil($seat/$perRow)); }
@@ -238,6 +234,33 @@ $pageStyles = [
         .ticket{max-width:420px;margin:auto;}
 .ticket-body .poster img{max-width:100%;height:auto;display:block;}
 .info-table{width:100%;}
+        .info-container {
+            position: fixed !important;
+            top: 10px !important;
+            right: 20px !important;
+            padding: 10px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 10px !important;
+            width: 500px !important;
+            z-index: 100000 !important;
+        }
+
+        .errors {
+            background-color: var(--error-color) !important;
+            color: var(--text-color) !important;
+            border-radius: 5px !important;
+            padding: 10px !important;
+            box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.2) !important;
+            opacity: 0 !important;
+            display: none !important;
+        }
+
+        .errors.show {
+            display: block !important;
+            opacity: 1 !important;
+            animation: fadeIn 0.5s ease-in-out !important;
+        }
 .next-step{
     color: var(--text-color);
     padding: 10px;
@@ -247,6 +270,13 @@ $pageStyles = [
     background-image: linear-gradient(to bottom, var(--heading2-color), #947c3d);
     transition: transform 0.2s ease, background-color 0.2s ease;
     z-index: 100;
+}
+.next-step:disabled {
+    background-image: linear-gradient(to bottom, #363a42, #363a42);
+    opacity: 0.5;
+}
+.next-step:disabled:hover {
+    background-image: linear-gradient(to bottom, #363a42, #363a42);
 }
 .next-step:hover{
     cursor: pointer;
@@ -390,6 +420,52 @@ $pageStyles = [
             color: #826008 !important;
         }
 
+        .checkbox-container {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+        }
+
+        .checkbox-container label {
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        input[type="checkbox"] {
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            vertical-align: middle !important;
+            width: 15px !important;
+            height: 15px !important;
+            border: 1px solid var(--default-color) !important;
+            border-radius: 4px !important;
+            outline: none !important;
+            cursor: pointer !important;
+            margin: 0 !important;
+            background-color: var(--surface-color) !important;
+            transition: background-color 0.3s ease, border-color 0.3s ease !important;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            margin: 0 !important;
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '\2713' !important;
+            color: var(--text-color) !important;
+            font-size: 10px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        input[type="checkbox"]:hover {
+            transform: scale(1.15) !important;
+        }
+
 .form-icon{
   position:absolute;left:1rem;top:50%;transform:translateY(-50%);
   font-size:1rem;color:#836e4f;pointer-events:none;
@@ -466,7 +542,8 @@ $pageStyles = [
               <button class="screen-time"
                       data-time="<?=$t?>"
                       data-hall="<?=htmlspecialchars($h)?>"
-                      disabled><?=$t?></button>
+                      disabled
+                      style="border: none;"><?=$t?></button>
             <?php endforeach;?>
           </div>
         </li>
@@ -538,10 +615,11 @@ $pageStyles = [
       </div>
 
       <div class="poster">
-      <img src="../../includes/get_image.php?<?= $isEvent
+      <img src="/biletaria_online/includes/get_image.php?<?= $isEvent
          ? 'event_id=' . $event_id
          : 'show_id='  . $show_id ?>"
-         alt="Poster for <?= htmlspecialchars($title) ?>">
+         alt="Poster for <?= htmlspecialchars($title) ?>"
+         style="border-radius: 0;">
       </div>
 
       <div class="info">
@@ -583,6 +661,10 @@ $pageStyles = [
 </div></div></div>
 </div>
 
+<div class="info-container">
+
+</div>
+
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
 <script>
@@ -620,7 +702,7 @@ $pageStyles = [
 
         // Ndrysho iframe për selektimin e vendeve
         const iframe = document.getElementById('seat-sel-iframe');
-        iframe.src = `../../seat_selection/seat_sel.php?<?= $isEvent
+        iframe.src = `/biletaria_online/seat_selection/seat_sel.php?<?= $isEvent
                 ? 'event_id=' . $event_id
                 : 'show_id=' . $show_id ?>`
             + `&date=${encodeURIComponent(selectedDate)}`
@@ -632,8 +714,8 @@ $pageStyles = [
 <script src="https://npmcdn.com/flickity@2/dist/flickity.pkgd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-<script src="../../assets/js/theme-change.js"></script>
-<script src="../../assets/js/ticket-booking.js"></script>
+<script src="/biletaria_online/assets/js/theme-change.js"></script>
+<script src="/biletaria_online/assets/js/ticket-booking.js"></script>
 
 <!-- QRCode & html2canvas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -675,6 +757,44 @@ step2NextBtn.addEventListener('click', ev => {
 </script>
 
 <script>
+    function formatDate(date) {
+        const day = String(date.getDate()).padStart(2,'0');
+        const month = String(date.getMonth()+1).padStart(2,'0');
+        const year = date.getFullYear();
+        const hour = String(date.getHours()).padStart(2,'0');
+        const minute = String(date.getMinutes()).padStart(2,'0');
+        return `${day}.${month}.${year}, ${hour}:${minute}`;
+    }
+
+    function calculateExpireTime(showDate, showTime) {
+        const now = new Date();
+        const showDateTime = new Date(`${showDate}T${showTime}`);
+        if (isNaN(showDateTime)) return 'Datë/Orë e pavlefshme';
+
+        const diffInSeconds = (showDateTime - now) / 1000;
+
+        if (diffInSeconds < 4 * 3600) {
+            return 'Rezervimi është shumë afër kohës së shfaqjes';
+        }
+
+        let expire = new Date(showDateTime);
+
+        if (diffInSeconds >= 7 * 24 * 3600) {
+            expire.setDate(expire.getDate() - 5);
+            expire.setHours(16, 0, 0, 0);
+        } else if (diffInSeconds >= 3 * 24 * 3600) {
+            expire.setDate(expire.getDate() - 2);
+            expire.setHours(16, 0, 0, 0);
+        } else if (diffInSeconds >= 2 * 24 * 3600) {
+            expire.setDate(expire.getDate() - 1);
+            expire.setHours(16, 0, 0, 0);
+        } else {
+            expire.setHours(expire.getHours() - 6);
+        }
+
+        return formatDate(expire)
+    }
+
     function gatherJSON(){
         const f=document.forms[0];
 
@@ -708,41 +828,94 @@ step2NextBtn.addEventListener('click', ev => {
         })
             .then(r => r.json())
             .then(res => {
-                if (res.status !== 'ok') console.error('Insert failed', res);
+                if (res.status !== 'ok') {
+                    const error = document.createElement('div');
+                    error.classList.add('errors');
+                    error.classList.add('show');
+                    error.textContent = (res.message || 'Ndodhi një gabim gjatë rezervimit!');
+                    document.querySelector('.info-container').appendChild(error);
+                    const elementsToHide = document.getElementsByClassName("show");
+                    setTimeout(() => {
+                        Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
+                    }, 4500);
+                    return;
+                }
+
+                const tbody=document.querySelector('#seat-table');
+                [...tbody.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
+                if(data.seats.includes(-1)) {
+                    const tr=document.createElement('tr');
+                    tr.innerHTML = `<td>${data.hall}</td><td>${data.seats.length}</td>`;
+                    tbody.appendChild(tr);
+                } else {
+                    data.seats.forEach(nr=>{
+                        const tr=document.createElement('tr');
+                        tr.innerHTML = `<td>${data.hall}</td><td>${nr}</td>`;
+                        tbody.appendChild(tr);
+                    });
+                }
+                /* rifresko datën & orën në tabelën tjetër */
+                document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
+                document.getElementById('td-time').textContent=data.chosen_time;
+
+                const qty = data.seats.length;
+                const unitPrice = <?=$ticketPrice?>;
+                const total = data.total_price || (qty * unitPrice);
+                document.getElementById('td-price').textContent = `${qty} × ALL.${unitPrice.toFixed(0)} = ALL.${total.toFixed(0)}`;
+
+                console.log(data.chosen_date);
+                console.log(data.chosen_time);
+                const expireText = calculateExpireTime(data.chosen_date, data.chosen_time);
+                document.getElementById('expiration-date').textContent = `Data e skadimit: ${expireText}`;
+
+                const ids = res.ids;
+                const payURL = `${window.location.origin}/biletaria_online/views/admin/reservations/scan.php?ids=${ids.join(',')}`;
+                new QRCode(document.getElementById('qr-main'), {
+                    text: payURL,
+                    width: 120,
+                    height: 120,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                const ticket=document.querySelector('.ticket');
+                const fileName='bileta_<?= $isEvent ? $event_id : $show_id ?>.png';
+
+                async function toPNG() {
+                    const canvas = await html2canvas(ticket, { scale: 2 });
+                    return canvas.toDataURL('image/png');
+                }
+
+
+                const downloadBtn = document.getElementById('dl-ticket');
+                if (downloadBtn) {
+                    downloadBtn.onclick = async () => {
+                        const imageUrl = await toPNG();
+                        const link = document.createElement('a');
+                        link.href = imageUrl;
+                        link.download = fileName;
+                        link.click();
+                    };
+                }
+
+
+                const shareBtn = document.getElementById('share-ticket');
+                if (shareBtn && navigator.canShare && navigator.canShare({ files: [] })) {
+                    shareBtn.style.display = '';
+                    shareBtn.onclick = async () => {
+                        const imageBlob = await (await fetch(await toPNG())).blob();
+                        const file = new File([imageBlob], fileName, { type: 'image/png' });
+
+                        await navigator.share({
+                            files: [file],
+                            title: 'Bileta ime'
+                        });
+                    };
+                }
+
             })
             .catch(err => console.error('AJAX error', err));
-        // ────────────────────────────────────────────────
-
-
-        /* ► MBUSH TABELËN E VENDEVE º */
-        const tbody=document.querySelector('#seat-table');
-        [...tbody.querySelectorAll('tr')].slice(1).forEach(r=>r.remove());
-        if(data.seats.includes(-1)) {
-            const tr=document.createElement('tr');
-            tr.innerHTML = `<td>${data.hall}</td><td>${data.seats.length}</td>`;
-            tbody.appendChild(tr);
-        } else {
-            data.seats.forEach(nr=>{
-                const tr=document.createElement('tr');
-                tr.innerHTML = `<td>${data.hall}</td><td>${nr}</td>`;
-                tbody.appendChild(tr);
-            });
-        }
-        /* rifresko datën & orën në tabelën tjetër */
-        document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
-        document.getElementById('td-time').textContent=data.chosen_time;
-
-        const qty = data.seats.length;
-        const unitPrice = <?=$ticketPrice?>;
-        const total = data.total_price || (qty * unitPrice);
-        document.getElementById('td-price').textContent = `${qty} × ALL.${unitPrice.toFixed(0)} = ALL.${total.toFixed(0)}`;
-
-        const exp = new Date(data.chosen_date);
-        exp.setDate(exp.getDate() - 2);
-        const day   = String(exp.getDate()).padStart(2,'0');
-        const month = String(exp.getMonth()+1).padStart(2,'0');
-        const year  = exp.getFullYear();
-        document.getElementById('expiration-date').textContent = `Data e skadimit: ${day}/${month}/${year}`;
     }
 
     document.querySelectorAll('.next-step')[2].addEventListener('click',gatherJSON);
@@ -777,31 +950,6 @@ function validateStep3() {
 
 // run once on load (in case fields are pre-filled)
 validateStep3();
-</script>
-
-
-<script defer>
-
-const base = window.location.origin;
-const payURL  = `${base}/biletaria_online/views/admin/reservations/scan.php?ids=`;
-
-document.addEventListener('DOMContentLoaded',()=>{
-  new QRCode(document.getElementById('qr-main'),{
-    text:payURL,width:120,height:120,
-      colorDark: "#000000", colorLight: "#ffffff",correctLevel:QRCode.CorrectLevel.H
-  });
-    /* Shkarkim / Sharing */
-    const ticket=document.querySelector('.ticket');
-    const fileName='bileta_<?= $isEvent ? $event_id : $show_id ?>.png';
-    async function toPNG(){ const c=await html2canvas(ticket,{scale:2}); return c.toDataURL('image/png'); }
-    document.getElementById('dl-ticket').onclick=async()=>{const url=await toPNG(); Object.assign(document.createElement('a'),{href:url,download:fileName}).click();};
-    const shareBtn=document.getElementById('share-ticket');
-    if(navigator.canShare && navigator.canShare({files:[]})){
-      shareBtn.style.display='';
-      shareBtn.onclick=async()=>{const blob=await(await fetch(await toPNG())).blob();
-        await navigator.share({files:[new File([blob],fileName,{type:'image/png'})],title:'Bileta ime'});}
-    }
-});
 </script>
 
 </body>

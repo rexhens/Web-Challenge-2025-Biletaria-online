@@ -6,9 +6,9 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 $show_id  = isset($_GET['show_id'])  ? (int)$_GET['show_id']  : 0;
 $event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 0;
-$date    = isset($_GET['date'])      ? $_GET['date']            : '';
-$time    = isset($_GET['time'])      ? $_GET['time']            : '';
-$hall_i    = isset($_GET['hall'])      ? $_GET['hall']            : '';
+$date    = isset($_GET['date'])      ? $_GET['date']          : '';
+$time    = isset($_GET['time'])      ? $_GET['time']          : '';
+$hall_i  = isset($_GET['hall'])      ? $_GET['hall']          : '';
 
 if ((!$show_id && !$event_id) || !$date || !$time) {
     showError("Mungon data ose koha.");
