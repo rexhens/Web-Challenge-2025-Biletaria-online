@@ -437,9 +437,7 @@ function countOnlineReservations(mysqli $conn): int {
     $sql = "
         SELECT COUNT(*) AS total
         FROM reservations r
-        JOIN users u ON r.email = u.email
-        WHERE r.paid != 0
-        AND u.role NOT IN ('admin', 'ticketOffice')
+        WHERE online = 1
     ";
 
     $result = $conn->query($sql);
@@ -455,8 +453,8 @@ function getOnlinePrecentage($conn): int {
     $sql = "
         SELECT COUNT(*) AS total
         FROM reservations r
-        JOIN users u ON r.email = u.email
-        WHERE r.paid != 0
+        LEFT JOIN users u ON r.email = u.email
+        WHERE (u.role IS NULL OR u.role NOT IN ('admin', 'ticketOffice'))
     ";
 
     $result = $conn->query($sql);
@@ -466,4 +464,47 @@ function getOnlinePrecentage($conn): int {
     } else {
         return 0;
     }
+}
+
+function calculateExpireTime(string $showDate, string $showTime): ?DateTime {
+    $now = new DateTime();
+    $showDateTime = new DateTime("$showDate $showTime");
+    $diffInSeconds = $showDateTime->getTimestamp() - $now->getTimestamp();
+
+    $expire = clone $showDateTime;
+
+    if ($diffInSeconds < 4 * 3600) {
+        return null;
+    }
+
+    if ($diffInSeconds >= 7 * 24 * 3600) {
+        // Më shumë se 7 ditë → skadon 5 ditë para shfaqjes në orën 16:00
+        $expire->modify('-5 days')->setTime(16, 0);
+    } elseif ($diffInSeconds >= 3 * 24 * 3600) {
+        // 3 – 7 ditë → skadon 2 ditë para në orën 16:00
+        $expire->modify('-2 days')->setTime(16, 0);
+    } elseif ($diffInSeconds >= 2 * 24 * 3600) {
+        // 2 – 3 ditë → skadon 1 ditë para në orën 16:00
+        $expire->modify('-1 day')->setTime(16, 0);
+    } else {
+        // Më pak se 2 ditë → skadon 6 orë para orarit të shfaqjes
+        $expire->modify('-6 hours');
+    }
+
+    return $expire;
+}
+
+function isActiveEmail(string $email, $conn): bool {
+    $sql = "SELECT status FROM users WHERE email = ? AND status = 'not active'";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        return false;
+    }
+
+    return true;
 }

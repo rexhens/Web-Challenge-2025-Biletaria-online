@@ -373,8 +373,8 @@ $pageStyles = [
                                         </div>
                                         <div class="col">
                                             <div class="progress progress-sm mr-2">
-                                                <div class="progress-bar bg-gold" role="progressbar" style="width: <?php echo countOnlineReservations($conn) ?>%"
-                                                    aria-valuenow="<?php echo countOnlineReservations($conn) ?>" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-bar bg-gold" role="progressbar" style="width: <?php echo getOnlinePrecentage($conn) ?>%"
+                                                    aria-valuenow="<?php echo getOnlinePrecentage($conn) ?>" aria-valuemin="0" aria-valuemax="100"></div>
                                             </div>
                                         </div>
                                     </div>

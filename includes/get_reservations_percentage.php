@@ -8,4 +8,3 @@ redirectIfNotAdminOrTicketOffice($conn);
 header('Content-Type: application/json');
 
 echo json_encode(getOnlinePrecentage($conn));
-$conn->close();
