@@ -222,7 +222,7 @@ $pageStyles = [
         const elementsToHide = document.getElementsByClassName("show");
         setTimeout(() => {
             Array.from(elementsToHide).forEach((el) => el.classList.remove("show"))
-        }, 4500);
+        }, 5000);
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

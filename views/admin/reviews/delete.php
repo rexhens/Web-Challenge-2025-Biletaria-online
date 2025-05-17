@@ -17,13 +17,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['id'])) {
             header("Location: index.php?update=success");
             exit();
         } else {
-            showError("Një problem ndodhi me fshirjen e komentit");
+            $message = "Një problem ndodhi me fshirjen e komentit!";
+            $encodedMessage = urlencode($message);
+            header('Location: index.php?update=error&message=' . $encodedMessage);
+            exit();
         }
 
         $stmt->close();
     } else {
-        showError("Id e pavlefshme");
+        $message = "Id e pavlefshme!";
+        $encodedMessage = urlencode($message);
+        header('Location: index.php?update=error&message=' . $encodedMessage);
+        exit();
     }
 } else {
-    showError("Të dhëna të pamjaftueshme për të fshirë!");
+    $message = "Të dhëna të pamjaftueshme për të fshirë!";
+    $encodedMessage = urlencode($message);
+    header('Location: index.php?update=error&message=' . $encodedMessage);
+    exit();
 }

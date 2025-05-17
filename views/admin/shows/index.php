@@ -105,21 +105,54 @@ $pageStyles = [
         a.paginate_button:disabled {
             background-color: #8f793f !important;
         }
+
+          .info-container {
+              position: fixed !important;
+              top: 10px !important;
+              right: 20px !important;
+              padding: 10px !important;
+              display: flex !important;
+              flex-direction: column !important;
+              gap: 10px !important;
+              width: 500px !important;
+              z-index: 2000 !important;
+          }
+
+          .errors {
+              background-color: #F44336FF !important;
+              color: #E4E4E4FF !important;
+              border-radius: 5px !important;
+              padding: 10px !important;
+              box-shadow: 0 0 10px 6px rgba(0, 0, 0, 0.2) !important;
+              opacity: 0 !important;
+              display: none !important;
+          }
+
+          .errors.expose {
+              display: block !important;
+              opacity: 1 !important;
+              animation: fadeIn 0.5s ease-in-out !important;
+          }
     </style>
 </head>
 
 <body id="page-top">
 
-    <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
-        <div class="alert alert-success alert-dismissible fade show fixed-top text-center rounded-5 m-0" role="alert"
-            style="z-index: 1050; top: 10px; right: 10px; left: auto; max-width: 500px; background-color: rgba(131, 173, 68); color: #224212;">
-            Ndryshimet u kryen me sukses!
-            <button type="button" class="close position-absolute end-0 me-3" data-dismiss="alert" aria-label="Close"
-                style="top: 50%; transform: translateY(-50%);">
-                <span aria-hidden="true">&times;</span>
-            </button>
+<?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+    <div class="info-container">
+        <div class='errors expose' style='background-color: rgba(131, 173, 68) !important'>
+            <p>Ndryshimet u kryen me sukses</p>
         </div>
-    <?php endif; ?>
+    </div>
+<?php endif; ?>
+
+<?php if (isset($_GET['update']) && isset($_GET['message']) && $_GET['update'] === 'error'): ?>
+    <div class="info-container">
+        <div class='errors expose'>
+            <p><?= urldecode($_GET['message']) ?></p>
+        </div>
+    </div>
+<?php endif; ?>
 
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/sidebar.php'; ?>
 
@@ -489,8 +522,16 @@ $pageStyles = [
     if (window.history.replaceState) {
         const url = new URL(window.location);
         url.searchParams.delete('update');
+        url.searchParams.delete('message');
         window.history.replaceState({}, document.title, url.pathname + url.search);
     }
+</script>
+
+<script>
+    const elementsToHide = document.getElementsByClassName("expose");
+    setTimeout(() => {
+        Array.from(elementsToHide).forEach((el) => el.classList.remove("expose"))
+    }, 5000);
 </script>
 
 </body>
