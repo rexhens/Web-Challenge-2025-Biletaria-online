@@ -126,16 +126,20 @@ $imageTag
 
 <p><strong>Lënda:</strong> Formular aplikimi për ambient me qera</p>
 
-<p class='section-title'>Të dhëna të përgjithshme:</p>
+<h3 class='section-title'>Të dhëna të përgjithshme</h3>
+<hr>
 <p><strong>Institucioni / Organizata:</strong> " . htmlspecialchars($institucioni) . "</p>
-<p><strong>Emër:</strong> " . htmlspecialchars($emer) . " &nbsp;&nbsp;&nbsp; <strong>Mbiemër:</strong> " . htmlspecialchars($mbiemer) . "</p>
+<p><strong>Emër:</strong> " . htmlspecialchars($emer) . " &nbsp;&nbsp;&nbsp;  <strong>Mbiemër:</strong> " . htmlspecialchars($mbiemer) . "</p>
+<p><strong>Nr Tel:</strong> " . htmlspecialchars($telefoni) . " &nbsp;&nbsp;&nbsp; <strong>E-mail:</strong> " . htmlspecialchars($email) . "</p>
 <p><strong>Pozicioni në projekt:</strong> " . htmlspecialchars($pozicioni) . "</p>
 <p><strong>Personi i kontaktit:</strong> " . htmlspecialchars($kontakti) . "</p>
+
+<h3 class='section-title'>Detajet e aktivitetit</h3>
+<hr>
 <p><strong>Titulli i aktivitetit:</strong> " . htmlspecialchars($titulli) . "</p>
 <p><strong>Tematika:</strong><br>" . nl2br(htmlspecialchars($tematika)) . "</p>
 <p><strong>Përmbajtja:</strong><br>" . nl2br(htmlspecialchars($permbajtja)) . "</p>
 
-<p><strong>Nr Tel:</strong> " . htmlspecialchars($telefoni) . " &nbsp;&nbsp;&nbsp; <strong>E-mail:</strong> " . htmlspecialchars($email) . "</p>
 <p><strong>Data e aktivitetit:</strong> " . htmlspecialchars($data) . "</p>
 <p><strong>Orari i aktivitetit:</strong> " . htmlspecialchars($orari) . " &nbsp;&nbsp;&nbsp; <strong>Kohëzgjatja:</strong> " . htmlspecialchars($kohezgjatja) . "</p>
 <p><strong>Salla:</strong> " . htmlspecialchars($salla) . "</p>
@@ -146,7 +150,10 @@ $imageTag
 
 <p><strong>Aktorët pjesëmarrës:</strong><br>$aktorList</p>
 
+
+
 <p class='section-title'>Rregullorja e Teatrit</p>
+<hr>
 <ul>
   <li>Sallat në Teatër nuk jepen më pak se dy orë.</li>
   <li>Nuk lejohet konsumimi i ushqimit në ambientet e teatrit.</li>
