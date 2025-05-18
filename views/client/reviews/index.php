@@ -62,10 +62,10 @@ if ($show_id !== null) {
 
 $pageTitle = 'Vlerëso ' . isset($_GET['show_id']) ? 'Shfaqjen' : 'Eventin';
 $pageStyles = [
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
     '/biletaria_online/assets/css/styles.css',
     '/biletaria_online/assets/css/navbar.css',
-    '/biletaria_online/assets/css/footer.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'
+    '/biletaria_online/assets/css/footer.css'
 ];
 ?>
 
@@ -81,6 +81,10 @@ $pageStyles = [
             margin-top: 20px;
         }
 
+        .footer-glass {
+            width: calc(100% - 32px);
+        }
+
         .footer-bottom {
             margin-left: -20px;
         }
@@ -89,7 +93,7 @@ $pageStyles = [
             width: 95%;
             max-width: 400px;
             margin: auto;
-            padding: 20px;
+            padding: 20px 40px;
             border: 1px solid #ccc;
             border-radius: 8px;
             background: rgba(228, 228, 228, 0.04) !important;
@@ -166,6 +170,13 @@ $pageStyles = [
             margin-top: 15px;
             transition: background-color 0.2s;
         }
+
+        @media (max-width: 535px) {
+            .review-form {
+                max-width: 80%;
+                padding: 20px 30px;
+            }
+        }
     </style>
 </head>
 
@@ -202,13 +213,13 @@ $pageStyles = [
             $reservation_id = $_POST['reservation_id'];
             $show_id = $_POST['show_id'] ?? null;
             $event_id = $_POST['event_id'] ?? null;
-            $rating = $_POST['rating'];
+            $rating = $_POST['rating'] ?? null;
             $comment = trim($_POST['comment']) ?? null;
             $date = date('Y-m-d H:i:s');
 
             $errors = [];
 
-            if ($reservation_id || ($show_id && $event_id) || $rating) {
+            if ($reservation_id && ($show_id || $event_id) && $rating) {
                 $stmt = $conn->prepare("INSERT INTO reviews (email, show_id, event_id, rating, comment, date) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("siiiss", $email, $show_id, $event_id, $rating, $comment, $date);
                 $stmt->execute();
