@@ -103,6 +103,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             $conn->commit();
+
+            notifySubscribers($conn, "event", $title, $event_id);
+
             header("Location: add-event.php?update=success");
             exit();
 

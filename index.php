@@ -7,8 +7,8 @@ require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/functions.php';
 
 <?php
 $pageStyles = [
-    'assets/css/footer.css',
     'assets/css/style-starter.css',
+    'assets/css/footer.css',
     'assets/css/shows.css',
     'assets/css/navbar.css'
 ];

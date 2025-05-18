@@ -148,8 +148,6 @@ $ht->execute();
 $ht->bind_result($hall,$rawTime);
 while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('H:i'); }
 $ht->close(); ksort($hallTimes); foreach($hallTimes as &$t) sort($t); unset($t);
-$conn->close();
-
 
 }else{
 
@@ -176,7 +174,6 @@ if (isset($_SESSION['user_id'])) {
     $u->close();
 }
 
-
 /* 3. datat e shfaqjes ---------------------------------------- */
 $dq = $conn->prepare("SELECT DISTINCT show_date FROM show_dates WHERE show_id = ? AND show_date >= CURRENT_DATE() ORDER BY show_date ASC");
 $dq->bind_param("i",$show_id);
@@ -194,9 +191,6 @@ $ht->execute();
 $ht->bind_result($hall,$rawTime);
 while($ht->fetch()){ $hallTimes[$hall][]=(new DateTime($rawTime))->format('H:i'); }
 $ht->close(); ksort($hallTimes); foreach($hallTimes as &$t) sort($t); unset($t);
-$conn->close();
-
-
 }
 
 /* helper */
@@ -661,9 +655,7 @@ $pageStyles = [
 </div></div></div>
 </div>
 
-<div class="info-container">
-
-</div>
+<div class="info-container"></div>
 
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
