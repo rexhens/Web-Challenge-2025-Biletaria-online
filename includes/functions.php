@@ -159,6 +159,20 @@ function redirectIfNotAdminOrTicketOffice($conn): void {
     }
 }
 
+function isAdminOrTicketOffice($conn, $email) {
+    $stmt = $conn->prepare("SELECT role FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->bind_result($role);
+    $stmt->fetch();
+
+    if ($role !== 'ticketOffice' && $role !== 'admin') {
+        return false;
+    }
+
+    return true;
+}
+
 function groupDates($dates): array {
     if (empty($dates)) return [];
 
@@ -486,8 +500,8 @@ function calculateExpireTime(string $showDate, string $showTime): ?DateTime {
         // 2 – 3 ditë → skadon 1 ditë para në orën 16:00
         $expire->modify('-1 day')->setTime(16, 0);
     } else {
-        // Më pak se 2 ditë → skadon 6 orë para orarit të shfaqjes
-        $expire->modify('-6 hours');
+        // Më pak se 2 ditë → skadon 4 orë para orarit të shfaqjes
+        $expire->modify('-4 hours');
     }
 
     return $expire;

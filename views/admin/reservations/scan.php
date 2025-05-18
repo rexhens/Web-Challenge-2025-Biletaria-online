@@ -40,5 +40,5 @@ if (!$stmt->execute()) {
 }
 $stmt->close();
 
-header('Location: index.php?update=success');
+header('Location: success.php');
 exit;
