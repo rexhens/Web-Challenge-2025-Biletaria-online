@@ -52,7 +52,7 @@
                     <a href="/biletaria_online/auth/login.php" aria-label="Identifikohu ose Krijo llogari" style="margin-right: 10px">
                         <i class="fas fa-user-circle"></i>
                     </a>
-                    Identifikohu ose krijo një llogari që të mund të marrësh njoftime për shfaqje/evente të reja
+                    Identifikohu për të mos humbur asnjë të re
                 </p>
             <?php endif; ?>
         </div>
