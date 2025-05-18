@@ -5,7 +5,7 @@
     <meta name="description" content="Teatri Metropol - Your theater experience in Albania / Eksperienca juaj teatrore në Shqipëri.">
     <meta property="og:title" content="Teatri Metropol">
     <meta property="og:image" content="/biletaria_online/assets/img/metropol_icon.png">
-    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol_icon.png">
+    <link rel="icon" type="image/x-icon" href="/biletaria_online/assets/img/metropol-icon.png">
 
     <title>Tetari Metropol <?php echo isset($pageTitle) ? '| ' . $pageTitle : ''; ?></title>
 
