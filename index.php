@@ -44,7 +44,7 @@ $pageStyles = [
 
     <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/navbar.php'; ?>
 
-    <section class="w3l-main-slider position-relative" id="home" style="margin-top: -57px;">
+    <section class="w3l-main-slider position-relative" id="home" style="margin-top: -67px;">
         <div class="companies20-content">
             <div class="owl-one owl-carousel owl-theme">
                 <?php
