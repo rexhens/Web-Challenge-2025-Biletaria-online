@@ -22,6 +22,7 @@ AND r.id NOT IN (
     FROM notifications n
     WHERE type = 'review'
 )
+AND r.paid = 1
 GROUP BY 
     r.email,
     r.show_id,
