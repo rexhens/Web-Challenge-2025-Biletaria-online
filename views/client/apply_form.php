@@ -43,6 +43,10 @@ unset($_SESSION['old']);
             overflow-x: hidden !important;
         }
 
+        .footer-glass {
+            width: calc(100% - 32px);
+        }
+
         .footer-bottom {
             margin-left: -20px;
         }
@@ -88,6 +92,27 @@ unset($_SESSION['old']);
             width: 100% !important;
         }
 
+        .addButton {
+            margin: 20px auto -5px !important;
+            background: none !important;
+            color: var(--heading2-color) !important;
+            transition: font-weight 0.3s ease !important;
+        }
+
+        .addButton.light {
+            color: #826008 !important;
+            font-weight: 500 !important;
+        }
+
+        .addButton:hover {
+            background: none !important;
+            color: var(--accent-color) !important;
+        }
+
+        .addButton.light:hover {
+            font-weight: bolder !important;
+        }
+
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -96,7 +121,7 @@ unset($_SESSION['old']);
 
         @media (max-width: 945px) {
             .form-container {
-                width: 100% !important;
+                max-width: 90% !important;
                 padding: 25px 35px !important;
             }
 
@@ -230,17 +255,18 @@ unset($_SESSION['old']);
 
     <fieldset>
         <legend>Aktorët pjesmarrës</legend>
-        <div class="form-grid">
+        <div class="form-grid" id="actors-container">
             <?php
             $aktoret = $old['aktoret'] ?? array_fill(0, 6, '');
-            for ($i = 0; $i < 6; $i++) {
+            foreach ($aktoret as $i => $aktor) {
                 echo '<div class="form-group">
-                        <input type="text" name="aktoret[]" placeholder=" " value="' . htmlspecialchars($aktoret[$i] ?? '') . '">
-                        <label>' . ($i + 1) . '.</label>
-                    </div>';
+                <input type="text" name="aktoret[]" placeholder=" " value="' . htmlspecialchars($aktor) . '">
+                <label>' . ($i + 1) . '.</label>
+            </div>';
             }
             ?>
         </div>
+        <button type="button" id="add-actor-btn" class="addButton full-width"">+ Shto Aktor</button>
     </fieldset>
 
     <div class="full-width">
@@ -260,6 +286,22 @@ unset($_SESSION['old']);
 
 <?php require $_SERVER['DOCUMENT_ROOT'] . '/biletaria_online/includes/footer.php'; ?>
 
+<script>
+    let actorCount = <?= count($aktoret) ?>;
+    const container = document.getElementById('actors-container');
+    const addBtn = document.getElementById('add-actor-btn');
+
+    addBtn.addEventListener('click', () => {
+        actorCount++;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'form-group';
+        wrapper.innerHTML = `
+            <input type="text" name="aktoret[]" placeholder=" ">
+            <label>${actorCount}.</label>
+        `;
+        container.appendChild(wrapper);
+    });
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         flatpickr("#data", {
