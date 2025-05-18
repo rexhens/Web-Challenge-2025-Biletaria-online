@@ -43,7 +43,7 @@
     <div class="footer-subscribe" id="footer-subscribe" style="text-align:center; margin-top: 20px;">
         <div class="social-icons">
             <?php if (isset($_SESSION['user_id'])): ?>
-                <p id="subscribe-toggle" style="font-size: 0.95rem; font-family: var(--nav-font); cursor: pointer;">
+                <p id="subscribe-toggle" style="font-size: 0.95rem; color: #e4e4e4; font-family: var(--nav-font); cursor: pointer;">
                     <a style="margin-right: 10px"><i class="fas <?= isSubscriber($conn, $_SESSION['user_id']) ? 'fa-bell-slash' : 'fa-bell' ?>"></i></a>
                     <?= isSubscriber($conn, $_SESSION['user_id']) ? 'Ndalo njoftimet për shfaqje/evente të reja' : 'Merr njoftime për shfaqje/evente të reja' ?>
                 </p>
