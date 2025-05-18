@@ -132,6 +132,22 @@ $pageStyles = [
             opacity: 1 !important;
             animation: fadeIn 0.5s ease-in-out !important;
         }
+
+        .errors p {
+            margin-bottom: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 
 

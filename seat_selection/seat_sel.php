@@ -40,7 +40,6 @@ if ($isEvent) {
     $hall_i
 );
 } else {
-  // your existing shows query
   $stmt = $conn->prepare("
       SELECT s.title, s.time, s.price, sd.show_date, s.hall
         FROM shows AS s
@@ -54,7 +53,6 @@ if ($isEvent) {
   ");
  
 
-  // …then later…
   $stmt->bind_param(
     "isss",
     $show_id,
@@ -71,10 +69,7 @@ if (!$stmt->fetch()) {
 }
 $show_date = new DateTime($show_date);
 $stmt->close();
-;
 
-/* ────────── vendet e bllokuara (nga DB) ────────── */
-// 1) load all seats for this hall
 $allSeats = [];
 $sq = $conn->prepare("
     SELECT seat_number, seat_type
@@ -93,9 +88,6 @@ while ($row = $resS->fetch_assoc()) {
 }
 $sq->close();
 
-// 2) fetch reserved seats for this show+hall
-
-/* ────────── SVG i sallës ────────── */
 $svg_path = __DIR__ . '/' . basename($hall) . '.svg';
 if (file_exists($svg_path)) {
     $svg_markup = file_get_contents($svg_path);
@@ -106,12 +98,18 @@ $reservedIds = [];
 if(isset($svg_markup)) {
     if ($isEvent) {
         $rq = $conn->prepare("
-    SELECT seat_id
-      FROM reservations
-     WHERE event_id  = ?
-       AND hall      = ?
-       AND show_date = ?
-       AND show_time = ?
+    SELECT r.seat_id
+FROM reservations r
+LEFT JOIN users u ON r.email = u.email
+WHERE r.event_id = ?
+  AND r.hall = ?
+  AND r.show_date = ?
+  AND r.show_time = ?
+  AND (
+    (u.email IS NOT NULL AND (u.role = 'admin' OR u.role = 'ticketOffice'))
+    OR
+    (u.email IS NULL AND (r.paid = 1 OR (r.paid = 0 AND r.expires_at > NOW())))
+  )
   ");
         $rq->bind_param(
             "isss",
@@ -122,12 +120,18 @@ if(isset($svg_markup)) {
         );
     } else {
         $rq = $conn->prepare("
-    SELECT seat_id
-      FROM reservations
-     WHERE show_id    = ?
-       AND hall       = ?
-       AND show_date  = ?
-       AND show_time  = ?
+    SELECT r.seat_id
+FROM reservations r
+LEFT JOIN users u ON r.email = u.email
+WHERE r.show_id = ?
+  AND r.hall = ?
+  AND r.show_date = ?
+  AND r.show_time = ?
+  AND (
+    (u.email IS NOT NULL AND (u.role = 'admin' OR u.role = 'ticketOffice'))
+    OR
+    (u.email IS NULL AND (r.paid = 1 OR (r.paid = 0 AND r.expires_at > NOW())))
+  )
   ");
         $rq->bind_param(
             "isss",
@@ -158,10 +162,7 @@ if(isset($svg_markup)) {
     unset($s);
 }
 
-// 4) prepare reserved list for JS
 $reserved = $reservedIds;
-
-$conn->close();
 
 ?>
 <!DOCTYPE html>
@@ -421,13 +422,6 @@ input[type="number"] {
     <div><span class="box" style="background:var(--color-reserved);"></span> I zënë</div>
   </div>
 </div>
-
-<!-- form i fshehtë nëse do ta përdorësh me submit direkt -->
-<form id="booking-form" action="process_booking.php" method="post" style="display:none;">
-  <input type="hidden" name="<?= $isEvent ? 'event_id' : 'show_id' ?>" value="<?= $isEvent ? $event_id : $show_id ?>">
-  <input type="hidden" name="selected_seats" id="selected-seats-input">
-  <input type="hidden" name="total_price"   id="total-price-input" value="0">
-</form>
 
 <script>
 

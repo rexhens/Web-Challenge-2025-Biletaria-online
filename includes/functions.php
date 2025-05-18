@@ -35,7 +35,6 @@ function sendEmail(string $email, string $subject, string $title, string $body, 
         $mail->send();
         return true;
     } catch (Exception $e) {
-        echo $e->getMessage();
         return false;
     }
 }
@@ -507,4 +506,40 @@ function isActiveEmail(string $email, $conn): bool {
     }
 
     return true;
+}
+
+function isSubscriber($conn, $id): bool {
+    $sql = "SELECT subscribe FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result && $row = $result->fetch_assoc()) {
+        if($row['subscribe'] == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function notifySubscribers($conn, $type, $title, $id) {
+    $sql = "SELECT email FROM users WHERE subscribe = 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result) {
+        $subject = $type === 'event' ? "Event i ri!" : "Shfaqje e re!";
+        $h1 = $type === 'event' ? "Eventi " : "Shfaqja " . "\"$title\" është tani në Teatrin Metropol";
+        $body = "Duke ju falenderuar që na ndiqni dhe e vlerësoni punën dhe artin tonë, ju njoftojmë se " . ($type === 'event' ? "eventi " : "shfaqja ") . "\"$title\" është tani në Teatrin Metropol.<br> Për të marrë të gjitha informacionet që ju duhen dhe për të rezervuar mund të klikoni më poshtë. <br>Ju ftojmë të na bashkoheni!";
+
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'];
+        $path = "/biletaria_online/views/client/" . $type . "s/" . $type . "_details.php?id=" . urlencode($id);
+
+        $link = $protocol . $host . $path;
+
+        while ($row = $result->fetch_assoc()) {
+            sendEmail($row['email'], $subject, $h1, $body, $link);
+        }
+    }
 }

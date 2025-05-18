@@ -91,6 +91,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 if (empty($errors)) {
                     $conn->commit();
+
+                    notifySubscribers($conn, "show", $title, $show_id);
+
                     header("Location: add-show.php?update=success");
                     exit();
                 } else {
@@ -213,12 +216,12 @@ $pageStyles = [
                     }
                 }
                 ?>
+                <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+                    <div class='errors show' style='background-color: rgba(131, 173, 68) !important'>
+                        <p style='color: #E4E4E4;'>Shfaqja u shtua me sukses!</p>
+                    </div>
+                <?php endif; ?>
             </div>
-        <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
-            <div class='errors show' style='background-color: rgba(131, 173, 68) !important'>
-                <p style='color: #E4E4E4;'>Shfaqja u shtua me sukses!</p>
-            </div>
-        <?php endif; ?>
 
 
     <script>
