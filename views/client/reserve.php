@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
             $expiresAt  = calculateExpireTime($data['chosen_date'], $data['chosen_time']);
 
             if (!$expiresAt) {
-                error("Nuk lejohet rezervimi më pak se 6 orë para shfaqjes.");
+                error("Nuk lejohet rezervimi më pak se 4 orë para shfaqjes.");
             }
 
             $expiresAt = $expiresAt->format('Y-m-d H:i:s');
@@ -97,6 +97,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ticket_json'])) {
             $insertedIds[] = $conn->insert_id;   // ▼ ID‑ja e sapo‑krijuar
         }
         $resStmt->close();
+
+      if(count($data['seats']) > 10 && !isAdminOrTicketOffice($conn, $data['customer']['email'])) {
+          $subject = "KUJDES!";
+          $title = "Kujdes! Mund të jetë nevoja të bëni një konfirmim.";
+          $body = "<a href='mailto:" . $data['customer']['email'] . "'>" . $data['customer']['fullname'] . "</a> rezervoi më shumë se 10 vende.<br>Mund të shikoni detaje të mëtejshme mbi rezervimet për këtë shfaqje/event duke klikuar më poshtë.";
+          $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
+          $host = $_SERVER['HTTP_HOST'];
+          $path = "/biletaria_online/views/admin/reservations/index.php";
+
+          $link = $protocol . $host . $path . "?" . $column . "=" . ($isEvent ? urlencode($event_id) : urlencode($show_id));
+
+          $sql = "SELECT email FROM users WHERE role = 'admin' OR role = 'ticketOffice'";
+          $stmt = $conn->prepare($sql);
+          $stmt->execute();
+          $result = $stmt->get_result();
+          if($result) {
+              while($row = $result->fetch_assoc()) {
+                  sendEmail($row['email'], $subject, $title, $body, $link);
+              }
+          }
+      }
 
         header('Content-Type: application/json');
         echo json_encode(['status' => 'ok', 'ids' => $insertedIds]);   // ▼ kthe edhe id‑të
@@ -716,29 +737,21 @@ $pageStyles = [
 
 
 <script>
-// ─── Step 2 “Vazhdo” gating based on iframe seat selection ───
-
-// 1. Marrim butonin "Vazhdo" në hapin 2
 const step2NextBtn = document.querySelectorAll('.next-step')[1];
 
-// 2. E çaktivizojmë në fillim
 step2NextBtn.disabled = true;
 
-// 3. Dëgjojmë mesazhin nga iframe për përzgjedhjen e vendeve ose biletave
 window.addEventListener('message', e => {
     if (e.origin !== window.origin || e.data?.type !== 'seatSelection') return;
 
-    // Ruajmë të dhënat në input-e të fshehura
     document.getElementById('chosen_seats').value = e.data.seats?.join(',') || '';
     if (e.data.hall) document.getElementById('chosen_hall').value = e.data.hall;
     document.getElementById('total_price').value = e.data.total;
 
-    // Aktivizo butonin nëse totali është më i madh se 0
     const total = parseInt(e.data.total);
     step2NextBtn.disabled = isNaN(total) || total <= 0;
 });
 
-//  Siguri shtesë: mos lejo kalimin nëse totali është bosh ose zero
 step2NextBtn.addEventListener('click', ev => {
     const total = parseInt(document.getElementById('total_price').value);
     if (isNaN(total) || total <= 0) {
@@ -781,7 +794,7 @@ step2NextBtn.addEventListener('click', ev => {
             expire.setDate(expire.getDate() - 1);
             expire.setHours(16, 0, 0, 0);
         } else {
-            expire.setHours(expire.getHours() - 6);
+            expire.setHours(expire.getHours() - 4);
         }
 
         return formatDate(expire)
@@ -804,8 +817,7 @@ step2NextBtn.addEventListener('click', ev => {
             customer: {
                 fullname: f.fullname.value,
                 email:    f.email.value,
-                phone:    f.phone.value,
-                /*notes:    f.notes.value*/
+                phone:    f.phone.value
             }
         };
 
