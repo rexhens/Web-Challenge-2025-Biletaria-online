@@ -15,20 +15,15 @@ require $_SERVER['DOCUMENT_ROOT'].'/biletaria_online/includes/functions.php';
 redirectIfNotLoggedIn();
 redirectIfNotAdminOrTicketOffice($conn);
 
-/* ─── mblidh ID‑të nga query‑string ─── */
 $ids = [];
-if (isset($_GET['id'])) {
-    $ids[] = (int)$_GET['id'];
-} elseif (isset($_GET['ids'])) {
+if (isset($_GET['ids'])) {
     $ids = array_map('intval', array_filter(explode(',', $_GET['ids'])));
 }
 
-/* ─── nëse s’kemi asnjë ID – kthe gabim ─── */
 if (!$ids) {
     showError('Nuk u dërgua asnjë ID rezervimi!');
 }
 
-/* ─── përgatis SQL‑in “…WHERE id IN (?,?,...)” ─── */
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
 $sql = "UPDATE reservations SET paid = 1 WHERE id IN ($placeholders)";
 $stmt = $conn->prepare($sql);
@@ -36,17 +31,14 @@ if (!$stmt) {
     showError('Gabim gjatë përgatitjes së kërkesës në databazë!');
 }
 
-/* ─── lidh parametrat dinamikisht ─── */
-$types = str_repeat('i', count($ids));           // “iii…”
+$types = str_repeat('i', count($ids));
 $stmt->bind_param($types, ...$ids);
 
-/* ─── ekzekuto + verifiko ─── */
 if (!$stmt->execute()) {
     $stmt->close();
     showError('Një problem ndodhi! Rezervimet nuk u përditësuan!');
 }
 $stmt->close();
 
-/* ─── sukses – kthehu te lista ─── */
 header('Location: index.php?update=success');
 exit;

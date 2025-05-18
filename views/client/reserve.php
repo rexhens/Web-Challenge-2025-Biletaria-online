@@ -818,9 +818,7 @@ step2NextBtn.addEventListener('click', ev => {
         };
 
         document.getElementById('ticket-json').value=JSON.stringify(data);
-        console.log(JSON.stringify(data,null,2));
 
-        // ─── INSERT VIA AJAX ────────────────────────────
         fetch(window.location.pathname + '?<?= $isEvent ? 'event_id' : 'show_id' ?>=<?= $isEvent ? $event_id : $show_id ?>', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -854,7 +852,7 @@ step2NextBtn.addEventListener('click', ev => {
                         tbody.appendChild(tr);
                     });
                 }
-                /* rifresko datën & orën në tabelën tjetër */
+
                 document.getElementById('td-date').textContent=data.chosen_date.split('-').reverse().join('/');
                 document.getElementById('td-time').textContent=data.chosen_time;
 
@@ -863,8 +861,6 @@ step2NextBtn.addEventListener('click', ev => {
                 const total = data.total_price || (qty * unitPrice);
                 document.getElementById('td-price').textContent = `${qty} × ALL.${unitPrice.toFixed(0)} = ALL.${total.toFixed(0)}`;
 
-                console.log(data.chosen_date);
-                console.log(data.chosen_time);
                 const expireText = calculateExpireTime(data.chosen_date, data.chosen_time);
                 document.getElementById('expiration-date').textContent = `Data e skadimit: ${expireText}`;
 
