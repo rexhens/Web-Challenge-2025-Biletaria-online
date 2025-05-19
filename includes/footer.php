@@ -48,7 +48,7 @@
                     <?= isSubscriber($conn, $_SESSION['user_id']) ? 'Ndalo njoftimet për shfaqje/evente të reja' : 'Merr njoftime për shfaqje/evente të reja' ?>
                 </p>
             <?php else: ?>
-                <p style="font-size: 0.95rem; font-family: var(--nav-font);">
+                <p style="font-size: 0.95rem; color: #e4e4e4; font-family: var(--nav-font);">
                     <a href="/biletaria_online/auth/login.php" aria-label="Identifikohu ose Krijo llogari" style="margin-right: 10px">
                         <i class="fas fa-user-circle"></i>
                     </a>
