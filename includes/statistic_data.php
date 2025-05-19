@@ -1,5 +1,5 @@
 <?php
-$pdo = new PDO('mysql:host=localhost;dbname=theater_db;charset=utf8', 'root', '');
+$pdo = new PDO('mysql:host=localhost;dbname=theater_db;charset=utf8', 'root', 'toor1');
 
 $sql = "
 SELECT 

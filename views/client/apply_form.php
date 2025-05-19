@@ -306,8 +306,7 @@ unset($_SESSION['old']);
     document.addEventListener("DOMContentLoaded", function () {
         flatpickr("#data", {
             mode: "multiple",
-            dateFormat: "Y-m-d",
-            locale: "sq"
+            dateFormat: "Y-m-d"
         });
 
         flatpickr("#orari", {

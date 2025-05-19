@@ -289,6 +289,7 @@ $pageStyles = [
 .next-step:disabled {
     background-image: linear-gradient(to bottom, #363a42, #363a42);
     opacity: 0.5;
+    cursor: not-allowed;
 }
 .next-step:disabled:hover {
     background-image: linear-gradient(to bottom, #363a42, #363a42);
