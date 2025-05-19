@@ -194,7 +194,7 @@ $pageStyles = [
     <section class="w3l-grids">
         <div class="grids-main py-5">
             <div class="container py-lg-3">
-                <div class="headerhny-title" style="margin-bottom: -20px;">
+                <div class="headerhny-title" style="margin-bottom: -10px;">
                     <div class="w3l-title-grids">
                         <div class="headerhny-left">
                             <h3 class="hny-title" style="/*color: white;*/">Sezoni i Ri</h3>
@@ -215,7 +215,7 @@ $pageStyles = [
     <!--mid-slider -->
     <section class="w3l-mid-slider position-relative">
         <div class="companies20-content">
-            <div class="grids-main py-5" style="margin-bottom: -70px; margin-top: -60px;">
+            <div class="grids-main py-5" style="margin-bottom: -60px; margin-top: -60px;">
                 <div class="container py-lg-3">
                     <div class="headerhny-title">
                         <div class="w3l-title-grids">
@@ -337,7 +337,7 @@ $pageStyles = [
     </section>
     <!-- Map Section -->
     <div class="map-section">
-        <div class="grids-main py-5" style="margin-bottom: -30px; margin-top: -60px;">
+        <div class="grids-main py-5" style="margin-bottom: -20px; margin-top: -60px;">
             <div class="container py-lg-3">
                 <div class="headerhny-title">
                     <div class="w3l-title-grids">
