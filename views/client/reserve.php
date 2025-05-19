@@ -276,6 +276,12 @@ $pageStyles = [
             opacity: 1 !important;
             animation: fadeIn 0.5s ease-in-out !important;
         }
+
+        @media (max-width: 560px) {
+            .info-container {
+                width: 300px !important;
+            }
+        }
 .next-step{
     color: var(--text-color);
     padding: 10px;
