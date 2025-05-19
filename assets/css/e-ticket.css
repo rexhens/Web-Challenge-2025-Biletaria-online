@@ -48,8 +48,8 @@ img {
 
 .holes-lower {
   position: relative;
-  margin-right: 25px;
-  margin-left: 25px;
+  margin-right: 5%;
+  margin-left: 5%;
   border: 1px dashed var(--theme-bg);
 }
 
@@ -70,7 +70,7 @@ img {
 
 .holes-lower:after {
   top: -25px;
-  left: 365px;
+  left: 100%;
 }
 
 .title {
