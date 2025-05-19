@@ -108,7 +108,7 @@ WHERE r.event_id = ?
   AND (
     (u.email IS NOT NULL AND (u.role = 'admin' OR u.role = 'ticketOffice'))
     OR
-    (u.email IS NULL AND (r.paid = 1 OR (r.paid = 0 AND r.expires_at > NOW())))
+    (r.paid = 1 OR (r.paid = 0 AND r.expires_at > NOW()))
   )
   ");
         $rq->bind_param(
@@ -130,7 +130,7 @@ WHERE r.show_id = ?
   AND (
     (u.email IS NOT NULL AND (u.role = 'admin' OR u.role = 'ticketOffice'))
     OR
-    (u.email IS NULL AND (r.paid = 1 OR (r.paid = 0 AND r.expires_at > NOW())))
+    (r.paid = 1 OR (r.paid = 0 AND r.expires_at > NOW()))
   )
   ");
         $rq->bind_param(

@@ -233,8 +233,6 @@ $pageStyles = [
                 $errors[] = "Të dhënat mungojnë! Ju duhet të vendosni një vlerësim me yje!";
             }
 
-            $conn->close();
-
             if(!empty($errors)) {
                 foreach ($errors as $error) {
                     echo "<div class='errors show'><p>$error</p></div>";
@@ -243,6 +241,21 @@ $pageStyles = [
                 echo "<div class='errors show' style='background-color: rgba(131, 173, 68) !important;'>
                          <p style='color: #E4E4E4;'>Vlerësimi juaj u dërgua me sukses!</p>
                       </div>";
+
+                $subject = "U shtua review";
+                $body = "Kontrolloni review-n e bërë nga <a href='mailto:" . $email . "'>" . $email . "</a> për shfaqjen/eventin \"" . $title . "\"<br>Ky email vjen automatikisht që ju të kontrolloni nëse review e bërë ka përmbajtje të padëshiruar.";
+
+                $title = "Një review u shtua!";
+
+                $sql = "SELECT email FROM users WHERE role = 'admin' OR role = 'ticketOffice'";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                if($result) {
+                    while($row = $result->fetch_assoc()) {
+                        sendEmail($row['email'], $subject, $title, $body, "");
+                    }
+                }
             }
         }
         ?>
