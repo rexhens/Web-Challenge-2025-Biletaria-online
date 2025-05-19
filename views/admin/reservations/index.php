@@ -215,13 +215,18 @@ $pageStyles = [
                                     <td><?php echo htmlspecialchars($row['hall']) ?></td>
                                     <td><?php echo htmlspecialchars($row['show_date']) . " " . htmlspecialchars($row['show_time']) ?></td>
 
-                                    <?php if ($row['paid']) { ?>
-                                        <td><span class="badge badge-success">Paguar</span></td>
-                                    <?php } else if (htmlspecialchars($row['expires_at']) < new DateTime()) { ?>
-                                        <td><span class="badge badge-danger">Kaluar afati</span></td>
-                                    <?php } else { ?>
-                                        <td><span class="badge badge-danger">Pa Pguar</span></td>
-                                    <?php }?>
+                                    <?php
+                                    $now = new DateTime();
+                                    $expiresAt = new DateTime($row['expires_at']);
+
+                                    if ($row['paid']) {
+                                        echo '<td><span class="badge badge-success">Paguar</span></td>';
+                                    } else if ($expiresAt < $now) {
+                                        echo '<td><span class="badge badge-danger">Kaluar afati</span></td>';
+                                    } else {
+                                        echo '<td><span class="badge badge-danger">Pa Paguar</span></td>';
+                                    }
+                                    ?>
                                     <td>
                                         <div
                                             style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; width: 150px;">
