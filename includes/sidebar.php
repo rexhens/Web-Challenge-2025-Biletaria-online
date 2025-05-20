@@ -53,6 +53,28 @@
             margin-left: 14rem !important;
         }
     }
+
+    @media (max-width: 768px) {
+        .sidebar .collapse.show {
+            position: fixed !important;
+            background-color: transparent;
+            overflow-y: auto;
+        }
+
+        .collapse-inner {
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        .sidebar {
+            overflow: visible !important;
+        }
+    }
+
+    @media (max-width: 560px) {
+        .info-container {
+            width: 300px !important;
+        }
+    }
 </style>
 
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar"
@@ -188,3 +210,26 @@
     </li>
 
 </ul>
+
+<script>
+    document.querySelectorAll('.nav-link.collapsed').forEach(link => {
+        link.addEventListener('click', function (e) {
+            // Delay pak që të lejojë Bootstrap të shtojë klasën "show"
+            setTimeout(() => {
+                const targetId = link.getAttribute('data-target');
+                const collapseElement = document.querySelector(targetId);
+
+                if (collapseElement && collapseElement.classList.contains('show')) {
+                    const linkRect = link.getBoundingClientRect();
+
+                    // Poziciono submenu-n bazuar në butonin që u klikua
+                    collapseElement.style.top = `${linkRect.top}px`;
+                    collapseElement.style.left = `7.2rem`; // ose gjerësia e sidebar-it të ngushtë
+                    collapseElement.style.position = 'fixed';
+                    collapseElement.style.zIndex = 1050;
+                    collapseElement.style.width = '220px';
+                }
+            }, 10);
+        });
+    });
+</script>
