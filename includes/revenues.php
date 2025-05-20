@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 $host = 'localhost';
 $db = 'theater_db';
 $user = 'root';
-$pass = 'toor1';
+$pass = '';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
