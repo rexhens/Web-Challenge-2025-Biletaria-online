@@ -259,8 +259,7 @@ $pageStyles = [
         document.addEventListener("DOMContentLoaded", function () {
             flatpickr("#show_dates", {
                 mode: "multiple",
-                dateFormat: "Y-m-d",
-                locale: "sq"
+                dateFormat: "Y-m-d"
             });
 
             flatpickr("#time", {
